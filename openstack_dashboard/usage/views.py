@@ -64,13 +64,14 @@ class UsageView(tables.DataTableView):
 
         # (Used key, Max key, Human Readable Name, text to display when
         # describing the quota by default it is 'Used')
-        types = [("totalInstancesUsed", "maxTotalInstances", _("Instances")),
-                 ("totalCoresUsed", "maxTotalCores", _("VCPUs")),
-                 ("totalRAMUsed", "maxTotalRAMSize", _("RAM")),
-                 ("totalFloatingIpsUsed", "maxTotalFloatingIps",
-                  "Floating IPs", _("Allocated")),
-                 ("totalSecurityGroupsUsed", "maxSecurityGroups",
-                  _("Security Groups"))]
+        types = [
+            ("totalInstancesUsed", "maxTotalInstances", _("Instances")),
+            # ("totalCoresUsed", "maxTotalCores", _("VCPUs")),
+            # ("totalRAMUsed", "maxTotalRAMSize", _("RAM")),
+            ("totalFloatingIpsUsed", "maxTotalFloatingIps", "Floating IPs",
+                _("Allocated")),
+            ("totalSecurityGroupsUsed", "maxSecurityGroups", _("Security Groups"))
+        ]
         # Check for volume usage
         if 'totalVolumesUsed' in self.usage.limits and self.usage.limits[
                 'totalVolumesUsed'] >= 0:
@@ -87,7 +88,7 @@ class UsageView(tables.DataTableView):
                     'name': t[2],
                     'used': self.usage.limits[t[0]],
                     'max': self.usage.limits[t[1]],
-                    'text': text
+                    'usedphrase': text
                 })
 
         try:
