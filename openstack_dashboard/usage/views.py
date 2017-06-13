@@ -112,8 +112,6 @@ CHART_DEFS = [
         'title': _("Compute"),
         'charts': [
             ChartDef("instances", _("Instances"), None, None),
-            ChartDef("cores", _("VCPUs"), None, None),
-            ChartDef("ram", _("RAM"), None, (sizeformat.mb_float_format,)),
         ],
     },
     {
