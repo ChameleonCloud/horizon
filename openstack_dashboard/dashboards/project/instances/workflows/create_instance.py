@@ -23,9 +23,7 @@ import operator
 from oslo_utils import units
 from blazardashboard.api import blazar
 
-from django.core.urlresolvers import reverse
 from django.template.defaultfilters import filesizeformat  # noqa
-from django.utils.safestring import mark_safe
 from django.utils.text import normalize_newlines  # noqa
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ungettext_lazy
@@ -51,7 +49,6 @@ from openstack_dashboard.dashboards.project.instances \
 
 
 LOG = logging.getLogger(__name__)
-NO_RESERV = ''
 
 
 class SelectProjectUserAction(workflows.Action):
@@ -85,12 +82,9 @@ class SetInstanceDetailsAction(workflows.Action):
     #availability_zone = forms.ChoiceField(label=_("Availability Zone"),
      #                                     required=False)
 
-    reservation_id = forms.ChoiceField(
-        label=_("Reservation"),
-        help_text=_("Choose a reservation to launch this instance against. "
-                    "Only active reservations are displayed as options."),
-        required=False,
-    )
+    reservation_id = forms.ChoiceField(label=_("Reservation"),
+                                       help_text=_("Choose a reservation to launch this instance against. Only active reservations are displayed as options."),
+                                       required=False)
 
     name = forms.CharField(label=_("Instance Name"),
                            max_length=255)
@@ -372,18 +366,6 @@ class SetInstanceDetailsAction(workflows.Action):
         if check_method:
             check_method(cleaned_data)
 
-    def clean_reservation_id(self):
-        reservation_id = self.cleaned_data.get('reservation_id')
-        if reservation_id == NO_RESERV:
-            raise forms.ValidationError(
-                mark_safe(_( # assuming translations are safe
-                    'A <a href="%(lease_url)s">reservation</a> is required '
-                    'to launch instances'
-                ) % {
-                    'lease_url': reverse('horizon:project:leases:index'),
-                }),
-            )
-
     def clean(self):
         cleaned_data = super(SetInstanceDetailsAction, self).clean()
 
@@ -409,7 +391,9 @@ class SetInstanceDetailsAction(workflows.Action):
                         reservation_ids.append((reservation['id'], label))
 
         if not reservation_ids:
-            reservation_ids.insert(0, (NO_RESERV, _("No reservations active")))
+            reservation_ids.insert(0, ("", _("No reservation found")))
+        else:
+            reservation_ids.append(("", _("Launch without reservation")))
         return reservation_ids
 
     def populate_availability_zone_choices(self, request, context):
