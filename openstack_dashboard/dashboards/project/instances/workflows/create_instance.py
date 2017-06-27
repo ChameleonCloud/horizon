@@ -377,12 +377,13 @@ class SetInstanceDetailsAction(workflows.Action):
         if reservation_id == NO_RESERV:
             raise forms.ValidationError(
                 mark_safe(_( # assuming translations are safe
-                    'A <a href="%(lease_url)s">reservation</a> is required '
+                    'An active <a href="%(lease_url)s">reservation</a> is required '
                     'to launch instances'
                 ) % {
                     'lease_url': reverse('horizon:project:leases:index'),
                 }),
             )
+        return reservation_id
 
     def clean(self):
         cleaned_data = super(SetInstanceDetailsAction, self).clean()
@@ -390,6 +391,7 @@ class SetInstanceDetailsAction(workflows.Action):
         self._check_quotas(cleaned_data)
         self._check_source(cleaned_data)
 
+        LOG.debug('form data: {}'.format(cleaned_data))
         return cleaned_data
 
     def populate_flavor_choices(self, request, context):
@@ -410,6 +412,17 @@ class SetInstanceDetailsAction(workflows.Action):
 
         if not reservation_ids:
             reservation_ids.insert(0, (NO_RESERV, _("No reservations active")))
+            msg = mark_safe(_( # assuming translations are safe
+                'An active <a href="%(lease_url)s">reservation</a> is required '
+                'to launch instances'
+            ) % {
+                'lease_url': reverse('horizon:project:leases:index'),
+            })
+            # injecting preemptive error causes multiple spurious errors to
+            # be emitted from a form that might just have one.
+            # self.errors['reservation_id'] = self.error_class([msg])
+            # self.add_action_error(msg)
+
         return reservation_ids
 
     def populate_availability_zone_choices(self, request, context):
