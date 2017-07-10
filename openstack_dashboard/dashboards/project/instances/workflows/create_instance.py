@@ -378,7 +378,7 @@ class SetInstanceDetailsAction(workflows.Action):
             raise forms.ValidationError(
                 mark_safe(_( # assuming translations are safe
                     'An active <a href="%(lease_url)s">reservation</a> is required '
-                    'to launch instances'
+                    'to launch instances.'
                 ) % {
                     'lease_url': reverse('horizon:project:leases:index'),
                 }),
@@ -414,7 +414,7 @@ class SetInstanceDetailsAction(workflows.Action):
             reservation_ids.insert(0, (NO_RESERV, _("No reservations active")))
             msg = mark_safe(_( # assuming translations are safe
                 'An active <a href="%(lease_url)s">reservation</a> is required '
-                'to launch instances'
+                'to launch instances.'
             ) % {
                 'lease_url': reverse('horizon:project:leases:index'),
             })
