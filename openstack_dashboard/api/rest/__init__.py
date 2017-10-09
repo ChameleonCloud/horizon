@@ -21,6 +21,7 @@ It does not promise to adhere to the general OpenStack API Guidelines set out
 in https://wiki.openstack.org/wiki/APIChangeGuidelines.
 """
 
+from openstack_dashboard.api.rest import blazar
 from openstack_dashboard.api.rest import cinder
 from openstack_dashboard.api.rest import config
 from openstack_dashboard.api.rest import glance
@@ -33,6 +34,7 @@ from openstack_dashboard.api.rest import swift
 
 
 __all__ = [
+    'blazar',
     'cinder',
     'config',
     'glance',
