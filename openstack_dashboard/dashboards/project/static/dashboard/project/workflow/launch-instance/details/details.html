@@ -19,7 +19,7 @@
           </span>
       </div>
 
-      <div class="form-group">
+      <div class="form-group hidden">
         <label class="control-label" translate for="availability-zone">Availability Zone</label>
         <div class="alert alert-warning"
              ng-if="model.availabilityZones.length === 0"
@@ -29,6 +29,23 @@
                 id="availability-zone"
                 ng-options="zone.value as zone.label for zone in model.availabilityZones"
                 ng-model="model.newInstanceSpec.availability_zone">
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="control-label" for="reservation">
+          <translate>Reservation</translate>
+          <span class="hz-icon-required fa fa-asterisk"></span>
+        </label>
+        <div class="alert alert-danger"
+             ng-if="model.reservations.length === 0"
+             translate>There are no active reservations.</div>
+        <select ng-if="model.reservations.length !== 0"
+                class="form-control"
+                id="reservation"
+                ng-options="reserv.value as reserv.label for reserv in model.reservations"
+                ng-model="model.newInstanceSpec.reservation"
+                required>
         </select>
       </div>
 

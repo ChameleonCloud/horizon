@@ -1271,6 +1271,7 @@ class InstancesTable(tables.DataTable):
         #
         # - SoftRebootInstance
         # - EditInstanceSecurityGroups
+        # - ConsoleLink
         # - LogLink
         row_actions = (StartInstance, ConfirmResize, RevertResize,
                        SimpleAssociateIP, AssociateIP, SimpleDisassociateIP,
