@@ -48,7 +48,7 @@
         label: gettext('Name'),
         name: 'name',
         singleton: true
-      },
+      },/**
       {
         label: gettext('VCPUs'),
         name: 'vcpus',
@@ -58,7 +58,7 @@
         label: gettext('RAM'),
         name: 'ram',
         singleton: true
-      },
+      },**/
       {
         label: gettext('Public'),
         name: 'isPublic',
