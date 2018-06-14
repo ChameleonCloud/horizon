@@ -24,6 +24,7 @@ from django.test.utils import override_settings
 from openstack_dashboard import api
 from openstack_dashboard.api import base
 from openstack_dashboard.test import helpers as test
+from openstack_dashboard.test.test_data import glance_data
 
 
 class GlanceApiTests(test.APIMockTestCase):
@@ -406,3 +407,19 @@ class GlanceApiTests(test.APIMockTestCase):
         self.assertNotIn('properties', meta)
         self.assertEqual(meta['description'], form_data['description'])
         self.assertEqual(meta['architecture'], form_data['architecture'])
+
+    @override_settings(CHAMELEON_SUPPORT_METADATA_NAME='chameleon-supported')
+    def test_image_to_dict_serializes_project_supported(self):
+        # Ensure that chameleon-supported image property passes through to the
+        # project_supported api field.
+        apiresource = glance_data.APIResourceV2({
+            'id': '1', 'name': 'img', 'chameleon-supported': 'true'})
+        result = api.glance.Image(apiresource).to_dict()
+        self.assertEqual('Yes', result['project_supported'])
+
+    def test_create_image_metadata_excludes_project_supported(self):
+        # project_supported is a derived field, not a real glance property, so
+        # ensure it isn't sent to glance when an image is edited via horizon.
+        meta = api.glance.create_image_metadata(
+            {'name': 'img', 'disk_format': 'raw', 'project_supported': 'Yes'})
+        self.assertNotIn('project_supported', meta)

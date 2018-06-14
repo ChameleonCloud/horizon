@@ -51,7 +51,7 @@ class Image(base.APIResourceWrapper):
     _attrs = {"architecture", "container_format", "disk_format", "created_at",
               "owner", "size", "id", "status", "updated_at", "checksum",
               "visibility", "name", "is_public", "protected", "min_disk",
-              "min_ram"}
+              "min_ram", "project_supported"}
     _ext_attrs = {"file", "locations", "schema", "tags", "virtual_size",
                   "kernel_id", "ramdisk_id", "image_url"}
 
@@ -70,6 +70,22 @@ class Image(base.APIResourceWrapper):
     @property
     def name(self):
         return getattr(self._apiresource, 'name', None)
+
+    @property
+    def project_supported(self):
+        raw = getattr(self._apiresource, settings.CHAMELEON_SUPPORT_METADATA_NAME, None)
+        if raw is None or str(raw).strip() == "":
+            return 'No'
+
+        value = str(raw).strip().lower()
+        if value in ('true', 'yes'):
+            return 'Yes'
+        elif value in ('false', 'no'):
+            return 'No'
+        elif value == 'deprecated':
+            return 'Deprecated'
+        else:
+            return 'Unknown'
 
     @property
     def size(self):
@@ -140,6 +156,7 @@ KNOWN_PROPERTIES = [
     'deleted_at', 'is_public', 'virtual_size',
     'status', 'size', 'owner', 'id', 'updated_at',
     'kernel_id', 'ramdisk_id', 'image_file',
+    'project_supported',
 ]
 
 
