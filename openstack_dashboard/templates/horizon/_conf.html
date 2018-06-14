@@ -38,6 +38,8 @@
     };
     conf.disable_password_reveal =
       {{ HORIZON_CONFIG.disable_password_reveal|yesno:"true,false" }};
+    conf.show_chameleon_support_column =
+      {{ HORIZON_CONFIG.show_chameleon_support_column|yesno:"true,false" }};
 
   })(this);
 </script>
