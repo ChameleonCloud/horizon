@@ -24,6 +24,8 @@ import itertools
 import json
 import logging
 import os
+import urllib3
+from django.core.cache import cache
 
 from django.conf import settings
 from django.core.files.uploadedfile import InMemoryUploadedFile
@@ -84,9 +86,10 @@ class Image(base.APIResourceWrapper):
     _attrs = {"architecture", "container_format", "disk_format", "created_at",
               "owner", "size", "id", "status", "updated_at", "checksum",
               "visibility", "name", "is_public", "protected", "min_disk",
-              "min_ram"}
+              "min_ram", "project_supported", "published_in_app_catalog"}
     _ext_attrs = {"file", "locations", "schema", "tags", "virtual_size",
                   "kernel_id", "ramdisk_id", "image_url"}
+    APP_CATALOG = None
 
     def __getattribute__(self, attr):
         # Because Glance v2 treats custom properties as normal
@@ -104,6 +107,18 @@ class Image(base.APIResourceWrapper):
     @property
     def name(self):
         return getattr(self._apiresource, 'name', None)
+
+    @property
+    def project_supported(self):
+        return self.get_is_project_supported()
+
+    @property
+    def published_in_app_catalog(self):
+        return self.get_is_published_in_app_catalog()
+
+    @property
+    def appliance_catalog_id(self):
+        return self.get_catalog_id()
 
     @property
     def size(self):
@@ -138,6 +153,12 @@ class Image(base.APIResourceWrapper):
             return self._apiresource.to_dict()
         image_dict = super(Image, self).to_dict()
         image_dict['is_public'] = self.is_public
+        image_dict['project_supported'] = self.project_supported
+        image_dict['published_in_app_catalog'] = self.published_in_app_catalog
+        image_dict['appliance_catalog_id'] = self.appliance_catalog_id
+        image_dict['appliance_catalog_details_path'] = settings.APPLIANCE_CATALOG_DETAILS_PATH
+        image_dict['appliance_catalog_host'] = settings.CHAMELEON_PORTAL_API_BASE_URL
+        image_dict['publish_appliance_path'] = settings.PUBLISH_APPLIANCE_PATH
         image_dict['properties'] = {
             k: self._apiresource[k] for k in self._apiresource
             if self.property_visible(k, show_ext_attrs=show_ext_attrs)}
@@ -149,9 +170,66 @@ class Image(base.APIResourceWrapper):
     def __ne__(self, other_image):
         return not self.__eq__(other_image)
 
+    def get_catalog_id(self):
+        try:
+            LOG.info('Getting catalog id from appliance catalog api for image id: ' + self.id)
+            app_json = json.loads(Image.APP_CATALOG)
+            for app in app_json['result']:
+                if(app['chi_uc_appliance_id'] == self.id):
+                    return app['id']
+                if(app['chi_tacc_appliance_id'] == self.id):
+                    return app['id']
+                if(app['kvm_tacc_appliance_id'] == self.id):
+                    return app['id']
+        except:
+            LOG.error('Error getting catalog id from appliance catalog api for image id: ' + self.id)
+        return -1
+
+    def get_is_project_supported(self):
+        try:
+            LOG.info('Getting project_supported flag from appliance catalog api for image id: ' + self.id)
+            app_json = json.loads(Image.APP_CATALOG)
+            for app in app_json['result']:
+                if(app['chi_uc_appliance_id'] == self.id):
+                    return app['project_supported']
+                if(app['chi_tacc_appliance_id'] == self.id):
+                    return app['project_supported']
+                if(app['kvm_tacc_appliance_id'] == self.id):
+                    return app['project_supported']
+        except:
+            LOG.error('Error getting project_supported flag from appliance catalog api for image id: ' + self.id)
+        return False
+
+    def get_is_published_in_app_catalog(self):
+        try:
+            LOG.info('Checking if image is published to appliance catalog for image id: ' + self.id)
+            app_json = json.loads(Image.APP_CATALOG)
+            for app in app_json['result']:
+                if(app['chi_uc_appliance_id'] == self.id):
+                    return True
+                if(app['chi_tacc_appliance_id'] == self.id):
+                    return True
+                if(app['kvm_tacc_appliance_id'] == self.id):
+                    return True
+        except:
+            LOG.error('Error checking if image is published to appliance catalog for image id: ' + self.id)
+        return False
+
+@memoized
+def fetch_supported_appliances(request):
+    try:
+        LOG.info('Fetching and caching Appliance JSON from ' + settings.CHAMELEON_PORTAL_API_BASE_URL + settings.APPLIANCE_CATALOG_API_PATH)
+        http = urllib3.PoolManager()
+        r = http.request('GET', settings.CHAMELEON_PORTAL_API_BASE_URL + settings.APPLIANCE_CATALOG_API_PATH)
+        LOG.debug('fetched appliance catalog data: ' + r.data)
+        return r.data
+    except Exception as e:
+        LOG.error(e)
+    return []
 
 @memoized
 def glanceclient(request, version=None):
+    Image.APP_CATALOG = fetch_supported_appliances(request)
     api_version = VERSIONS.get_active_version()
 
     url = base.url_for(request, 'image')
@@ -397,6 +475,13 @@ def image_list_detailed(request, marker=None, sort_dir='desc',
 
 @profiler.trace
 def image_update(request, image_id, **kwargs):
+    ## Ensuring custom properties aren't sent to glance on upate
+    kwargs.pop('appliance_catalog_id', None)
+    kwargs.pop('project_supported', None)
+    kwargs.pop('appliance_catalog_host', None)
+    kwargs.pop('publish_appliance_path', None)
+    kwargs.pop('published_in_app_catalog', None)
+
     image_data = kwargs.get('data', None)
     try:
         # Horizon doesn't support purging image properties. Make sure we don't

@@ -227,6 +227,15 @@ COMPRESS_OFFLINE_CONTEXT = 'horizon.themes.offline_context'
 # Notice all customizable configurations should be above this line
 XSTATIC_MODULES = settings_utils.BASE_XSTATIC_MODULES
 
+OPENSTACK_PROFILER = {
+    'enabled': False
+}
+
+CHAMELEON_PORTAL_API_BASE_URL = 'https://www.chameleoncloud.org'
+APPLIANCE_CATALOG_API_PATH = '/appliances/api/appliances'
+APPLIANCE_CATALOG_DETAILS_PATH = '/appliances'
+PUBLISH_APPLIANCE_PATH = '/appliances/create/image'
+
 if not LOCAL_PATH:
     LOCAL_PATH = os.path.join(ROOT_PATH, 'local')
 LOCAL_SETTINGS_DIR_PATH = os.path.join(LOCAL_PATH, "local_settings.d")
