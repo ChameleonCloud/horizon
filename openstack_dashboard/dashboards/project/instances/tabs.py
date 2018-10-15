@@ -36,25 +36,12 @@ class OverviewTab(tabs.Tab):
                      "_detail_overview.html")
 
     def get_context_data(self, request):
-        instance = self.tab_group.kwargs['instance']
-        if instance.volumes and not instance.image:
-            try:
-                volume = api.cinder.volume_get(
-                    self.request, volume_id=instance.volumes[0].volumeId)
-            except Exception:
-                exceptions.handle(self.request,
-                                  _('Failed to get attached volume.'))
-            try:
-                instance.image = {
-                    'id': volume.volume_image_metadata['image_id'],
-                    'name': volume.volume_image_metadata['image_name'],
-                }
-            except (AttributeError, KeyError):
-                # AttributeError is raised when volume_image_metadata does not
-                # exist. KeyError is raised when volume_image_metadata exists
-                # but image_id or image_name is not included.
-                instance.image = None
-        return {"instance": instance}
+        site = None
+        sites = getattr(settings, "CHAMELEON_SITES")
+        if sites:
+            site = sites.get(request.session.get("services_region"))
+        return {"instance": self.tab_group.kwargs["instance"],
+                "is_superuser": request.user.is_superuser, "site": site}
 
 
 class InterfacesTab(policy.PolicyTargetMixin, tabs.TableTab):
