@@ -35,7 +35,12 @@ class OverviewTab(tabs.Tab):
                      "_detail_overview.html")
 
     def get_context_data(self, request):
-        return {"instance": self.tab_group.kwargs['instance']}
+        site = None
+        sites = getattr(settings, "CHAMELEON_SITES")
+        if sites:
+            site = sites.get(request.session.get("services_region"))
+        return {"instance": self.tab_group.kwargs["instance"],
+                "is_superuser": request.user.is_superuser, "site": site}
 
 
 class InterfacesTab(tabs.TableTab):

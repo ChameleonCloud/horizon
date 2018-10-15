@@ -102,7 +102,6 @@ class MKSConsole(base.APIDictWrapper):
     """
     _attrs = ['url', 'type']
 
-
 class Hypervisor(base.APIDictWrapper):
     """Simple wrapper around novaclient.hypervisors.Hypervisor."""
 
