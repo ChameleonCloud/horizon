@@ -62,7 +62,14 @@ class OverviewTab(tabs.Tab):
                 # exist. KeyError is raised when volume_image_metadata exists
                 # but image_id or image_name is not included.
                 instance.image = None
-        return {"instance": instance}
+
+        site = None
+        sites = getattr(settings, "CHAMELEON_SITES")
+        if sites:
+            site = sites.get(request.session.get("services_region"))
+
+        return {"instance": instance,
+                "is_superuser": request.user.is_superuser, "site": site}
 
 
 class InterfacesTab(policy.PolicyTargetMixin, tabs.TableTab):

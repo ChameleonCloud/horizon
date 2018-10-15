@@ -54,7 +54,8 @@ class Server(base.APIResourceWrapper):
               'OS-EXT-SRV-ATTR:ramdisk_id', 'OS-EXT-SRV-ATTR:root_device_name',
               'OS-EXT-SRV-ATTR:root_device_name', 'OS-EXT-SRV-ATTR:user_data',
               'OS-EXT-SRV-ATTR:reservation_id', 'OS-EXT-SRV-ATTR:launch_index',
-              'OS-EXT-AZ:availability_zone', 'OS-DCF:diskConfig']
+              'OS-EXT-AZ:availability_zone', 'OS-DCF:diskConfig',
+              'OS-EXT-SRV-ATTR:hypervisor_hostname']
 
     def __init__(self, apiresource, request):
         super().__init__(apiresource)
@@ -95,6 +96,10 @@ class Server(base.APIResourceWrapper):
     @property
     def internal_name(self):
         return getattr(self, 'OS-EXT-SRV-ATTR:instance_name', "")
+    
+    @property
+    def hypervisor_hostname(self):
+        return getattr(self, 'OS-EXT-SRV-ATTR:hypervisor_hostname', "")
 
     @property
     def host_server(self):
