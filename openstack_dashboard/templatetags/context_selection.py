@@ -15,6 +15,9 @@
 from django.conf import settings
 from django import template
 
+from horizon.utils import sites
+from openstack_dashboard.api import keystone
+
 
 register = template.Library()
 
@@ -28,6 +31,11 @@ def is_multi_region_configured(request):
 # context and remove `is_multidomain` template tag
 def is_multidomain_supported():
     return settings.OPENSTACK_KEYSTONE_MULTIDOMAIN_SUPPORT
+
+
+def is_multi_site_configured():
+    return (len(sites.get_available_sites()) > 1 and
+            settings.CHAMELEON_MULTISITE_SUPPORT)
 
 
 @register.simple_tag(takes_context=True)
@@ -52,6 +60,10 @@ def show_systems(context):
         return False
     return request.user.is_system_user
 
+@register.simple_tag
+def is_multi_site():
+    return is_multi_site_configured()
+
 
 @register.inclusion_tag('context_selection/_overview.html',
                         takes_context=True)
@@ -68,6 +80,8 @@ def show_overview(context):
                'multi_region': is_multi_region_configured(request),
                'region_name': request.user.services_region,
                'system_scoped': request.user.system_scoped,
+               'multi_site': is_multi_site_configured(),
+               'site_name': (sites.get_current_site() or {}).get('name'),
                'request': request}
 
     return context
@@ -126,6 +140,18 @@ def show_system_list(context):
         'system_scoped': request.user.system_scoped,
         'page_url': panel.get_absolute_url() if panel else None,
     }
+    return context
+
+@register.inclusion_tag('context_selection/_site_list.html',
+                        takes_context=True)
+def show_site_list(context):
+    panel = None
+    if 'request' in context:
+        request = context['request']
+        panel = request.horizon.get('panel')
+    context = {'site_id': settings.CHAMELEON_SITE_ID,
+               'sites': sites.get_available_sites(),
+               'page_url': panel.get_absolute_url() if panel else None}
     return context
 
 

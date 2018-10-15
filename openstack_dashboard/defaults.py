@@ -570,3 +570,10 @@ KUBECONFIG_CERTIFICATE_AUTHORITY_DATA = ""
 # Services may require a System Scope token for certain operations. This
 # settings enables the use of the system scope token on per-service basis.
 SYSTEM_SCOPE_SERVICES = []
+
+CHAMELEON_PORTAL_API_BASE_URL = 'https://www.chameleoncloud.org'
+CHAMELEON_MULTISITE_SUPPORT = False
+CHAMELEON_REFERENCE_API_URL = "https://api.chameleoncloud.org"
+CHAMELEON_SITE_ID = ""
+# DEPRECATED
+CHAMELEON_SITES = {}
