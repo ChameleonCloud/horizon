@@ -14,6 +14,10 @@ import six
 
 LOG = logging.getLogger(__name__)
 
+"""
+    The below overrides the defaul login functionality and redirects to auth with the preconfigured portal with
+    all the required parameters for login to this Horizon instance
+"""
 @sensitive_post_parameters()
 @csrf_protect
 @never_cache
@@ -33,6 +37,13 @@ def login(request, template_name=None, extra_context=None, **kwargs):
         return django_http.HttpResponseRedirect(login_url)
     return openstack_auth.views.login(request, template_name=None, extra_context=None, **kwargs)
 
+"""
+    this is a custom websso endpoint for chameleon portal
+    This primary difference between this and the original websso login code is
+    that the original request's HTTP_REFERER is not used, in the standard websso impmlementation,
+    the HTTP_REFERER would be the Keystone server, which would then be used as the Keystone URL
+    Since we are using the chameleon portal, we want Horizon to use its preconfigured OPENSTACK_KEYSTONE_URL
+"""
 @sensitive_post_parameters()
 @csrf_exempt
 @never_cache
@@ -47,8 +58,6 @@ def cc_websso(request):
     try:
         request.user = auth.authenticate(request=request, auth_url=auth_url, token=token)
     except exceptions.KeystoneAuthException as exc:
-        # logger.error('Login failed: %s' % six.text_type(exc))
-        # raise exc
         msg = 'Login failed: %s' % six.text_type(exc)
         res = django_http.HttpResponseRedirect(settings.LOGOUT_URL)
         res.set_cookie('logout_reason', msg, max_age=10)
@@ -64,6 +73,10 @@ def cc_websso(request):
     return django_http.HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
 
 
+"""
+    This overrides the standard logout and redirect to login page, and instead
+    take users to a custom logout page where they can further log out of Chameleon portal
+"""
 def logout(request, login_url=None, **kwargs):
     """Logs out the user if he is logged in. Then redirects to the log-in page.
 
