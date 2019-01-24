@@ -11,6 +11,7 @@ from openstack_auth import utils
 from openstack_auth import exceptions
 from openstack_auth import user as auth_user
 import six
+import urlparse
 
 LOG = logging.getLogger(__name__)
 
@@ -68,8 +69,10 @@ def cc_websso(request):
     if request.session.test_cookie_worked():
         request.session.delete_test_cookie()
 
-    if request.GET.get('next'):
-        return django_http.HttpResponseRedirect(request.GET.get('next'))
+    next = request.GET.get('next')
+    if next and not bool(urlparse.urlparse(next).netloc):
+        return django_http.HttpResponseRedirect(next)
+
     return django_http.HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
 
 
