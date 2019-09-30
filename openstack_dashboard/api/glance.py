@@ -153,31 +153,17 @@ class Image(base.APIResourceWrapper):
         return not self.__eq__(other_image)
 
     def get_catalog_id(self):
-        try:
-            if not Image.PUBLISHED_APPLIANCES.get(self.id):
-                return -1
-
-            return Image.PUBLISHED_APPLIANCES.get(self.id).get('id')
-        except:
-            LOG.error('Error getting catalog id from appliance catalog api for image id: ' + self.id)
+        if Image.PUBLISHED_APPLIANCES.get(self.id):
+            return Image.PUBLISHED_APPLIANCES.get(self.id).get('id', -1)
         return -1
 
     def get_is_project_supported(self):
-        try:
-            if not Image.PUBLISHED_APPLIANCES.get(self.id):
-                return False
-
-            return Image.PUBLISHED_APPLIANCES.get(self.id).get('project_supported')
-        except:
-            LOG.error('Error getting project_supported flag from appliance catalog api for image id: ' + self.id)
+        if Image.PUBLISHED_APPLIANCES.get(self.id):
+            Image.PUBLISHED_APPLIANCES.get(self.id).get('project_supported', False) 
         return False
 
     def get_is_published_in_app_catalog(self):
-        try:
-            return Image.PUBLISHED_APPLIANCES.get(self.id) is not None
-        except:
-             LOG.error('Error checking if image is published to appliance catalog for image id: ' + self.id)
-        return False
+        return Image.PUBLISHED_APPLIANCES.get(self.id) is not None
 
 def fetch_published_appliances():
     if not cache.get('app_catalog_updated'):
