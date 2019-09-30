@@ -159,7 +159,7 @@ class Image(base.APIResourceWrapper):
 
     def get_is_project_supported(self):
         if Image.PUBLISHED_APPLIANCES.get(self.id):
-            Image.PUBLISHED_APPLIANCES.get(self.id).get('project_supported', False) 
+            return Image.PUBLISHED_APPLIANCES.get(self.id).get('project_supported', False)
         return False
 
     def get_is_published_in_app_catalog(self):
