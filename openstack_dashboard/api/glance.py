@@ -179,19 +179,28 @@ class Image(base.APIResourceWrapper):
              LOG.error('Error checking if image is published to appliance catalog for image id: ' + self.id)
         return False
 
-def fetch_published_appliances(request):
+def fetch_published_appliances():
     if not cache.get('app_catalog_updated'):
         try:
             LOG.info('Fetching appliances from ' + settings.CHAMELEON_PORTAL_API_BASE_URL + settings.APPLIANCE_CATALOG_API_PATH)
-            Image.PUBLISHED_APPLIANCES = requests.get(settings.CHAMELEON_PORTAL_API_BASE_URL + settings.APPLIANCE_CATALOG_API_PATH).json()
-            cache.set('app_catalog_updated', True, 5)
+            appliance_list = requests.get(settings.CHAMELEON_PORTAL_API_BASE_URL + settings.APPLIANCE_CATALOG_API_PATH).json().get('result')
+            appliance_dict = {}
+            for appliance in appliance_list:
+                if appliance.get('chi_uc_appliance_id', False):
+                    appliance_dict[appliance.get('chi_uc_appliance_id')] = appliance
+                if appliance.get('chi_tacc_appliance_id', False):
+                    appliance_dict[appliance.get('chi_tacc_appliance_id')] = appliance
+                if appliance.get('kvm_tacc_appliance_id', False):
+                    appliance_dict[appliance.get('kvm_tacc_appliance_id')] = appliance
+            Image.PUBLISHED_APPLIANCES = appliance_dict
+            cache.set('app_catalog_updated', True, 60*5)
         except Exception as e:
             LOG.error(e)
 
 @memoized
 def glanceclient(request, version=None):
     api_version = VERSIONS.get_active_version()
-
+    fetch_published_appliances()
     url = base.url_for(request, 'image')
     insecure = getattr(settings, 'OPENSTACK_SSL_NO_VERIFY', False)
     cacert = getattr(settings, 'OPENSTACK_SSL_CACERT', None)
