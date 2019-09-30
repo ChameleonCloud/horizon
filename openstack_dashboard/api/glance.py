@@ -50,6 +50,8 @@ if hasattr(collections, 'abc'):
 else:
     from collections import Iterable
 
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 LOG = logging.getLogger(__name__)
 VERSIONS = base.APIVersionManager("image", preferred_version=2)
@@ -91,7 +93,7 @@ class Image(base.APIResourceWrapper):
                   "kernel_id", "ramdisk_id", "image_url"}
 
     # These are Appliance published to the Chameleon portal
-    PUBLISHED_APPLIANCES = {}
+    _published_appliances = {}
 
     def __getattribute__(self, attr):
         # Because Glance v2 treats custom properties as normal
@@ -173,45 +175,40 @@ class Image(base.APIResourceWrapper):
         return not self.__eq__(other_image)
 
     def get_catalog_id(self):
-        try:
-            if not Image.PUBLISHED_APPLIANCES.get(self.id):
-                return -1
-
-            return Image.PUBLISHED_APPLIANCES.get(self.id).get('id')
-        except:
-            LOG.error('Error getting catalog id from appliance catalog api for image id: ' + self.id)
-        return -1
+        return Image._published_appliances.get(self.id, {}).get('id', -1)
 
     def get_is_project_supported(self):
-        try:
-            if not Image.PUBLISHED_APPLIANCES.get(self.id):
-                return False
-
-            return Image.PUBLISHED_APPLIANCES.get(self.id).get('project_supported')
-        except:
-            LOG.error('Error getting project_supported flag from appliance catalog api for image id: ' + self.id)
-        return False
+        return Image._published_appliances.get(self.id, {}).get('project_supported', False)
 
     def get_is_published_in_app_catalog(self):
-        try:
-            return Image.PUBLISHED_APPLIANCES.get(self.id) is not None
-        except:
-             LOG.error('Error checking if image is published to appliance catalog for image id: ' + self.id)
-        return False
+        return Image._published_appliances.get(self.id) is not None
 
-def fetch_published_appliances(request):
-    if not cache.get('app_catalog_updated'):
+def fetch_published_appliances():
+    Image._published_appliances = cache.get('published_appliances', {})
+    if not Image._published_appliances:
         try:
-            LOG.info('Fetching appliances from ' + settings.CHAMELEON_PORTAL_API_BASE_URL + settings.APPLIANCE_CATALOG_API_PATH)
-            Image.PUBLISHED_APPLIANCES = requests.get(settings.CHAMELEON_PORTAL_API_BASE_URL + settings.APPLIANCE_CATALOG_API_PATH).json()
-            cache.set('app_catalog_updated', True, 5)
+            LOG.info('Fetching appliances from ' + settings.CHAMELEON_PORTAL_API_BASE_URL\
+                + settings.APPLIANCE_CATALOG_API_PATH)
+            appliance_list = requests.get(settings.CHAMELEON_PORTAL_API_BASE_URL\
+                + settings.APPLIANCE_CATALOG_API_PATH).json().get('result')
+            appliance_dict = {}
+            for appliance in appliance_list:
+                if appliance.get('chi_uc_appliance_id', False):
+                    appliance_dict[appliance.get('chi_uc_appliance_id')] = appliance
+                if appliance.get('chi_tacc_appliance_id', False):
+                    appliance_dict[appliance.get('chi_tacc_appliance_id')] = appliance
+                if appliance.get('kvm_tacc_appliance_id', False):
+                    appliance_dict[appliance.get('kvm_tacc_appliance_id')] = appliance
+            cache.set('published_appliances', appliance_dict, 60*15)
+            Image._published_appliances = appliance_dict
+            LOG.info('Appliance Catalog cache updated')
         except Exception as e:
             LOG.error(e)
 
 @memoized
 def glanceclient(request, version=None):
     api_version = VERSIONS.get_active_version()
-
+    fetch_published_appliances()
     url = base.url_for(request, 'image')
     insecure = settings.OPENSTACK_SSL_NO_VERIFY
     cacert = settings.OPENSTACK_SSL_CACERT

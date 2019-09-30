@@ -24,7 +24,7 @@
                 {% endif %}
               </div>
             </div>
-        {% if forloop.last or (not forloop.first and forloop.counter|divisibleby:6) %}
+        {% if forloop.last or not forloop.first and forloop.counter|divisibleby:6 %}
           </div>
         {% endif %}
       {% endfor %}
