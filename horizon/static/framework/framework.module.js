@@ -128,11 +128,12 @@
   function redirect($q, $rootScope, $window, frameworkEvents, toastService) {
     return {
       responseError: function (error) {
-        if (error.status === 401) {
+        var isRedirect = typeof error.config.redirectOnAuthErrors === "boolean" ? error.config.redirectOnAuthErrors : true
+        if (error.status === 401 && isRedirect) {
           var msg = gettext('Unauthorized. Redirecting to login');
           handleRedirectMessage(msg, $rootScope, $window, frameworkEvents, toastService, true);
         }
-        if (error.status === 403) {
+        if (error.status === 403 && isRedirect) {
           var msg2 = gettext('Forbidden. Insufficient permissions of the requested operation');
           handleRedirectMessage(msg2, $rootScope, $window, frameworkEvents, toastService, false);
         }

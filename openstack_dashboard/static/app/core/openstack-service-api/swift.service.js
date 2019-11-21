@@ -116,8 +116,8 @@
      * @returns {Object} An object with the metadata fields.
      *
      */
-    function getContainer(container, ignoreError) {
-      var promise = apiService.get(service.getContainerURL(container) + '/metadata/');
+    function getContainer(container, ignoreError, config) {
+      var promise = apiService.get(service.getContainerURL(container) + '/metadata/', config || {});
       if (ignoreError) {
         return promise.error(angular.noop);
       }

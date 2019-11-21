@@ -96,7 +96,9 @@
       var def = $q.defer();
       // reverse the sense here - successful lookup == error so we reject the
       // name if we find it in swift
-      swiftAPI.getContainer(containerName, true).then(def.reject, def.resolve);
+      swiftAPI.getContainer(containerName, true, {redirectOnAuthErrors: false}).then(def.reject, function(response){
+    	  if (response.status == 403) {def.reject(response)}
+    	  else {def.resolve(response)}});
       return def.promise;
     }
 
@@ -201,7 +203,7 @@
               {
                 key: 'name',
                 validationMessage: {
-                  exists: gettext('A container with that name exists.')
+                  exists: gettext('A container with that name exists. (Name must be unique within each region.)')
                 },
                 $asyncValidators: {
                   exists: checkContainerNameConflict
