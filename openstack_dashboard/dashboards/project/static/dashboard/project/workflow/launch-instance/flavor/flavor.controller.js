@@ -280,6 +280,11 @@
         };
         ctrl.availableFlavorFacades.push(facade);
       }
+
+      // Set default flavor if only one available
+      if(ctrl.allocatedFlavorFacades.length < 1 && ctrl.availableFlavorFacades.length == 1){
+        ctrl.allocatedFlavorFacades.push(ctrl.availableFlavorFacades[0]);
+      }
     }
 
     /*
