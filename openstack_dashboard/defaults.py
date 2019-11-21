@@ -253,6 +253,7 @@ LAUNCH_INSTANCE_DEFAULTS = {
     'enable_scheduler_hints': True,
     'enable_metadata': True,
     'enable_net_ports': True,
+    'default_flavor_name': None,
     'default_availability_zone': 'Any',
 }
 

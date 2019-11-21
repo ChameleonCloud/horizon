@@ -313,6 +313,9 @@
       if ('default_availability_zone' in defaults) {
         model.default_availability_zone = defaults.default_availability_zone;
       }
+      if ('default_flavor_name' in defaults) {
+        model.default_flavor_name = defaults.default_flavor_name;
+      }
     }
 
     /**
