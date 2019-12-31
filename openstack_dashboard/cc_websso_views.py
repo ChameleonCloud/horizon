@@ -53,10 +53,8 @@ def cc_websso(request):
     """Logs a user in using a token from Keystone's POST."""
     request.META['HTTP_REFERER'] = settings.OPENSTACK_KEYSTONE_URL
     referer = settings.OPENSTACK_KEYSTONE_URL
-    LOG.info(referer)
     auth_url = utils.clean_up_auth_url(referer)
     token = request.POST.get('token')
-    LOG.info('token: ' + token)
     try:
         request.user = auth.authenticate(request=request, auth_url=auth_url, token=token)
     except exceptions.KeystoneAuthException as exc:
