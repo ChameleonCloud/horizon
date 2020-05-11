@@ -61,10 +61,10 @@ def login(request):
             utils.is_websso_default_redirect() and
             (not utils.wants_bypass_websso_default_redirect(request))):
         origin = utils.build_absolute_uri(request, '/auth/websso/')
-        if utils.get_websso_default_url():
+        if utils.get_websso_default_redirect_url():
             host = request.get_host()
             url = ('%s?origin=%s&host=%s' % (
-                utils.get_websso_default_url(), origin, host))
+                utils.get_websso_default_redirect_url(), origin, host))
         else:
             protocol = utils.get_websso_default_redirect_protocol()
             region = utils.get_websso_default_redirect_region()
