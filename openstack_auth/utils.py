@@ -29,6 +29,8 @@ from openstack_auth import defaults
 
 LOG = logging.getLogger(__name__)
 
+FORCE_WEBSSO_CHOICES_COOKIE = "force_choices"
+
 """
 We need the request object to get the user, so we'll slightly modify the
 existing django.contrib.auth.get_user method. To do so we update the
@@ -152,7 +154,20 @@ def is_websso_default_redirect():
 
 
 def wants_bypass_websso_default_redirect(request):
-    return request.GET.get("websso_version") == "2"
+    return request.COOKIES.get(FORCE_WEBSSO_CHOICES_COOKIE) == "1"
+
+
+def is_websso_default_redirect_url(url):
+    default_url = get_websso_default_redirect_url()
+    if not default_url:
+        return False
+    default_url = default_url.rstrip('/')
+
+    scheme, netloc, path, query, fragment = urlparse.urlsplit(url)
+    clean_url = urlparse.urlunsplit(scheme, netloc, path, '', '')
+    clean_url = clean_url.rstrip('/')
+
+    return clean_url == default_url
 
 
 def get_websso_default_redirect_protocol():

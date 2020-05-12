@@ -171,7 +171,7 @@ def login(request):
 def websso(request):
     """Logs a user in using a token from Keystone's POST."""
     referer = request.META.get('HTTP_REFERER', settings.OPENSTACK_KEYSTONE_URL)
-    if referer == utils.get_websso_default_redirect_url():
+    if utils.is_websso_default_redirect_url(referer):
         auth_url = settings.OPENSTACK_KEYSTONE_URL
     else:
         auth_url = utils.clean_up_auth_url(referer)
