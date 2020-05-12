@@ -164,7 +164,7 @@ def is_websso_default_redirect_url(url):
     default_url = default_url.rstrip('/')
 
     scheme, netloc, path, query, fragment = urlparse.urlsplit(url)
-    clean_url = urlparse.urlunsplit(scheme, netloc, path, '', '')
+    clean_url = urlparse.urlunsplit((scheme, netloc, path, '', ''))
     clean_url = clean_url.rstrip('/')
 
     return clean_url == default_url
@@ -265,13 +265,12 @@ def get_websso_url(request, auth_url, websso_auth):
                '/protocols/%s/websso?origin=%s' %
                (auth_url, idp_id, protocol_id, origin))
     else:
-        if (utils.is_websso_default_redirect() and
-            utils.get_websso_default_redirect_url()):
+        if (is_websso_default_redirect() and get_websso_default_redirect_url()):
             # If the IdP is not found (or was explicitly undefined), and
             # there is a default URL set, prefer it over WebSSO by protocol.
             host = request.get_host()
             url = ('%s?origin=%s&host=%s' %
-                  (utils.get_websso_default_redirect_url(), origin, host))
+                  (get_websso_default_redirect_url(), origin, host))
         else:
             # If no IDP mapping found for the identifier,
             # perform WebSSO by protocol.
