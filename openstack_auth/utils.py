@@ -161,13 +161,13 @@ def is_websso_default_redirect_url(url):
     default_url = get_websso_default_redirect_url()
     if not default_url:
         return False
-    default_url = default_url.rstrip('/')
 
-    scheme, netloc, path, query, fragment = urlparse.urlsplit(url)
-    clean_url = urlparse.urlunsplit((scheme, netloc, path, '', ''))
-    clean_url = clean_url.rstrip('/')
+    default_parsed = urlparse.urlsplit(default_url)
+    url_parsed = urlparse.urlslpit(url)
 
-    return clean_url == default_url
+    # Perform a loose check on just the host to handle intermediate
+    # redirects on the target host
+    return default_parsed.netloc == url_parsed.netloc
 
 
 def get_websso_default_redirect_protocol():
