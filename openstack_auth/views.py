@@ -180,7 +180,8 @@ def websso(request):
         request.user = auth.authenticate(request, auth_url=auth_url,
                                          token=token)
     except exceptions.KeystoneAuthException as exc:
-        if utils.is_websso_default_redirect():
+        if (utils.is_websso_default_redirect() and
+            (not utils.wants_bypass_websso_default_redirect(request))):
             res = django_http.HttpResponseRedirect(settings.LOGIN_ERROR)
         else:
             msg = 'Login failed: %s' % six.text_type(exc)
