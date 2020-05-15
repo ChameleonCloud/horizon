@@ -163,7 +163,7 @@ def is_websso_default_redirect_url(url):
         return False
 
     default_parsed = urlparse.urlsplit(default_url)
-    url_parsed = urlparse.urlslpit(url)
+    url_parsed = urlparse.urlsplit(url)
 
     # Perform a loose check on just the host to handle intermediate
     # redirects on the target host
