@@ -307,6 +307,20 @@ def url_path_append(url, suffix):
     return urlparse.urlunsplit((scheme, netloc, path, query, fragment))
 
 
+def url_query_append(url, query_params):
+    scheme, netloc, path, query, fragment = urlparse.urlsplit(url)
+    params = urlparse.parse_qsl(query)
+    query = urlparse.urlencode(params + list(query_params.items()), doseq=True)
+    return urlparse.urlunsplit((scheme, netloc, path, query, fragment))
+
+
+def url_extract_param(url, param_name):
+    scheme, netloc, path, query, fragment = urlparse.urlsplit(url)
+    params = urlparse.parse_qsl(query)
+    param_values = [v for k, v in params if k == param_name]
+    return next(iter(param_values), '')
+
+
 def _augment_url_with_version(auth_url):
     """Optionally augment auth_url path with version suffix.
 
