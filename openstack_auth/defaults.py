@@ -151,6 +151,12 @@ WEBSSO_DEFAULT_REDIRECT_REGION = OPENSTACK_KEYSTONE_URL
 # in this variable.
 WEBSSO_DEFAULT_REDIRECT_LOGOUT = None
 
+# When combined with WEBSSO_DEFAULT_REDIRECT_LOGOUT, enables a flow where users
+# are not automatically logged out of the identity provider, but are instead
+# taken to a logout page where they can follow an additional link to explicitly
+# log out from the identity provider.
+WEBSSO_DEFAULT_REDIRECT_LOGOUT_CONFIRM = None
+
 # Specifies an absolute redirect URL to use instead of automaticall
 # constructing one based on the default protocol/region. Useful if you're doing
 # something weird like completely bypassing Keystone's built-in WebSSO support.

@@ -226,11 +226,19 @@ def logout(request, login_url=None, **kwargs):
     LOG.info(msg)
 
     """ Securely logs a user out. """
-    if (utils.is_websso_enabled and utils.is_websso_default_redirect() and
-            utils.get_websso_default_redirect_logout()):
-        auth_user.unset_session_user_variables(request)
-        return django_http.HttpResponseRedirect(
-            utils.get_websso_default_redirect_logout())
+    if utils.is_websso_enabled and utils.is_websso_default_redirect():
+        default_redirect_logout = utils.get_websso_default_redirect_logout()
+        if (default_redirect_logout and
+            not utils.get_websso_default_redirect_logout_confirm()):
+            auth_user.unset_session_user_variables(request)
+            return django_http.HttpResponseRedirect(
+                default_redirect_logout)
+        else:
+            extra_context = {'logout_url': default_redirect_logout}
+            return django_auth_views.logout(request,
+                                            template_name='auth/logout.html',
+                                            extra_context=extra_context,
+                                            **kwargs)
     else:
         return django_auth_views.logout_then_login(request,
                                                    login_url=login_url,

@@ -1,0 +1,41 @@
+{% load i18n %}
+
+<div class="container login">
+  <div class="row">
+    <div class="col-xs-11 col-sm-8 col-md-6 col-lg-5 horizontal-center">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="login-title">
+            {% block logout-text %}
+              {% blocktrans trimmed %}
+                You are logged out of this Chameleon site.
+              {% endblocktrans %}
+            {% endblock %}
+          </h3>
+        </div>
+
+        <div class="panel-body">
+          {% if logout_url %}
+          <p>
+            {% block logout-secure-text %}
+              {% blocktrans trimmed %}
+                You may still be logged in to Chameleon Portal. To sign out of
+                the Portal, please go to the sign out page
+                <a href="{{ logout_url }}">here</a>.
+              {% endblocktrans %}
+            {% endblock %}
+          </p>
+          {% endif %}
+        </div>
+        <div class="panel-footer">
+          {% url 'horizon:user_home' as home_url %}
+          <a class="btn btn-primary pull-right" href="{{ home_url }}">
+            <span>{% trans "Sign In" %}</span>
+          </a>
+          </button>
+          <div class="clearfix"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

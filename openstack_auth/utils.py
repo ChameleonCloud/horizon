@@ -182,6 +182,10 @@ def get_websso_default_redirect_logout():
     return settings.WEBSSO_DEFAULT_REDIRECT_LOGOUT
 
 
+def get_websso_default_redirect_logout_confirm():
+    return settings.WEBSSO_DEFAULT_REDIRECT_LOGOUT_CONFIRM
+
+
 def get_websso_default_redirect_url():
     return settings.WEBSSO_DEFAULT_REDIRECT_URL
 
