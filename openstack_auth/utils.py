@@ -29,6 +29,8 @@ from openstack_auth import defaults
 
 LOG = logging.getLogger(__name__)
 
+FORCE_WEBSSO_CHOICES_COOKIE = "force_choices"
+
 """
 We need the request object to get the user, so we'll slightly modify the
 existing django.contrib.auth.get_user method. To do so we update the
@@ -141,14 +143,28 @@ def is_websso_enabled():
     return settings.WEBSSO_ENABLED
 
 
-def is_websso_default_redirect():
+def is_websso_default_redirect(request):
     """Checks if the websso default redirect is available.
 
     As with websso, this is only supported in Keystone version 3.
     """
     websso_default_redirect = settings.WEBSSO_DEFAULT_REDIRECT
     keystonev3_plus = (get_keystone_version() >= 3)
-    return websso_default_redirect and keystonev3_plus
+    wants_bypass = request.COOKIES.get(FORCE_WEBSSO_CHOICES_COOKIE) == "1"
+    return websso_default_redirect and keystonev3_plus and not wants_bypass
+
+
+def is_websso_default_redirect_url(url):
+    default_url = get_websso_default_redirect_url()
+    if not default_url:
+        return False
+
+    default_parsed = urlparse.urlsplit(default_url)
+    url_parsed = urlparse.urlsplit(url)
+
+    # Perform a loose check on just the host to handle intermediate
+    # redirects on the target host
+    return default_parsed.netloc == url_parsed.netloc
 
 
 def get_websso_default_redirect_protocol():
@@ -161,6 +177,14 @@ def get_websso_default_redirect_region():
 
 def get_websso_default_redirect_logout():
     return settings.WEBSSO_DEFAULT_REDIRECT_LOGOUT
+
+
+def get_websso_default_redirect_logout_confirm():
+    return settings.WEBSSO_DEFAULT_REDIRECT_LOGOUT_CONFIRM
+
+
+def get_websso_default_redirect_url():
+    return settings.WEBSSO_DEFAULT_REDIRECT_URL
 
 
 def build_absolute_uri(request, relative_url):
@@ -242,10 +266,18 @@ def get_websso_url(request, auth_url, websso_auth):
                '/protocols/%s/websso?origin=%s' %
                (auth_url, idp_id, protocol_id, origin))
     else:
-        # If no IDP mapping found for the identifier,
-        # perform WebSSO by protocol.
-        url = ('%s/auth/OS-FEDERATION/websso/%s?origin=%s' %
-               (auth_url, protocol_id, origin))
+        if (is_websso_default_redirect(request)
+            and get_websso_default_redirect_url()):
+            # If the IdP is not found (or was explicitly undefined), and
+            # there is a default URL set, prefer it over WebSSO by protocol.
+            host = request.get_host()
+            url = ('%s?origin=%s&host=%s' %
+                  (get_websso_default_redirect_url(), origin, host))
+        else:
+            # If no IDP mapping found for the identifier,
+            # perform WebSSO by protocol.
+            url = ('%s/auth/OS-FEDERATION/websso/%s?origin=%s' %
+                (auth_url, protocol_id, origin))
 
     return url
 
@@ -275,6 +307,20 @@ def url_path_append(url, suffix):
     scheme, netloc, path, query, fragment = urlparse.urlsplit(url)
     path = (path + suffix).replace('//', '/')
     return urlparse.urlunsplit((scheme, netloc, path, query, fragment))
+
+
+def url_query_append(url, query_params):
+    scheme, netloc, path, query, fragment = urlparse.urlsplit(url)
+    params = urlparse.parse_qsl(query)
+    query = urlparse.urlencode(params + list(query_params.items()), doseq=True)
+    return urlparse.urlunsplit((scheme, netloc, path, query, fragment))
+
+
+def url_extract_param(url, param_name):
+    scheme, netloc, path, query, fragment = urlparse.urlsplit(url)
+    params = urlparse.parse_qsl(query)
+    param_values = [v for k, v in params if k == param_name]
+    return next(iter(param_values), '')
 
 
 def _augment_url_with_version(auth_url):

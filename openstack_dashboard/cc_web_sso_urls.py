@@ -1,19 +1,23 @@
-from django.conf.urls import url
 from django.conf import settings
+from django.conf.urls import url
+from django import http as django_http
+
 from openstack_auth import utils
 from openstack_auth import views
-from openstack_dashboard import cc_websso_views
-utils.patch_middleware_get_user()
 
 
-""" We need websso enabled for Chameleon portal to sso users into Horizon """
+def request_new_login(request):
+    res = django_http.HttpResponseRedirect(settings.LOGIN_URL)
+    res.set_cookie(utils.FORCE_WEBSSO_CHOICES_COOKIE, '1', max_age=60*60*24)
+    return res
+
+
+urlpatterns = []
+
+# TODO: remove this extra URL for websso when Portal is updated to just use
+# the "built-in" URL in Horizon (/websso)
 if utils.is_websso_enabled():
-    urlpatterns = [
-        url(r"^login/$", cc_websso_views.login, name='login'),
-        url(r"^logout/$", cc_websso_views.logout, name='logout'),
+    urlpatterns += [
+        url(r"^ccwebsso/$", views.websso, name='chameleon_websso'),
+        url(r"^new-login-flow/$", request_new_login, name='chameleon_new_login'),
     ]
-
-
-    urlpatterns.append(url(r"^ccwebsso/$", cc_websso_views.cc_websso, name='custom_websso'))
-else:
-    urlpatterns = []
