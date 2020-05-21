@@ -201,7 +201,10 @@ def websso(request, redirect_field_name=auth.REDIRECT_FIELD_NAME):
     if request.session.test_cookie_worked():
         request.session.delete_test_cookie()
 
-    redirect_to = utils.url_extract_param(referer, redirect_field_name)
+    # Support passing redirect param explicitly on query params
+    redirect_to = request.GET.get(redirect_field_name)
+    if not redirect_to:
+        redirect_to = utils.url_extract_param(referer, redirect_field_name)
     if not http.is_safe_url(url=redirect_to,
                             allowed_hosts=[request.get_host()]):
         redirect_to = settings.LOGIN_REDIRECT_URL
