@@ -57,8 +57,7 @@ def login(request):
     # If the user enabled websso and the default redirect
     # redirect to the default websso url
     if (request.method == 'GET' and utils.is_websso_enabled and
-            utils.is_websso_default_redirect() and
-            (not utils.wants_bypass_websso_default_redirect(request))):
+            utils.is_websso_default_redirect(request)):
         origin = utils.build_absolute_uri(request, '/auth/websso/')
         if utils.get_websso_default_redirect_url():
             host = request.get_host()
@@ -189,8 +188,7 @@ def websso(request, redirect_field_name=auth.REDIRECT_FIELD_NAME):
         request.user = auth.authenticate(request, auth_url=auth_url,
                                          token=token)
     except exceptions.KeystoneAuthException as exc:
-        if (utils.is_websso_default_redirect() and
-            (not utils.wants_bypass_websso_default_redirect(request))):
+        if utils.is_websso_default_redirect(request):
             res = django_http.HttpResponseRedirect(settings.LOGIN_ERROR)
         else:
             msg = 'Login failed: %s' % six.text_type(exc)
@@ -226,7 +224,7 @@ def logout(request, login_url=None, **kwargs):
     LOG.info(msg)
 
     """ Securely logs a user out. """
-    if utils.is_websso_enabled and utils.is_websso_default_redirect():
+    if utils.is_websso_enabled and utils.is_websso_default_redirect(request):
         default_redirect_logout = utils.get_websso_default_redirect_logout()
         if (default_redirect_logout and
             not utils.get_websso_default_redirect_logout_confirm()):

@@ -143,18 +143,15 @@ def is_websso_enabled():
     return settings.WEBSSO_ENABLED
 
 
-def is_websso_default_redirect():
+def is_websso_default_redirect(request):
     """Checks if the websso default redirect is available.
 
     As with websso, this is only supported in Keystone version 3.
     """
     websso_default_redirect = settings.WEBSSO_DEFAULT_REDIRECT
     keystonev3_plus = (get_keystone_version() >= 3)
-    return websso_default_redirect and keystonev3_plus
-
-
-def wants_bypass_websso_default_redirect(request):
-    return request.COOKIES.get(FORCE_WEBSSO_CHOICES_COOKIE) == "1"
+    wants_bypass = request.COOKIES.get(FORCE_WEBSSO_CHOICES_COOKIE) == "1"
+    return websso_default_redirect and keystonev3_plus and not wants_bypass
 
 
 def is_websso_default_redirect_url(url):
@@ -269,7 +266,8 @@ def get_websso_url(request, auth_url, websso_auth):
                '/protocols/%s/websso?origin=%s' %
                (auth_url, idp_id, protocol_id, origin))
     else:
-        if (is_websso_default_redirect() and get_websso_default_redirect_url()):
+        if (is_websso_default_redirect(request)
+            and get_websso_default_redirect_url()):
             # If the IdP is not found (or was explicitly undefined), and
             # there is a default URL set, prefer it over WebSSO by protocol.
             host = request.get_host()
