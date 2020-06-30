@@ -271,8 +271,9 @@ def get_websso_url(request, auth_url, websso_auth):
             # If the IdP is not found (or was explicitly undefined), and
             # there is a default URL set, prefer it over WebSSO by protocol.
             host = request.get_host()
-            url = ('%s?origin=%s&host=%s' %
-                  (get_websso_default_redirect_url(), origin, host))
+            url = ('%s?origin=%s&host=%s&services_region=%s' %
+                  (get_websso_default_redirect_url(), origin, host,
+                   request.COOKIES.get('services_region')))
         else:
             # If no IDP mapping found for the identifier,
             # perform WebSSO by protocol.
