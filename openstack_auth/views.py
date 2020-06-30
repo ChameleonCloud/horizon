@@ -60,9 +60,8 @@ def login(request):
             utils.is_websso_default_redirect(request)):
         origin = utils.build_absolute_uri(request, '/auth/websso/')
         if utils.get_websso_default_redirect_url():
-            host = request.get_host()
-            url = ('%s?origin=%s&host=%s' % (
-                utils.get_websso_default_redirect_url(), origin, host))
+            auth_url = getattr(settings, 'WEBSSO_KEYSTONE_URL', None)
+            url = utils.get_websso_url(request, auth_url, None)
         else:
             protocol = utils.get_websso_default_redirect_protocol()
             region = utils.get_websso_default_redirect_region()
