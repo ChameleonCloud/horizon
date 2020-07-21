@@ -20,7 +20,8 @@ register = template.Library()
 
 
 def is_multi_region_configured(request):
-    return len(request.user.available_services_regions) > 1
+    return (len(request.user.available_services_regions) > 1 and
+            settings.OPENSTACK_KEYSTONE_MULTIREGION_SUPPORT)
 
 
 # TODO(e0ne): pass OPENSTACK_KEYSTONE_MULTIDOMAIN_SUPPORT to the template
