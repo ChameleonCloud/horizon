@@ -365,6 +365,13 @@ def fix_auth_url_version_prefix(auth_url):
     return auth_url, url_fixed
 
 
+def strip_auth_url_version_prefix(auth_url):
+    if has_in_url_path(auth_url, ["/v3"]):
+        auth_url = url_path_replace(auth_url, "/v3", "", 1)
+
+    return auth_url
+
+
 def clean_up_auth_url(auth_url):
     """Clean up the auth url to extract the exact Keystone URL"""
 
