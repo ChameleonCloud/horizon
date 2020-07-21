@@ -96,6 +96,11 @@ OPENSTACK_KEYSTONE_DOMAIN_DROPDOWN = False
 OPENSTACK_KEYSTONE_DOMAIN_CHOICES = ()
 OPENSTACK_KEYSTONE_DEFAULT_DOMAIN = 'Default'
 
+# Whether to explicitly show the region dropdown selector in the Horizon UI.
+# This has no effect if there are not already multiple regions configured in
+# the list of Keystone service endpoints.
+OPENSTACK_KEYSTONE_MULTIREGION_SUPPORT = True
+
 # Enables keystone web single-sign-on if set to True.
 WEBSSO_ENABLED = False
 
