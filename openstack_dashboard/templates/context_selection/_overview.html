@@ -9,6 +9,10 @@
   {% if project_name %}
   <span class="context-project">{{ project_name }}</span>
   {% endif %}
+  {% if multi_site %}
+  <span class="fa fa-circle context-delimiter"></span>
+  <span class="context-site">{{ site_name }}</span>
+  {% endif %}
   {% if multi_region %}
   <span class="fa fa-circle context-delimiter"></span>
   <span class="context-region">{{ region_name }}</span>
