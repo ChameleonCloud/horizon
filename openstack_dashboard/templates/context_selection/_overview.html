@@ -5,6 +5,10 @@
   <span class="fa fa-circle context-delimiter"></span>
   {% endif %}
   <span class="context-project">{{ project_name }}</span>
+  {% if multi_site %}
+  <span class="fa fa-circle context-delimiter"></span>
+  <span class="context-site">{{ site_name }}</span>
+  {% endif %}
   {% if multi_region %}
   <span class="fa fa-circle context-delimiter"></span>
   <span class="context-region">{{ region_name }}</span>

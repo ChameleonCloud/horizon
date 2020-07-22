@@ -29,5 +29,15 @@
         {% show_region_list %}
       </li>
     {% endif %}
+
+    {% comment %}
+    is_multi_site is only available through an assignment tag pulled in through context_selection
+    {% endcomment %}
+    {% is_multi_site as multi_site %}
+    {% if multi_site %}
+      <li>
+        {% show_site_list %}
+      </li>
+    {% endif %}
   </ul>
 </li>
