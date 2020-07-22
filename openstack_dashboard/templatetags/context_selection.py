@@ -17,6 +17,7 @@ from __future__ import absolute_import
 from django.conf import settings
 from django import template
 
+from horizon.utils import sites
 from openstack_dashboard.api import keystone
 
 
@@ -33,6 +34,11 @@ def is_multidomain_supported():
             settings.OPENSTACK_KEYSTONE_MULTIDOMAIN_SUPPORT)
 
 
+def is_multi_site_configured():
+    return (len(sites.get_available_sites()) > 1 and
+            settings.CHAMELEON_MULTISITE_SUPPORT)
+
+
 @register.simple_tag(takes_context=True)
 def is_multi_region(context):
     if 'request' not in context:
@@ -43,6 +49,11 @@ def is_multi_region(context):
 @register.simple_tag
 def is_multidomain():
     return is_multidomain_supported()
+
+
+@register.simple_tag
+def is_multi_site():
+    return is_multi_site_configured()
 
 
 @register.inclusion_tag('context_selection/_overview.html',
@@ -59,6 +70,8 @@ def show_overview(context):
                'project_name': project_name or request.user.project_name,
                'multi_region': is_multi_region_configured(request),
                'region_name': request.user.services_region,
+               'multi_site': is_multi_site_configured(),
+               'site_name': (sites.get_current_site() or {}).get('name'),
                'request': request}
 
     return context
@@ -102,6 +115,19 @@ def show_region_list(context):
     context = {'region_name': request.user.services_region,
                'regions': sorted(request.user.available_services_regions,
                                  key=lambda x: (x or '').lower()),
+               'page_url': panel.get_absolute_url() if panel else None}
+    return context
+
+
+@register.inclusion_tag('context_selection/_site_list.html',
+                        takes_context=True)
+def show_site_list(context):
+    panel = None
+    if 'request' in context:
+        request = context['request']
+        panel = request.horizon.get('panel')
+    context = {'site_id': settings.CHAMELEON_SITE_ID,
+               'sites': sites.get_available_sites(),
                'page_url': panel.get_absolute_url() if panel else None}
     return context
 

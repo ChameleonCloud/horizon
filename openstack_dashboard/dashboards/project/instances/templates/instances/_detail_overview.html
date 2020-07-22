@@ -8,8 +8,8 @@
     <dd>{{ instance.id }}</dd>
     <dt>{% trans "Physical Host Name" %}</dt>
     <dd>
-    {% if site and instance.hypervisor_hostname %}
-     <a target="blank" href="https://www.chameleoncloud.org/hardware/node/sites/{{ site }}/clusters/chameleon/nodes/{{ instance.hypervisor_hostname }}/">
+    {% if hardware_catalog_url and instance.hypervisor_hostname %}
+     <a target="_blank" href="{{ hardware_catalog_url }}/{{ instance.hypervisor_hostname }}">
        {{ instance.hypervisor_hostname }}
      </a>
     {% else %}
