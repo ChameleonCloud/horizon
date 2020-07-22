@@ -18,6 +18,7 @@ from django.utils.translation import gettext_lazy as _
 
 from horizon import exceptions
 from horizon import tabs
+from horizon.utils import sites
 
 from openstack_dashboard.dashboards.project.instances \
     import audit_tables as a_tables
@@ -54,7 +55,20 @@ class OverviewTab(tabs.Tab):
                 # exist. KeyError is raised when volume_image_metadata exists
                 # but image_id or image_name is not included.
                 instance.image = None
-        return {"instance": instance}
+        site = None
+        if settings.CHAMELEON_MULTISITE_SUPPORT:
+            site = settings.CHAMELEON_SITE_ID
+        elif settings.CHAMELEON_SITES:
+            site = settings.CHAMELEON_SITES.get(
+                request.session.get("services_region"))
+        if site:
+            portal_base = settings.CHAMELEON_PORTAL_API_BASE_URL
+            hardware_catalog_url = '/'.join([
+                portal_base, 'hardware/node/sites', site,
+                'clusters/chameleon/nodes'])
+        return {"instance": self.tab_group.kwargs["instance"],
+                "is_superuser": request.user.is_superuser,
+                "hardware_catalog_url": hardware_catalog_url}
 
 
 class InterfacesTab(policy.PolicyTargetMixin, tabs.TableTab):
