@@ -4,7 +4,7 @@
   <li class="dropdown-header">{% trans "Sites:" %}</li>
   {% for site in sites %}
   <li>
-    <a href="{{ site.url }}{% if page_url %}?next={{ page_url }}{% endif %}"
+    <a href="{{ site.url }}{% if page_url %}{{ page_url }}{% endif %}"
        target="_self">
       <span class="site-name dropdown-title">{{ site.name }}</span>
       {% if site.id == site_id %}
