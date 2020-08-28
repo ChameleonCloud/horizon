@@ -57,9 +57,9 @@ def login(request):
     # If the user enabled websso and the default redirect
     # redirect to the default websso url
     if (request.method == 'GET' and utils.is_websso_enabled and
-            utils.is_websso_default_redirect(request)):
+            utils.is_websso_default_redirect()):
         origin = utils.build_absolute_uri(request, '/auth/websso/')
-        if utils.get_websso_default_redirect_url():
+        if utils.get_websso_default_redirect_url(request):
             auth_url = getattr(settings, 'WEBSSO_KEYSTONE_URL', None)
             url = utils.get_websso_url(request, auth_url, None)
         else:
@@ -178,7 +178,7 @@ def login(request):
 def websso(request, redirect_field_name=auth.REDIRECT_FIELD_NAME):
     """Logs a user in using a token from Keystone's POST."""
     referer = request.META.get('HTTP_REFERER', settings.OPENSTACK_KEYSTONE_URL)
-    if utils.is_websso_default_redirect_url(referer):
+    if utils.is_websso_default_redirect_url(request, referer):
         auth_url = settings.OPENSTACK_KEYSTONE_URL
     else:
         auth_url = utils.clean_up_auth_url(referer)
@@ -187,7 +187,7 @@ def websso(request, redirect_field_name=auth.REDIRECT_FIELD_NAME):
         request.user = auth.authenticate(request, auth_url=auth_url,
                                          token=token)
     except exceptions.KeystoneAuthException as exc:
-        if utils.is_websso_default_redirect(request):
+        if utils.is_websso_default_redirect():
             res = django_http.HttpResponseRedirect(settings.LOGIN_ERROR)
         else:
             msg = 'Login failed: %s' % six.text_type(exc)
@@ -226,7 +226,7 @@ def logout(request, login_url=None, **kwargs):
     LOG.info(msg)
 
     """ Securely logs a user out. """
-    if utils.is_websso_enabled and utils.is_websso_default_redirect(request):
+    if utils.is_websso_enabled and utils.is_websso_default_redirect():
         default_redirect_logout = utils.get_websso_default_redirect_logout()
         if (default_redirect_logout and
             not utils.get_websso_default_redirect_logout_confirm()):

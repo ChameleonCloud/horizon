@@ -29,7 +29,7 @@ from openstack_auth import defaults
 
 LOG = logging.getLogger(__name__)
 
-FORCE_WEBSSO_CHOICES_COOKIE = "force_choices"
+NEW_LOGIN_EXPERIENCE_COOKIE = "new_login_experience"
 
 """
 We need the request object to get the user, so we'll slightly modify the
@@ -143,19 +143,18 @@ def is_websso_enabled():
     return settings.WEBSSO_ENABLED
 
 
-def is_websso_default_redirect(request):
+def is_websso_default_redirect():
     """Checks if the websso default redirect is available.
 
     As with websso, this is only supported in Keystone version 3.
     """
     websso_default_redirect = settings.WEBSSO_DEFAULT_REDIRECT
     keystonev3_plus = (get_keystone_version() >= 3)
-    wants_bypass = request.COOKIES.get(FORCE_WEBSSO_CHOICES_COOKIE) == "1"
-    return websso_default_redirect and keystonev3_plus and not wants_bypass
+    return websso_default_redirect and keystonev3_plus
 
 
-def is_websso_default_redirect_url(url):
-    default_url = get_websso_default_redirect_url()
+def is_websso_default_redirect_url(request, url):
+    default_url = get_websso_default_redirect_url(request)
     if not default_url:
         return False
 
@@ -183,7 +182,9 @@ def get_websso_default_redirect_logout_confirm():
     return settings.WEBSSO_DEFAULT_REDIRECT_LOGOUT_CONFIRM
 
 
-def get_websso_default_redirect_url():
+def get_websso_default_redirect_url(request):
+    if request.COOKIES.get(NEW_LOGIN_EXPERIENCE_COOKIE) == "1":
+        return False
     return settings.WEBSSO_DEFAULT_REDIRECT_URL
 
 
@@ -266,8 +267,8 @@ def get_websso_url(request, auth_url, websso_auth):
                '/protocols/%s/websso?origin=%s' %
                (auth_url, idp_id, protocol_id, origin))
     else:
-        if (is_websso_default_redirect(request)
-            and get_websso_default_redirect_url()):
+        if (is_websso_default_redirect()
+            and get_websso_default_redirect_url(request)):
             # If the IdP is not found (or was explicitly undefined), and
             # there is a default URL set, prefer it over WebSSO by protocol.
             host = request.get_host()
@@ -279,7 +280,7 @@ def get_websso_url(request, auth_url, websso_auth):
                           settings.DEFAULT_SERVICE_REGIONS.get('*'))
 
             url = ('%s?origin=%s&host=%s&services_region=%s' %
-                  (get_websso_default_redirect_url(), origin, host,
+                  (get_websso_default_redirect_url(request), origin, host,
                    region or ''))
         else:
             # If no IDP mapping found for the identifier,
