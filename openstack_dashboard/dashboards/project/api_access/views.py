@@ -145,6 +145,7 @@ def download_clouds_yaml_file(request):
         region_tuple[1] for region_tuple in settings.AVAILABLE_REGIONS
     ]
 
+    context['projects'] = request.user.authorized_tenants
     context['user_domain_name'] = request.user.user_domain_name
     context['os_identity_api_version'] = 3
     context['os_auth_version'] = 3
