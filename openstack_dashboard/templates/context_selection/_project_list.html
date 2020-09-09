@@ -9,7 +9,7 @@
        target="_self">
       <span class="fa fa-check dropdown-selected-icon"></span>
       <span class="dropdown-title">
-        {{ project.name }}
+        {% if project.nickname %}{{ project.nickname }}{% else %}{{ project.name }}{% endif %}
       </span>
     </a>
   </li>

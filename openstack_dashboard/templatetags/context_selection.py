@@ -150,4 +150,4 @@ def get_project_name(project_id, projects):
     """
     for project in projects:
         if project_id == project.id:
-            return project.name
+            return getattr(project, 'nickname', None) or project.name
