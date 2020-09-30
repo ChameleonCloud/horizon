@@ -30,6 +30,7 @@ from openstack_auth import defaults
 LOG = logging.getLogger(__name__)
 
 NEW_LOGIN_EXPERIENCE_COOKIE = "new_login_experience"
+FORCE_OLD_LOGIN_EXPERIENCE_PARAM = "old_login_experience"
 
 """
 We need the request object to get the user, so we'll slightly modify the
@@ -183,7 +184,8 @@ def get_websso_default_redirect_logout_confirm():
 
 
 def get_websso_default_redirect_url(request):
-    if request.COOKIES.get(NEW_LOGIN_EXPERIENCE_COOKIE) == "1":
+    if (request.COOKIES.get(NEW_LOGIN_EXPERIENCE_COOKIE) == "1" and
+        request.GET.get(FORCE_OLD_LOGIN_EXPERIENCE_PARAM) != "1"):
         return False
     return settings.WEBSSO_DEFAULT_REDIRECT_URL
 
