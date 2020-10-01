@@ -227,9 +227,9 @@ def logout(request, login_url=None, **kwargs):
 
     """ Securely logs a user out. """
     if utils.is_websso_enabled and utils.is_websso_default_redirect():
-        default_redirect_logout = utils.get_websso_default_redirect_logout()
+        default_redirect_logout = utils.get_websso_default_redirect_logout(request)
         if (default_redirect_logout and
-            not utils.get_websso_default_redirect_logout_confirm()):
+            not utils.get_websso_default_redirect_logout_confirm(request)):
             auth_user.unset_session_user_variables(request)
             return django_http.HttpResponseRedirect(
                 default_redirect_logout)

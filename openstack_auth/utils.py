@@ -175,17 +175,31 @@ def get_websso_default_redirect_region():
     return settings.WEBSSO_DEFAULT_REDIRECT_REGION
 
 
-def get_websso_default_redirect_logout():
+def _wants_new_login_experience(request):
+    """Test if the user wants the new federated login experience.
+
+    This includes special handling of logout, so we look at the user's
+    current federation status, as well as any indications from the request.
+    """
+    return (getattr(request.user, 'is_federated', False) or
+        (request.COOKIES.get(NEW_LOGIN_EXPERIENCE_COOKIE) == "1" and
+         request.GET.get(FORCE_OLD_LOGIN_EXPERIENCE_PARAM) != "1"))
+
+
+def get_websso_default_redirect_logout(request):
+    if get_websso_default_redirect_logout_confirm(request):
+        return settings.WEBSSO_DEFAULT_REDIRECT_LOGOUT_CONFIRM_URL
     return settings.WEBSSO_DEFAULT_REDIRECT_LOGOUT
 
 
-def get_websso_default_redirect_logout_confirm():
+def get_websso_default_redirect_logout_confirm(request):
+    if _wants_new_login_experience(request):
+        return False
     return settings.WEBSSO_DEFAULT_REDIRECT_LOGOUT_CONFIRM
 
 
 def get_websso_default_redirect_url(request):
-    if (request.COOKIES.get(NEW_LOGIN_EXPERIENCE_COOKIE) == "1" and
-        request.GET.get(FORCE_OLD_LOGIN_EXPERIENCE_PARAM) != "1"):
+    if _wants_new_login_experience(request):
         return False
     return settings.WEBSSO_DEFAULT_REDIRECT_URL
 
