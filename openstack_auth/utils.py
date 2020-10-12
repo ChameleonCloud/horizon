@@ -182,8 +182,7 @@ def _wants_new_login_experience(request):
     current federation status, as well as any indications from the request.
     """
     return (getattr(request.user, 'is_federated', False) or
-        (request.COOKIES.get(NEW_LOGIN_EXPERIENCE_COOKIE) == "1" and
-         request.GET.get(FORCE_OLD_LOGIN_EXPERIENCE_PARAM) != "1"))
+        (request.GET.get(FORCE_OLD_LOGIN_EXPERIENCE_PARAM) != "1"))
 
 
 def get_websso_default_redirect_logout(request):
