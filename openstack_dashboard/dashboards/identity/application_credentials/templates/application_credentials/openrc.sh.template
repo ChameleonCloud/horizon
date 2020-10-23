@@ -1,7 +1,7 @@
 {% load shellfilter %}#!/usr/bin/env bash
 
 export OS_AUTH_TYPE=v3applicationcredential
-export OS_AUTH_URL={{ auth_url }}
+export OS_AUTH_URL={{ auth_url }}/v3
 export OS_IDENTITY_API_VERSION=3
 export OS_REGION_NAME="{{ region|shellfilter }}"
 export OS_INTERFACE={{ interface }}
