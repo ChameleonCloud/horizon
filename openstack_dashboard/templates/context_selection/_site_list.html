@@ -4,10 +4,10 @@
   <li class="dropdown-header">{% trans "Sites:" %}</li>
   {% for site in sites %}
   <li>
-    <a href="{{ site.url }}{% if page_url %}{{ page_url }}{% endif %}"
-       target="_self">
+    <a href="{{ site.url }}{% if page_url and current_site.site_class == site.site_class %}{{ page_url }}{% endif %}"
+      target="_self">
       <span class="site-name dropdown-title">{{ site.name }}</span>
-      {% if site.id == site_id %}
+      {% if site.id == current_site.id %}
       <span class="fa fa-check"></span>
       {% endif %}
     </a>

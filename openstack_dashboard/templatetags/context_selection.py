@@ -125,8 +125,8 @@ def show_site_list(context):
     if 'request' in context:
         request = context['request']
         panel = request.horizon.get('panel')
-    context = {'site_id': settings.CHAMELEON_SITE_ID,
-               'sites': sites.get_available_sites(),
+    context = {'sites': sites.get_available_sites(),
+               'current_site': sites.get_current_site(),
                'page_url': panel.get_absolute_url() if panel else None}
     return context
 
