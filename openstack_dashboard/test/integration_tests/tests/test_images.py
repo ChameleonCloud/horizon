@@ -11,6 +11,7 @@
 #    under the License.
 import pytest
 
+from openstack_dashboard.test.integration_tests import decorators
 from openstack_dashboard.test.integration_tests import helpers
 from openstack_dashboard.test.integration_tests.regions import messages
 
@@ -18,6 +19,18 @@ from openstack_dashboard.test.integration_tests.pages.project.\
     compute.instancespage import InstancesPage
 from openstack_dashboard.test.integration_tests.pages.project.\
     volumes.volumespage import VolumesPage
+
+
+@decorators.config_option_required('image.panel_type', 'legacy',
+                                   message="Angular Panels not tested")
+class TestImagesLegacy(helpers.TestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.IMAGE_NAME = helpers.gen_random_resource_name("image")
+
+    @property
+    def images_page(self):
+        return self.home_pg.go_to_project_compute_imagespage()
 
 
 class TestImagesBasicAngular(helpers.TestCase):
@@ -404,3 +417,40 @@ class TestImagesAdvancedAngular(helpers.TestCase):
         self.assertFalse(
             instances_page.find_message_and_dismiss(messages.ERROR))
         self.assertTrue(instances_page.is_instance_deleted(target_instance))
+
+
+class TestImagesAdmin(helpers.AdminTestCase, TestImagesLegacy):
+    """Login as admin user"""
+    @property
+    def images_page(self):
+        return self.home_pg.go_to_admin_compute_imagespage()
+
+    def test_image_create_delete(self):
+        super().test_image_create_delete()
+
+    def test_filter_images(self):
+        """This test checks filtering of images
+
+        Steps:
+        1) Login to Horizon dashboard as admin user
+        2) Go to Admin -> Compute -> Images
+        3) Use filter by Image Name
+        4) Check that filtered table has one image only (which name is
+           equal to filter value)
+        5) Check that no other images in the table
+        6) Clear filter and set nonexistent image name. Check that 0 rows
+           are displayed
+        """
+        images_list = self.CONFIG.image.images_list
+        images_page = self.images_page
+
+        images_page.images_table.filter(images_list[0])
+        self.assertTrue(images_page.is_image_present(images_list[0]))
+        for image in images_list[1:]:
+            self.assertFalse(images_page.is_image_present(image))
+
+        nonexistent_image_name = "{0}_test".format(self.IMAGE_NAME)
+        images_page.images_table.filter(nonexistent_image_name)
+        self.assertEqual(images_page.images_table.rows, [])
+
+        images_page.images_table.filter('')
