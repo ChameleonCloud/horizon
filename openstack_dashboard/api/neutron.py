@@ -708,7 +708,12 @@ class FloatingIpManager(object):
         """
         tenant_id = self.request.user.tenant_id
         ports = port_list(self.request, tenant_id=tenant_id)
-        servers, has_more = nova.server_list(self.request, detailed=False)
+        try:
+            servers, has_more = nova.server_list(self.request, detailed=False)
+        except Exception:
+            error_message = _('Unable to get instances')
+            exceptions.handle(self.request, error_message)
+            servers = []
         server_dict = collections.OrderedDict(
             [(s.id, s.name) for s in servers])
         reachable_subnets = self._get_reachable_subnets(ports)
