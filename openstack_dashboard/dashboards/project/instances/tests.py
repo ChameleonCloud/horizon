@@ -2186,17 +2186,13 @@ class InstanceTests2(InstanceTestBase, InstanceTableTestMixin):
     @helpers.create_mocks({api.nova: ('server_get',
                                       'flavor_list',
                                       'tenant_absolute_limits',
-                                      'is_feature_available')})
-<<<<<<< HEAD
+                                      'is_feature_available',
+                                      'flavor_get')})
     def _test_instance_resize_get(self, server, nova_api_lt_2_47=False):
-=======
-    def test_instance_resize_get(self):
-        server = self.servers.first()
-        flavor = self.flavors.first()
->>>>>>> 6ac31e0ba (Drop Django based implementation of launch instance)
         self.mock_server_get.return_value = server
         self.mock_flavor_list.return_value = self.flavors.list()
         self.mock_tenant_absolute_limits.return_value = self.limits['absolute']
+        self.mock_flavor_get.return_value = self.flavors.first()
 
         url = reverse('horizon:project:instances:resize', args=[server.id])
         res = self.client.get(url)
@@ -2211,12 +2207,8 @@ class InstanceTests2(InstanceTestBase, InstanceTableTestMixin):
         self.assertNotContains(res, config_drive_field_label)
 
         step = workflow.get_step("flavor_choice")
-<<<<<<< HEAD
         self.assertEqual(step.action.initial['old_flavor_name'],
                          self.flavors.first().name)
-=======
-        self.assertEqual(step.action.initial['old_flavor_id'], flavor.id)
->>>>>>> 6ac31e0ba (Drop Django based implementation of launch instance)
 
         step = workflow.get_step("setadvancedaction")
         self.assertEqual(step.action.fields['disk_config'].label,
@@ -2245,6 +2237,20 @@ class InstanceTests2(InstanceTestBase, InstanceTableTestMixin):
             mock.call(helpers.IsHttpRequest()))
         self.mock_tenant_absolute_limits.assert_called_once_with(
             helpers.IsHttpRequest(), reserved=True)
+        if nova_api_lt_2_47:
+            self.mock_flavor_get.assert_called_once_with(
+                helpers.IsHttpRequest(), server.flavor['id'])
+        else:
+            self.mock_flavor_get.assert_not_called()
+
+    def test_instance_resize_get_nova_api_lt_2_47(self):
+        server = self.servers.first()
+        self._test_instance_resize_get(server, nova_api_lt_2_47=True)
+
+    def test_instance_resize_get_nova_api_ge_2_47(self):
+        server = self.servers.first()
+        self._populate_server_flavor_nova_api_ge_2_47(server)
+        self._test_instance_resize_get(server)
 
     def test_instance_resize_get_nova_api_lt_2_47(self):
         server = self.servers.first()
@@ -2270,9 +2276,10 @@ class InstanceTests2(InstanceTestBase, InstanceTableTestMixin):
             helpers.IsHttpRequest(), server.id)
 
     @helpers.create_mocks({api.nova: ('server_get',
-                                      'flavor_list',)})
-    def test_instance_resize_get_flavor_list_exception(self):
-        server = self.servers.first()
+                                      'flavor_list',
+                                      'flavor_get')})
+    def _test_instance_resize_get_flavor_list_exception(
+            self, server, nova_api_lt_2_47=False):
         self.mock_server_get.return_value = server
         self.mock_flavor_list.side_effect = self.exceptions.nova
 
@@ -2285,6 +2292,21 @@ class InstanceTests2(InstanceTestBase, InstanceTableTestMixin):
         self.mock_server_get.assert_called_once_with(helpers.IsHttpRequest(),
                                                      server.id)
         self.mock_flavor_list.assert_called_once_with(helpers.IsHttpRequest())
+        if nova_api_lt_2_47:
+            self.mock_flavor_get.assert_called_once_with(
+                helpers.IsHttpRequest(), server.flavor['id'])
+        else:
+            self.mock_flavor_get.assert_not_called()
+
+    def test_instance_resize_get_flavor_list_exception_nova_api_lt_2_47(self):
+        server = self.servers.first()
+        self._test_instance_resize_get_flavor_list_exception(
+            server, nova_api_lt_2_47=True)
+
+    def test_instance_resize_get_flavor_list_exception(self):
+        server = self.servers.first()
+        self._populate_server_flavor_nova_api_ge_2_47(server)
+        self._test_instance_resize_get_flavor_list_exception(server)
 
     # TODO(amotoki): This is requred only when nova API <=2.46 is used.
     # Once server_get() uses nova API >=2.47 only, this test can be droppped.

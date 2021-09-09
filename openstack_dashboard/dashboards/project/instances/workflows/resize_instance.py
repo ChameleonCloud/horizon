@@ -64,7 +64,6 @@ class SetFlavorChoiceAction(workflows.Action):
     def populate_flavor_choices(self, request, context):
         old_flavor_name = context.get('old_flavor_name')
         flavors = context.get('flavors').values()
-
         # Remove current flavor from the list of flavor choices
         flavors = [flavor for flavor in flavors
                    if flavor.name != old_flavor_name]
