@@ -18,7 +18,6 @@ from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
 from horizon import exceptions
-
 from openstack_dashboard import api
 
 LOG = logging.getLogger(__name__)
