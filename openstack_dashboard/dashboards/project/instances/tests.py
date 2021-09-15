@@ -3079,13 +3079,14 @@ class ConsoleManagerTests(helpers.ResetImageAPIVersionMixin, helpers.TestCase):
                           console.get_console, None, 'FAKE', None)
 
     @helpers.create_mocks({api.neutron: ('network_list_for_tenant',
-                                         'port_list_with_trunk_types',)})
+                                         'port_list_with_trunk_types')})
     def test_interface_attach_get(self):
         server = self.servers.first()
         self.mock_network_list_for_tenant.side_effect = [
             self.networks.list()[:1],
             [],
         ]
+        self.mock_port_list_with_trunk_types.return_value = self.ports.list()
 
         url = reverse('horizon:project:instances:attach_interface',
                       args=[server.id])
@@ -3098,9 +3099,11 @@ class ConsoleManagerTests(helpers.ResetImageAPIVersionMixin, helpers.TestCase):
             mock.call(helpers.IsHttpRequest(), self.tenant.id),
         ])
         self.assertEqual(2, self.mock_network_list_for_tenant.call_count)
+        self.mock_port_list_with_trunk_types.assert_called_once_with(
+            helpers.IsHttpRequest(), tenant_id=self.tenant.id)
 
     @helpers.create_mocks({api.neutron: ('network_list_for_tenant',
-                                         'port_list_with_trunk_types',),
+                                         'port_list_with_trunk_types'),
                            api.nova: ('interface_attach',)})
     def test_interface_attach_post(self):
         fixed_ip = '10.0.0.10'
@@ -3110,6 +3113,7 @@ class ConsoleManagerTests(helpers.ResetImageAPIVersionMixin, helpers.TestCase):
             [network],
             [],
         ]
+        self.mock_port_list_with_trunk_types.return_value = self.ports.list()
         self.mock_interface_attach.return_value = None
 
         form_data = {'instance_id': server.id,
@@ -3129,6 +3133,8 @@ class ConsoleManagerTests(helpers.ResetImageAPIVersionMixin, helpers.TestCase):
             mock.call(helpers.IsHttpRequest(), self.tenant.id),
         ])
         self.assertEqual(2, self.mock_network_list_for_tenant.call_count)
+        self.mock_port_list_with_trunk_types.assert_called_once_with(
+            helpers.IsHttpRequest(), tenant_id=self.tenant.id)
         self.mock_interface_attach.assert_called_once_with(
             helpers.IsHttpRequest(), server.id,
             net_id=network.id, fixed_ip=fixed_ip, port_id=None)
