@@ -39,5 +39,12 @@
         {% show_site_list %}
       </li>
     {% endif %}
+
+    {% is_system_user as system_user %}
+    {% if system_user %}
+      <li>
+        {% show_system_list %}
+      </li>
+    {% endif %}
   </ul>
 </li>

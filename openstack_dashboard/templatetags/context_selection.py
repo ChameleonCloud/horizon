@@ -55,6 +55,15 @@ def is_multi_site():
     return is_multi_site_configured()
 
 
+@register.simple_tag(takes_context=True)
+def is_system_user(context):
+    try:
+        request = context['request']
+    except KeyError:
+        return False
+    return request.user.is_system_user
+
+
 @register.inclusion_tag('context_selection/_overview.html',
                         takes_context=True)
 def show_overview(context):
@@ -71,6 +80,7 @@ def show_overview(context):
                'region_name': request.user.services_region,
                'multi_site': is_multi_site_configured(),
                'site_name': (sites.get_current_site() or {}).get('name'),
+               'system_scoped': request.user.system_scoped,
                'request': request}
 
     return context
@@ -128,6 +138,20 @@ def show_site_list(context):
     context = {'sites': sites.get_available_sites(),
                'current_site': sites.get_current_site(),
                'page_url': panel.get_absolute_url() if panel else None}
+    return context
+
+
+@register.inclusion_tag('context_selection/_system_list.html',
+                        takes_context=True)
+def show_system_list(context):
+    if 'request' not in context:
+        return {}
+    request = context['request']
+    panel = request.horizon.get('panel')
+    context = {
+        'system_scoped': request.user.system_scoped,
+        'page_url': panel.get_absolute_url() if panel else None,
+    }
     return context
 
 
