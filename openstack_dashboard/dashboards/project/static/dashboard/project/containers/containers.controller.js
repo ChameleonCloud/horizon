@@ -97,13 +97,11 @@
         return $q.when();
       }
 
-      var def = $q.defer();
       // reverse the sense here - successful lookup == error so we reject the
       // name if we find it in swift
-      swiftAPI.getContainer(containerName, true, {redirectOnAuthErrors: false}).then(def.reject, function(response){
-    	  if (response.status == 403) {def.reject(response)}
-    	  else {def.resolve(response)}});
-      return def.promise;
+      return swiftAPI.getContainer(containerName, true).then(function onSuccess(response) {
+        return $q.reject(response);
+      }, function onError() { return true; });
     }
 
     function selectContainer(container) {
