@@ -70,6 +70,15 @@ class TabView(views.HorizonTemplateView):
         context = self.get_context_data(**kwargs)
         return self.handle_tabbed_response(context["tab_group"], context)
 
+    def post(self, request, *args, **kwargs):
+        # Direct POST to the selected tab
+        context = self.get_context_data(**kwargs)
+        tab_group = context["tab_group"]
+        if tab_group.selected:
+            tab_group.selected.post(request, *args, **kwargs)
+
+        return self.handle_tabbed_response(tab_group, context)
+
 
 class TabbedTableView(tables.MultiTableMixin, TabView):
     def __init__(self, *args, **kwargs):
