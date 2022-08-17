@@ -70,7 +70,8 @@
           templateUrl: basePath + 'networkports/ports.html',
           helpUrl: basePath + 'networkports/ports.help.html',
           formName: 'launchInstanceNetworkPortForm',
-          requiredServiceTypes: ['network']
+          requiredServiceTypes: ['network'],
+          setting: 'LAUNCH_INSTANCE_DEFAULTS.enable_net_ports'
         },
         // We remove the security groups tab from the instance creation dialogue because
         // they do nothing on bare metal, and they confuse users
@@ -125,6 +126,7 @@
           helpUrl: basePath + 'metadata/metadata.help.html',
           formName: 'launchInstanceMetadataForm',
           isAdvanced: true,
+          setting: 'LAUNCH_INSTANCE_DEFAULTS.enable_metadata'
         }
       ],
 
