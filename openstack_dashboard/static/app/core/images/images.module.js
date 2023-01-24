@@ -92,10 +92,10 @@
         classes: "word-wrap",
         urlFunction: imagesService.getDetailsPath
       })
-      // .append({
-      //   id: 'project_supported',
-      //   priority: 1
-      // })
+      .append({
+        id: 'project_supported',
+        priority: 1
+      })
       .append({
         id: 'type',
         priority: 1
@@ -130,18 +130,17 @@
         singleton: true,
         persistent: true
       })
-      // filtering by project supported not working yet, and it's not part of the requirements
-      // .append({
-      //   label: gettext('Project Supported'),
-      //   name: 'project_supported',
-      //   isServer: true,
-      //   singleton: true,
-      //   persistent: true,
-      //   options: [
-      //     {label: gettext('True'), key: 'true'},
-      //     {label: gettext('False'), key: 'false'}
-      //   ]
-      // })
+      .append({
+        label: gettext('Official'),
+        name: 'project_supported',
+        isServer: true,
+        singleton: true,
+        persistent: true,
+        options: [
+          {label: gettext('Yes'), key: 'true'},
+          {label: gettext('No'), key: 'false'}
+        ]
+      })
       .append({
         label: gettext('Status'),
         name: 'status',
@@ -254,7 +253,7 @@
   function imageProperties(imagesService, statuses) {
     return {
       id: gettext('ID'),
-      project_supported: gettext('Project Supported'),
+      project_supported: { label: gettext('Official'), filters: ['yesno'] },
       checksum: gettext('Checksum'),
       members: gettext('Members'),
       min_disk: gettext('Min. Disk'),
