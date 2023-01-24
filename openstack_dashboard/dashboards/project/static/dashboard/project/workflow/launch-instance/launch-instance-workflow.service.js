@@ -68,14 +68,18 @@
           formName: 'launchInstanceNetworkPortForm',
           requiredServiceTypes: ['network']
         },
-        {
-          id: 'secgroups',
-          title: gettext('Security Groups'),
-          templateUrl: basePath + 'security-groups/security-groups.html',
-          helpUrl: basePath + 'security-groups/security-groups.help.html',
-          formName: 'launchInstanceAccessAndSecurityForm',
-          requiredServiceTypes: ['network']
-        },
+        // We remove the security groups tab from the instance creation dialogue because
+        // they do nothing on bare metal, and they confuse users
+        // The commit that introduced this change should not ever be applied to the
+        // KVM branch, as security groups are useful on KVM sites.
+        // {
+        //   id: 'secgroups',
+        //   title: gettext('Security Groups'),
+        //   templateUrl: basePath + 'security-groups/security-groups.html',
+        //   helpUrl: basePath + 'security-groups/security-groups.help.html',
+        //   formName: 'launchInstanceAccessAndSecurityForm',
+        //   requiredServiceTypes: ['network']
+        // },
         {
           id: 'keypair',
           title: gettext('Key Pair'),
