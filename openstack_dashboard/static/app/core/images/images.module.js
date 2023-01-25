@@ -131,7 +131,7 @@
         persistent: true
       })
       .append({
-        label: gettext('Official'),
+        label: gettext('Chameleon Supported'),
         name: 'project_supported',
         isServer: true,
         singleton: true,
@@ -253,7 +253,7 @@
   function imageProperties(imagesService, statuses) {
     return {
       id: gettext('ID'),
-      project_supported: { label: gettext('Official'), filters: ['yesno'] },
+      project_supported: { label: gettext('Chameleon Supported'), filters: ['yesno'] },
       checksum: gettext('Checksum'),
       members: gettext('Members'),
       min_disk: gettext('Min. Disk'),
