@@ -80,15 +80,12 @@
           <td ng-repeat="column in config.columns"
             class="rsp-p{$ column.priority $} {$ column.classes $}"
             ng-if="columnAllowed(column)">
-              {% if "chameleon-supported" in column.classes %}
-                <hz-cell table="table" column="column">
+                <hz-cell table="table" column="column" ng-if="'chameleon-supported' in column.classes">
                   <img title="Chameleon Supported Appliance" alt="Chameleon Supported Appliance"
                        style="float:right;" ng-if="item.project_supported" height="20px"
                        src="https://www.chameleoncloud.org/static/images/logo-small.png" />
                 </hz-cell>
-              {% else %}
-                  <hz-cell table="table" column="column" item="item"></hz-cell>
-              {% endif %}
+                <hz-cell table="table" column="column" item="item" ng-if="!'chameleon-supported' in column.classes"></hz-cell>
           </td>
           <td ng-if="itemActions" class="actions_column">
             <!--
