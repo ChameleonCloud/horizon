@@ -45,13 +45,17 @@
           helpUrl: basePath + 'source/source.help.html',
           formName: 'launchInstanceSourceForm'
         },
-        {
-          id: 'flavor',
-          title: gettext('Flavor'),
-          templateUrl: basePath + 'flavor/flavor.html',
-          helpUrl: basePath + 'flavor/flavor.help.html',
-          formName: 'launchInstanceFlavorForm'
-        },
+        // We remove the Flavors tab from the instance creation dialogue because
+        // there is only one flavor on baremetal sites: "baremetal."
+        // The commit that introduced this change should not ever be applied to the
+        // KVM branch, as flavors are necessary on KVM sites.
+        // {
+        //   id: 'flavor',
+        //   title: gettext('Flavor'),
+        //   templateUrl: basePath + 'flavor/flavor.html',
+        //   helpUrl: basePath + 'flavor/flavor.help.html',
+        //   formName: 'launchInstanceFlavorForm'
+        // },
         {
           id: 'networks',
           title: gettext('Networks'),
