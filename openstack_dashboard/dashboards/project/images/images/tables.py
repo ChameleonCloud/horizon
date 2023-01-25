@@ -293,6 +293,22 @@ class UpdateRow(tables.Row):
             self.classes.append('category-' + category)
 
 
+@filters.register.filter(is_safe=False)
+@filters.stringfilter
+def chameleon_logo(value):
+    """
+    Accepts a yes/no value and translates it into "" or " ". This is used to match against a CSS
+    selector to emplace a Chameleon logo for empty elements. This is incredibly hacky, but columns
+    do not appear to allow conditional CSS classes for each row, and rather blanket apply the classes
+    to every row. This means the condition HAS to be checked in the CSS, and this seemed like the
+    easiest way to do it.
+    """
+    if value.lower().trim() == "yes":
+        return ""
+    else:
+        return " "
+
+
 class ImagesTable(tables.DataTable):
     STATUS_CHOICES = (
         ("active", True),
@@ -343,7 +359,8 @@ class ImagesTable(tables.DataTable):
                          attrs=({"data-type": "size"}),
                          verbose_name=_("Size"))
     chameleon_supported = tables.Column(get_is_supported,
-                                        filters=(filters.yesno, filters.capfirst),
+                                        filters=(filters.yesno, chameleon_logo),
+                                        classes=(".chameleon-supported",),
                                         verbose_name=_("Chameleon Supported"))
 
     class Meta(object):
