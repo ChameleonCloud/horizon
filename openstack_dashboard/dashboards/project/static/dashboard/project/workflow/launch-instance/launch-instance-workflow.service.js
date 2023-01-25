@@ -98,14 +98,16 @@
           helpUrl: basePath + 'configuration/configuration.help.html',
           formName: 'launchInstanceConfigurationForm'
         },
-        {
-          id: 'servergroups',
-          title: gettext('Server Groups'),
-          templateUrl: basePath + 'server-groups/server-groups.html',
-          helpUrl: basePath + 'server-groups/server-groups.help.html',
-          formName: 'launchInstanceServerGroupsForm',
-          policy: stepPolicy.serverGroups
-        },
+        // We remove server groups from the instance creation dialogue
+        // because they are not used
+        // {
+        //   id: 'servergroups',
+        //   title: gettext('Server Groups'),
+        //   templateUrl: basePath + 'server-groups/server-groups.html',
+        //   helpUrl: basePath + 'server-groups/server-groups.help.html',
+        //   formName: 'launchInstanceServerGroupsForm',
+        //   policy: stepPolicy.serverGroups
+        // },
         {
           id: 'hints',
           title: gettext('Scheduler Hints'),
