@@ -133,6 +133,7 @@
       .append({
         label: gettext('Chameleon Supported'),
         name: 'project_supported',
+        classes: ['chameleon-supported'],
         isServer: true,
         singleton: true,
         persistent: true,
