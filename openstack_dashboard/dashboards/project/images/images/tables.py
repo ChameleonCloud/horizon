@@ -343,6 +343,7 @@ class ImagesTable(tables.DataTable):
                          attrs=({"data-type": "size"}),
                          verbose_name=_("Size"))
     chameleon_supported = tables.Column(get_is_supported,
+                                        classes=("chameleon-supported",),
                                         filters=(filters.yesno, filters.capfirst),
                                         verbose_name=_("Chameleon Supported"))
 
