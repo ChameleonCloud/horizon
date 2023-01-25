@@ -272,7 +272,7 @@ def get_format(image):
         return pgettext_lazy("Image format for display in table", "Raw")
     return format.upper()
 
-def get_is_official(image):
+def get_is_supported(image):
     return getattr(image, "project_supported", False)
 
 
@@ -342,9 +342,9 @@ class ImagesTable(tables.DataTable):
                          filters=(filters.filesizeformat,),
                          attrs=({"data-type": "size"}),
                          verbose_name=_("Size"))
-    official = tables.Column(get_is_official,
-                             filters=(filters.yesno, filters.capfirst),
-                             verbose_name=_("Official"))
+    chameleon_supported = tables.Column(get_is_supported,
+                                        filters=(filters.yesno, filters.capfirst),
+                                        verbose_name=_("Chameleon Supported"))
 
     class Meta(object):
         name = "images"
