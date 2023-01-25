@@ -131,15 +131,14 @@
         persistent: true
       })
       .append({
-        label: gettext('Chameleon Supported'),
+        label: gettext('Official'),
         name: 'project_supported',
         isServer: true,
         singleton: true,
         persistent: true,
-        classes: 'chameleon-supported',
         options: [
-          {label: gettext(''), key: 'true'},
-          {label: gettext(' '), key: 'false'}
+          {label: gettext('Yes'), key: 'true'},
+          {label: gettext('No'), key: 'false'}
         ]
       })
       .append({
