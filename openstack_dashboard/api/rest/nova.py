@@ -364,7 +364,7 @@ class Servers(generic.View):
         try:
             flavors = api.nova.flavor_list(request)
             flavor_id = flavors[0].id
-        except IndexError:
+        except Exception:
             raise rest_utils.AjaxError(500, "Unable to set default flavor.")
         try:
             args = (
