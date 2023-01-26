@@ -345,6 +345,7 @@ class ImagesTable(tables.DataTable):
     chameleon_supported = tables.Column(get_is_supported,
                                         classes=("chameleon-supported",),
                                         filters=(filters.yesno, filters.capfirst),
+                                        empty_value=False,
                                         verbose_name=_("Chameleon Supported"))
 
     class Meta(object):
