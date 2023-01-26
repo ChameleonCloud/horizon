@@ -363,8 +363,8 @@ class Servers(generic.View):
         # Since baremetal sites only have one flavor, just grab the ID from the first one
         try:
             flavors = api.nova.flavor_list(request)
-            flavor_id = flavors[0]["id"]
-        except (IndexError, KeyError):
+            flavor_id = flavors[0].id
+        except IndexError:
             raise rest_utils.AjaxError(500, "Unable to set default flavor.")
         try:
             args = (
