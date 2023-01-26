@@ -167,7 +167,7 @@
       image: [
         { id: 'name_or_id', title: gettext('Name'), priority: 1 },
         { id: 'project_supported', title: gettext('Chameleon Supported'),
-          filters: ['yesno'], priority: 2 },
+          filters: ['yesno'], classes: 'chameleon-supported', priority: 2 },
         { id: 'updated_at', title: gettext('Updated'), filters: ['simpleDate'], priority: 2 },
         { id: 'size', title: gettext('Size'), filters: ['bytes'], priority: 2 },
         { id: 'disk_format', title: gettext('Format'),
@@ -260,6 +260,7 @@
       project_supported: {
         label: gettext('Chameleon Supported'),
         name: 'chameleon_supported',
+        classes: 'chameleon-supported',
         options: [
           { label: gettext('Yes'), key: 'true' },
           { label: gettext('No'), key: 'false' },
