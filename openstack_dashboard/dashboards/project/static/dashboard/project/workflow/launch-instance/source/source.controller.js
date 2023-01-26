@@ -172,7 +172,7 @@
         { id: 'size', title: gettext('Size'), filters: ['bytes'], priority: 2 },
         { id: 'disk_format', title: gettext('Format'),
           filters: [getImageDiskFormat], priority: 2 },
-        { id: 'visibility', title: gettext('Visibility'), filters: [getVisibility], priority: 2 }
+        // { id: 'visibility', title: gettext('Visibility'), filters: [getVisibility], priority: 2 }
       ],
       snapshot: [
         { id: 'name', title: gettext('Name'), priority: 1 },
@@ -288,17 +288,19 @@
         name: 'updated_at',
         singleton: true
       },
-      visibility: {
-        label: gettext('Visibility'),
-        name: 'visibility',
-        singleton: true,
-        options: [
-          { label: gettext('Public'), key: 'public' },
-          { label: gettext('Private'), key: 'private' },
-          { label: gettext('Shared With Project'), key: 'shared' },
-          { label: gettext('Community'), key: 'community' }
-        ]
-      },
+      // To simplify the table, hide visibility since it's not
+      // super import information when creating an instance
+      // visibility: {
+      //   label: gettext('Visibility'),
+      //   name: 'visibility',
+      //   singleton: true,
+      //   options: [
+      //     { label: gettext('Public'), key: 'public' },
+      //     { label: gettext('Private'), key: 'private' },
+      //     { label: gettext('Shared With Project'), key: 'shared' },
+      //     { label: gettext('Community'), key: 'community' }
+      //   ]
+      // },
       volumeType: {
         label: gettext('Type'),
         name: 'volume_image_metadata.disk_format',
