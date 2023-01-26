@@ -94,6 +94,7 @@
       })
       .append({
         id: 'project_supported',
+        classes: "chameleon-supported",
         priority: 1
       })
       .append({
