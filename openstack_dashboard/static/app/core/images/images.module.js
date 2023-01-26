@@ -139,8 +139,8 @@
         singleton: true,
         persistent: true,
         options: [
-          {label: gettext('Yes'), key: 'Yes'},
-          {label: gettext('No'), key: 'No'}
+          {label: gettext('Yes'), key: 'true'},
+          {label: gettext('No'), key: 'false'}
         ]
       })
       .append({
