@@ -166,6 +166,8 @@
     var tableColumnsMap = {
       image: [
         { id: 'name_or_id', title: gettext('Name'), priority: 1 },
+        { id: 'project_supported', title: gettext('Chameleon Supported'),
+          filters: ['yesno'], priority: 2 },
         { id: 'updated_at', title: gettext('Updated'), filters: ['simpleDate'], priority: 2 },
         { id: 'size', title: gettext('Size'), filters: ['bytes'], priority: 2 },
         { id: 'disk_format', title: gettext('Format'),
@@ -255,6 +257,14 @@
         name: 'name',
         singleton: true
       },
+      project_supported: {
+        label: gettext('Chameleon Supported'),
+        name: 'chameleon_supported',
+        options: [
+          { label: gettext('Yes'), key: 'true' },
+          { label: gettext('No'), key: 'false' },
+        ]
+      },
       size: {
         label: gettext('Size'),
         name: 'size',
@@ -299,7 +309,7 @@
     // Mapping for filter facets based on boot source type
     var sourceTypeFacets = {
       image: [
-        facets.name, facets.updated, facets.size, facets.type, facets.visibility
+        facets.name, facets.project_supported, facets.updated, facets.size, facets.type, facets.visibility
       ],
       snapshot: [
         facets.name, facets.updated, facets.size, facets.type, facets.visibility
