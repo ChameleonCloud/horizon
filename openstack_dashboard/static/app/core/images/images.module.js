@@ -137,7 +137,6 @@
         classes: 'chameleon-supported',
         isServer: true,
         singleton: true,
-        persistent: true,
         options: [
           {label: gettext('Yes'), key: 'true'},
           {label: gettext('No'), key: 'false'}
