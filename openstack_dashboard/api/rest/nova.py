@@ -365,7 +365,9 @@ class Servers(generic.View):
                 request,
                 request.DATA['name'],
                 request.DATA['source_id'],
-                request.DATA['flavor_id'],
+                # Since we have disabled flavors, we'll hardcode the default
+                # request.DATA['flavor_id'],
+                "baremetal",
                 request.DATA['key_name'],
                 request.DATA['user_data'],
                 request.DATA['security_groups'],
