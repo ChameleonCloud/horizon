@@ -32,6 +32,8 @@
     {% else %}
       <dd>{% trans "Never updated" %}</dd>
     {% endif %}
+    <dt>{% trans "Chameleon Supported" %}</dt>
+    <dd>{{  image.project_supported|yesno|capfirst }}</dd>
   </dl>
 
   <h4>{% trans "Specs" %}</h4>

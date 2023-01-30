@@ -153,6 +153,7 @@ def fetch_published_appliances():
             appliance_list = requests.get(settings.CHAMELEON_PORTAL_API_BASE_URL\
                 + settings.APPLIANCE_CATALOG_API_PATH).json().get('result')
             appliance_dict = {}
+            LOG.info(f"Found {len(appliance_list)} appliances")
             for appliance in appliance_list:
                 if appliance.get('chi_uc_appliance_id', False):
                     appliance_dict[appliance.get('chi_uc_appliance_id')] = appliance

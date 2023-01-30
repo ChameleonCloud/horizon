@@ -72,7 +72,6 @@
             </div>
           </td>
           <td style="width: 4em;max-width: 5em;" ng-show="config.expand" class="expander">
-            <img title="Chameleon Supported Appliance" style="float:right;" ng-if="item.project_supported" height="20px" src="https://www.chameleoncloud.org/static/images/logo-small.png" />
             <div class="fa fa-chevron-right"
               hz-expand-detail
               duration="200">
@@ -81,7 +80,10 @@
           <td ng-repeat="column in config.columns"
             class="rsp-p{$ column.priority $} {$ column.classes $}"
             ng-if="columnAllowed(column)">
-            <hz-cell table="table" column="column" item="item"></hz-cell>
+              <hz-cell table="table" column="column" item="item"></hz-cell>
+              <img title="Chameleon Supported Appliance" alt="Chameleon Supported Appliance"
+                ng-if="item.project_supported && column.classes.includes('chameleon-supported')" height="20px"
+                src="https://www.chameleoncloud.org/static/images/logo-small.png" />
           </td>
           <td ng-if="itemActions" class="actions_column">
             <!--
