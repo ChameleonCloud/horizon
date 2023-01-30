@@ -166,11 +166,13 @@
     var tableColumnsMap = {
       image: [
         { id: 'name_or_id', title: gettext('Name'), priority: 1 },
+        { id: 'project_supported', title: gettext('Chameleon Supported'),
+          filters: ['yesno'], classes: 'chameleon-supported', priority: 2 },
         { id: 'updated_at', title: gettext('Updated'), filters: ['simpleDate'], priority: 2 },
         { id: 'size', title: gettext('Size'), filters: ['bytes'], priority: 2 },
         { id: 'disk_format', title: gettext('Format'),
           filters: [getImageDiskFormat], priority: 2 },
-        { id: 'visibility', title: gettext('Visibility'), filters: [getVisibility], priority: 2 }
+        // { id: 'visibility', title: gettext('Visibility'), filters: [getVisibility], priority: 2 }
       ],
       snapshot: [
         { id: 'name', title: gettext('Name'), priority: 1 },
@@ -255,6 +257,15 @@
         name: 'name',
         singleton: true
       },
+      project_supported: {
+        label: gettext('Chameleon Supported'),
+        name: 'chameleon_supported',
+        classes: 'chameleon-supported',
+        options: [
+          { label: gettext('Yes'), key: 'true' },
+          { label: gettext('No'), key: 'false' },
+        ]
+      },
       size: {
         label: gettext('Size'),
         name: 'size',
@@ -277,17 +288,19 @@
         name: 'updated_at',
         singleton: true
       },
-      visibility: {
-        label: gettext('Visibility'),
-        name: 'visibility',
-        singleton: true,
-        options: [
-          { label: gettext('Public'), key: 'public' },
-          { label: gettext('Private'), key: 'private' },
-          { label: gettext('Shared With Project'), key: 'shared' },
-          { label: gettext('Community'), key: 'community' }
-        ]
-      },
+      // To simplify the table, hide visibility since it's not
+      // super import information when creating an instance
+      // visibility: {
+      //   label: gettext('Visibility'),
+      //   name: 'visibility',
+      //   singleton: true,
+      //   options: [
+      //     { label: gettext('Public'), key: 'public' },
+      //     { label: gettext('Private'), key: 'private' },
+      //     { label: gettext('Shared With Project'), key: 'shared' },
+      //     { label: gettext('Community'), key: 'community' }
+      //   ]
+      // },
       volumeType: {
         label: gettext('Type'),
         name: 'volume_image_metadata.disk_format',
@@ -299,7 +312,7 @@
     // Mapping for filter facets based on boot source type
     var sourceTypeFacets = {
       image: [
-        facets.name, facets.updated, facets.size, facets.type, facets.visibility
+        facets.name, facets.project_supported, facets.updated, facets.size, facets.type, facets.visibility
       ],
       snapshot: [
         facets.name, facets.updated, facets.size, facets.type, facets.visibility
