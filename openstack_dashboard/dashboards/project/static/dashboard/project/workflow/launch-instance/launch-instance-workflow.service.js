@@ -45,13 +45,17 @@
           helpUrl: basePath + 'source/source.help.html',
           formName: 'launchInstanceSourceForm'
         },
-        {
-          id: 'flavor',
-          title: gettext('Flavor'),
-          templateUrl: basePath + 'flavor/flavor.html',
-          helpUrl: basePath + 'flavor/flavor.help.html',
-          formName: 'launchInstanceFlavorForm'
-        },
+        // We remove the Flavors tab from the instance creation dialogue because
+        // there is only one flavor on baremetal sites: "baremetal."
+        // The commit that introduced this change should not ever be applied to the
+        // KVM branch, as flavors are necessary on KVM sites.
+        // {
+        //   id: 'flavor',
+        //   title: gettext('Flavor'),
+        //   templateUrl: basePath + 'flavor/flavor.html',
+        //   helpUrl: basePath + 'flavor/flavor.help.html',
+        //   formName: 'launchInstanceFlavorForm'
+        // },
         {
           id: 'networks',
           title: gettext('Networks'),
@@ -68,14 +72,18 @@
           formName: 'launchInstanceNetworkPortForm',
           requiredServiceTypes: ['network']
         },
-        {
-          id: 'secgroups',
-          title: gettext('Security Groups'),
-          templateUrl: basePath + 'security-groups/security-groups.html',
-          helpUrl: basePath + 'security-groups/security-groups.help.html',
-          formName: 'launchInstanceAccessAndSecurityForm',
-          requiredServiceTypes: ['network']
-        },
+        // We remove the security groups tab from the instance creation dialogue because
+        // they do nothing on bare metal, and they confuse users
+        // The commit that introduced this change should not ever be applied to the
+        // KVM branch, as security groups are useful on KVM sites.
+        // {
+        //   id: 'secgroups',
+        //   title: gettext('Security Groups'),
+        //   templateUrl: basePath + 'security-groups/security-groups.html',
+        //   helpUrl: basePath + 'security-groups/security-groups.help.html',
+        //   formName: 'launchInstanceAccessAndSecurityForm',
+        //   requiredServiceTypes: ['network']
+        // },
         {
           id: 'keypair',
           title: gettext('Key Pair'),
@@ -90,14 +98,16 @@
           helpUrl: basePath + 'configuration/configuration.help.html',
           formName: 'launchInstanceConfigurationForm'
         },
-        {
-          id: 'servergroups',
-          title: gettext('Server Groups'),
-          templateUrl: basePath + 'server-groups/server-groups.html',
-          helpUrl: basePath + 'server-groups/server-groups.help.html',
-          formName: 'launchInstanceServerGroupsForm',
-          policy: stepPolicy.serverGroups
-        },
+        // We remove server groups from the instance creation dialogue
+        // because they are not used
+        // {
+        //   id: 'servergroups',
+        //   title: gettext('Server Groups'),
+        //   templateUrl: basePath + 'server-groups/server-groups.html',
+        //   helpUrl: basePath + 'server-groups/server-groups.help.html',
+        //   formName: 'launchInstanceServerGroupsForm',
+        //   policy: stepPolicy.serverGroups
+        // },
         {
           id: 'hints',
           title: gettext('Scheduler Hints'),
