@@ -11,8 +11,7 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
-
-
+import functools
 import logging
 
 from django.conf import settings
@@ -1263,6 +1262,8 @@ class InstancesTable(tables.DataTable):
     flavor = tables.Column(get_flavor,
                            sortable=False,
                            verbose_name=_("Flavor"))
+    user_id = tables.Column("user_id",
+                            verbose_name=_("Created By"))
     keypair = tables.Column(get_keyname, verbose_name=_("Key Pair"))
     status = tables.Column("status",
                            filters=(title, filters.replace_underscores),
@@ -1308,3 +1309,19 @@ class InstancesTable(tables.DataTable):
                        EditInstance, ConsoleLink, SoftRebootInstance,
                        RebootInstance, StopInstance, RebuildInstance,
                        DeleteInstance)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        user_id_column = next((c for c in self.get_columns() if c.name == "user_id"), None)
+        if user_id_column:
+            user_id_column.filters.append(lambda u: self.uid_to_user(u))
+
+    @functools.lru_cache(maxsize=10_000)
+    def uid_to_user(self, uid):
+        if not uid:
+            return None
+        try:
+            user = api.keystone.user_get(self.request, uid, admin=False)
+            return user.email
+        except Exception:
+            return None
