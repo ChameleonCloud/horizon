@@ -1274,8 +1274,8 @@ class InstancesTable(tables.DataTable):
     locked = tables.Column(render_locked,
                            verbose_name="",
                            sortable=False)
-    az = tables.Column("availability_zone",
-                       verbose_name=_("Availability Zone"))
+    # az = tables.Column("availability_zone",
+    #                    verbose_name=_("Availability Zone"))
     task = tables.Column("OS-EXT-STS:task_state",
                          verbose_name=_("Task"),
                          empty_value=TASK_DISPLAY_NONE,
