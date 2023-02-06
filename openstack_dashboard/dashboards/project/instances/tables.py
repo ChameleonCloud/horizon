@@ -11,7 +11,6 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
-import functools
 import logging
 
 from django.conf import settings
@@ -34,6 +33,7 @@ from horizon import messages
 from horizon import tables
 from horizon.templatetags import sizeformat
 from horizon.utils import filters
+from horizon.utils.memoized import memoized_method
 
 from openstack_dashboard import api
 from openstack_dashboard.dashboards.project.floating_ips import workflows
@@ -1291,6 +1291,7 @@ class InstancesTable(tables.DataTable):
                             filters=(filters.parse_isotime,
                                      filters.timesince_sortable),
                             attrs={'data-type': 'timesince'})
+    uid_to_user_map = {}
 
     class Meta(object):
         name = "instances"
@@ -1316,7 +1317,7 @@ class InstancesTable(tables.DataTable):
         if user_id_column:
             user_id_column.filters.append(lambda u: self.uid_to_user(u))
 
-    @functools.lru_cache(maxsize=10_000)
+    @memoized_method(max_size=10_000)
     def uid_to_user(self, uid):
         if not uid:
             return None
