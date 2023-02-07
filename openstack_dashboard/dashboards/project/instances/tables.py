@@ -1326,6 +1326,7 @@ class InstancesTable(tables.DataTable):
             return username
         try:
             user = api.keystone.user_get(self.request, uid, admin=False)
-            return uid_to_username_cache.setdefault(uid, user.email)
+            uid_to_username_cache[uid] = user.email
+            return user.email
         except Exception:
             return None
