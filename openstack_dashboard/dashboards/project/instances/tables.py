@@ -1312,12 +1312,6 @@ class InstancesTable(tables.DataTable):
                        RebootInstance, StopInstance, RebuildInstance,
                        DeleteInstance)
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        user_id_column = next((c for c in self.get_columns() if c.name == "user_id"), None)
-        if user_id_column:
-            user_id_column.filters.append(lambda u: self.uid_to_user(u))
-
     def uid_to_user(self, uid):
         if not uid:
             return None
