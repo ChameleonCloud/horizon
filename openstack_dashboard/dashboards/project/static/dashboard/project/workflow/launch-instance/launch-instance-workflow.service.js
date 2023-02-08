@@ -31,8 +31,10 @@
   function launchInstanceWorkflow($q, $scope, basePath, stepPolicy, dashboardWorkflow) {
     const showTabsPromise = function() {
       const deferred = $q.defer();
-      const advancedTabs = $scope.viewModel.advancedTabs;
-      deferred.resolve(() => advancedTabs.showTabs);
+      deferred.resolve(() => {
+        const advancedTabs = $scope.viewModel.advancedTabs;
+        return advancedTabs.showTabs;
+      });
       return deferred.promise;
     };
 
