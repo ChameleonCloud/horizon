@@ -57,6 +57,7 @@
 
     $scope.switchTo = switchTo;
     $scope.showError = showError;
+    $scope.toggleAdvanced = toggleAdvanced;
     ctrl.toggleHelpBtn = toggleHelpBtn;
     ctrl.onInitSuccess = onInitSuccess;
     ctrl.onInitError = onInitError;
@@ -67,6 +68,7 @@
     viewModel.btnIcon = $scope.workflow.btnIcon || {};
     viewModel.showSpinner = false;
     viewModel.hasError = false;
+    viewModel.showAdvanced = false;
     viewModel.onClickFinishBtn = onClickFinishBtn;
     viewModel.isSubmitting = false;
 
@@ -96,6 +98,10 @@
       $scope.currentIndex = index;
       $scope.openHelp = false;
       /*eslint-enable angular/controller-as*/
+    }
+
+    function toggleAdvanced() {
+      $scope.showAdvanced = !$scope.showAdvanced;
     }
 
     function showError(errorMessage) {
