@@ -68,6 +68,7 @@
     viewModel.btnIcon = $scope.workflow.btnIcon || {};
     viewModel.showSpinner = false;
     viewModel.hasError = false;
+    viewModel.hasAdvanced = false;
     viewModel.showAdvanced = false;
     viewModel.onClickFinishBtn = onClickFinishBtn;
     viewModel.isSubmitting = false;

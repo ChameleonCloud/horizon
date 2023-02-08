@@ -130,7 +130,9 @@
 
       btnIcon: {
         finish: 'fa-cloud-upload'
-      }
+      },
+
+      hasAdvanced: true
     });
   }
 
