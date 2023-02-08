@@ -21,13 +21,21 @@
     .factory('horizon.dashboard.project.workflow.launch-instance.workflow', launchInstanceWorkflow);
 
   launchInstanceWorkflow.$inject = [
-    "$scope",
+    '$q',
+    '$scope',
     'horizon.dashboard.project.workflow.launch-instance.basePath',
     'horizon.dashboard.project.workflow.launch-instance.step-policy',
     'horizon.app.core.workflow.factory'
   ];
 
-  function launchInstanceWorkflow($scope, basePath, stepPolicy, dashboardWorkflow) {
+  function launchInstanceWorkflow($q, $scope, basePath, stepPolicy, dashboardWorkflow) {
+    const showTabsPromise = function() {
+      const deferred = $q.defer();
+      const advancedTabs = $scope.viewModel.advancedTabs;
+      deferred.resolve(() => advancedTabs.showTabs);
+      return deferred.promise;
+    };
+
     return dashboardWorkflow({
       title: gettext('Launch Instance'),
 
@@ -98,7 +106,7 @@
           templateUrl: basePath + 'configuration/configuration.html',
           helpUrl: basePath + 'configuration/configuration.help.html',
           formName: 'launchInstanceConfigurationForm',
-          checkReadiness: function() { return $scope.viewModel.advanced.showTabs; }
+          checkReadiness: showTabsPromise
         },
         {
           id: 'servergroups',
@@ -107,7 +115,7 @@
           helpUrl: basePath + 'server-groups/server-groups.help.html',
           formName: 'launchInstanceServerGroupsForm',
           policy: stepPolicy.serverGroups,
-          checkReadiness: function() { return $scope.viewModel.advanced.showTabs; }
+          checkReadiness: showTabsPromise
         },
         {
           id: 'hints',
@@ -117,7 +125,7 @@
           formName: 'launchInstanceSchedulerHintsForm',
           policy: stepPolicy.schedulerHints,
           setting: 'LAUNCH_INSTANCE_DEFAULTS.enable_scheduler_hints',
-          checkReadiness: function() { return $scope.viewModel.advanced.showTabs; }
+          checkReadiness: showTabsPromise
         },
         {
           id: 'metadata',
@@ -125,7 +133,7 @@
           templateUrl: basePath + 'metadata/metadata.html',
           helpUrl: basePath + 'metadata/metadata.help.html',
           formName: 'launchInstanceMetadataForm',
-          checkReadiness: function() { return $scope.viewModel.advanced.showTabs; }
+          checkReadiness: showTabsPromise
         }
       ],
 
