@@ -68,8 +68,7 @@
     viewModel.btnIcon = $scope.workflow.btnIcon || {};
     viewModel.showSpinner = false;
     viewModel.hasError = false;
-    viewModel.hasAdvanced = false;
-    viewModel.showAdvanced = false;
+    viewModel.advanced = extend({}, wizardLabels, $scope.workflow.advanced);
     viewModel.onClickFinishBtn = onClickFinishBtn;
     viewModel.isSubmitting = false;
 
@@ -102,7 +101,7 @@
     }
 
     function toggleAdvanced() {
-      $scope.showAdvanced = !$scope.showAdvanced;
+      viewModel.advanced.showTabs = !viewModel.advanced.showTabs;
     }
 
     function showError(errorMessage) {

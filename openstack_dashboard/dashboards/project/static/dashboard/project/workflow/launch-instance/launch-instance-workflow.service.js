@@ -21,12 +21,13 @@
     .factory('horizon.dashboard.project.workflow.launch-instance.workflow', launchInstanceWorkflow);
 
   launchInstanceWorkflow.$inject = [
+    "$scope",
     'horizon.dashboard.project.workflow.launch-instance.basePath',
     'horizon.dashboard.project.workflow.launch-instance.step-policy',
     'horizon.app.core.workflow.factory'
   ];
 
-  function launchInstanceWorkflow(basePath, stepPolicy, dashboardWorkflow) {
+  function launchInstanceWorkflow($scope, basePath, stepPolicy, dashboardWorkflow) {
     return dashboardWorkflow({
       title: gettext('Launch Instance'),
 
@@ -96,7 +97,8 @@
           title: gettext('Configuration'),
           templateUrl: basePath + 'configuration/configuration.html',
           helpUrl: basePath + 'configuration/configuration.help.html',
-          formName: 'launchInstanceConfigurationForm'
+          formName: 'launchInstanceConfigurationForm',
+          checkReadiness: function() { return $scope.viewModel.advanced.showTabs; }
         },
         {
           id: 'servergroups',
@@ -104,7 +106,8 @@
           templateUrl: basePath + 'server-groups/server-groups.html',
           helpUrl: basePath + 'server-groups/server-groups.help.html',
           formName: 'launchInstanceServerGroupsForm',
-          policy: stepPolicy.serverGroups
+          policy: stepPolicy.serverGroups,
+          checkReadiness: function() { return $scope.viewModel.advanced.showTabs; }
         },
         {
           id: 'hints',
@@ -113,14 +116,16 @@
           helpUrl: basePath + 'scheduler-hints/scheduler-hints.help.html',
           formName: 'launchInstanceSchedulerHintsForm',
           policy: stepPolicy.schedulerHints,
-          setting: 'LAUNCH_INSTANCE_DEFAULTS.enable_scheduler_hints'
+          setting: 'LAUNCH_INSTANCE_DEFAULTS.enable_scheduler_hints',
+          checkReadiness: function() { return $scope.viewModel.advanced.showTabs; }
         },
         {
           id: 'metadata',
           title: gettext('Metadata'),
           templateUrl: basePath + 'metadata/metadata.html',
           helpUrl: basePath + 'metadata/metadata.help.html',
-          formName: 'launchInstanceMetadataForm'
+          formName: 'launchInstanceMetadataForm',
+          checkReadiness: function() { return $scope.viewModel.advanced.showTabs; }
         }
       ],
 
@@ -132,7 +137,11 @@
         finish: 'fa-cloud-upload'
       },
 
-      hasAdvanced: true
+      advancedTabs: {
+        showButton: true,
+        showTabs: false,
+        hasAdvancedTabs: true
+      }
     });
   }
 
