@@ -29,6 +29,7 @@
 
   function launchInstanceWorkflow($q, basePath, stepPolicy, dashboardWorkflow) {
     const showTabsPromise = function ($scope) {
+      console.log("Foo!");
       return new Promise((resolve, reject) => resolve($scope.viewModel.advanced.showTabs));
     };
 
