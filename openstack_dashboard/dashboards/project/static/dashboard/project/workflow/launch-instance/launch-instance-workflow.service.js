@@ -148,7 +148,6 @@
       advanced: {
         showButton: true,
         showTabs: false,
-        hasAdvancedTabs: true
       }
     });
   }

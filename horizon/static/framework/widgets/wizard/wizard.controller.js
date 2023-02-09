@@ -68,7 +68,7 @@
     viewModel.btnIcon = $scope.workflow.btnIcon || {};
     viewModel.showSpinner = false;
     viewModel.hasError = false;
-    viewModel.advanced = extend({}, wizardLabels, $scope.workflow.advanced);
+    viewModel.advanced = extend({}, {showButton: false, showTabs: true}, $scope.workflow.advanced);
     viewModel.onClickFinishBtn = onClickFinishBtn;
     viewModel.isSubmitting = false;
 
