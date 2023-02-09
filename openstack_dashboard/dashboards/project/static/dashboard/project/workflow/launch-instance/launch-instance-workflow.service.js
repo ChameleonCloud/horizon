@@ -22,18 +22,16 @@
 
   launchInstanceWorkflow.$inject = [
     '$q',
-    '$scope',
     'horizon.dashboard.project.workflow.launch-instance.basePath',
     'horizon.dashboard.project.workflow.launch-instance.step-policy',
     'horizon.app.core.workflow.factory'
   ];
 
-  function launchInstanceWorkflow($q, $scope, basePath, stepPolicy, dashboardWorkflow) {
-    const showTabsPromise = function() {
+  function launchInstanceWorkflow($q, basePath, stepPolicy, dashboardWorkflow) {
+    const showTabsPromise = function ($scope) {
       const deferred = $q.defer();
       deferred.resolve(() => {
-        const advancedTabs = $scope.viewModel.advancedTabs;
-        return advancedTabs.showTabs;
+        return $scope.viewModel.advanced.showTabs;
       });
       return deferred.promise;
     };
@@ -147,7 +145,7 @@
         finish: 'fa-cloud-upload'
       },
 
-      advancedTabs: {
+      advanced: {
         showButton: true,
         showTabs: false,
         hasAdvancedTabs: true

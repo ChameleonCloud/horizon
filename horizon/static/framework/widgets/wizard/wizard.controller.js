@@ -212,7 +212,12 @@
         step.ready = !step.checkReadiness;
 
         if (step.checkReadiness) {
-          var promise = step.checkReadiness();
+          var promise;
+          if (step.checkReadiness.length === 1) {
+            promise = step.checkReadiness($scope);
+          } else {
+            promise = step.checkReadiness();
+          }
           stepReadyPromises.push(promise);
           promise.then(function(isReady) {
             step.ready = isReady;
