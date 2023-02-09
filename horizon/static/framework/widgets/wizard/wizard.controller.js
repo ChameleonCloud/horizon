@@ -227,6 +227,7 @@
           }
           stepReadyPromises.push(promise);
           promise.then(function(isReady) {
+            console.log(`STEP ${JSON.stringify(step)} IS READY ${isReady}`);
             step.ready = isReady;
           });
         }
