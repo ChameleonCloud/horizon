@@ -27,7 +27,7 @@
                 ng-class="{'active': currentIndex===$index}"
                 ng-click="switchTo($index)"
                 ng-repeat="step in steps"
-                ng-show="step.ready">
+                ng-show="shouldShowStep(step)">
               <a href="#">
                 <span ng-bind="::step.title"></span>
                 <span class="hz-icon-required fa fa-asterisk"

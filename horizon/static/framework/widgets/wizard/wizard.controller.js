@@ -78,6 +78,9 @@
     $scope.hideAdvancedButton = function() {
       return viewModel.advanced.showButton && viewModel.advanced.showTabs;
     };
+    $scope.shouldShowStep = function(step) {
+
+    };
 
     $scope.initPromise.then(onInitSuccess, onInitError);
 
@@ -230,11 +233,7 @@
       viewModel.ready = stepReadyPromises.length === 0;
       return $q.all(stepReadyPromises).finally(function() {
         $scope.steps = $scope.steps.filter(function(step) {
-          if (step.isAdvanced) {
-            return step.ready && step.showTabs;
-          } else {
-            return step.ready;
-          }
+          $scope.shouldShowStep(step);
         });
       });
     }
