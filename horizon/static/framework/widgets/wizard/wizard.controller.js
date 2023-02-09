@@ -62,13 +62,6 @@
     ctrl.onInitSuccess = onInitSuccess;
     ctrl.onInitError = onInitError;
 
-    $scope.showAdvancedButton = function() {
-      return $scope.viewModel.advanced.showButton && $scope.viewModel.advanced.showTabs;
-    };
-    $scope.hideAdvancedButton = function() {
-      return $scope.viewModel.advanced.showButton && $scope.viewModel.advanced.showTabs;
-    };
-
     /*eslint-enable angular/controller-as */
 
     viewModel.btnText = extend({}, wizardLabels, $scope.workflow.btnText);
@@ -78,6 +71,13 @@
     viewModel.advanced = extend({}, wizardLabels, $scope.workflow.advanced);
     viewModel.onClickFinishBtn = onClickFinishBtn;
     viewModel.isSubmitting = false;
+
+    $scope.showAdvancedButton = function() {
+      return $scope.viewModel.advanced.showButton && $scope.viewModel.advanced.showTabs;
+    };
+    $scope.hideAdvancedButton = function() {
+      return $scope.viewModel.advanced.showButton && $scope.viewModel.advanced.showTabs;
+    };
 
     $scope.initPromise.then(onInitSuccess, onInitError);
 
