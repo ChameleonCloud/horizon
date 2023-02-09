@@ -73,10 +73,10 @@
     viewModel.isSubmitting = false;
 
     $scope.showAdvancedButton = function() {
-      return $scope.viewModel.advanced.showButton && $scope.viewModel.advanced.showTabs;
+      return viewModel.advanced.showButton && $scope.viewModel.advanced.showTabs;
     };
     $scope.hideAdvancedButton = function() {
-      return $scope.viewModel.advanced.showButton && $scope.viewModel.advanced.showTabs;
+      return viewModel.advanced.showButton && $scope.viewModel.advanced.showTabs;
     };
 
     $scope.initPromise.then(onInitSuccess, onInitError);
