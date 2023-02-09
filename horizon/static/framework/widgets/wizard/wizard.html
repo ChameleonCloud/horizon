@@ -66,9 +66,9 @@
       <span ng-bind="::viewModel.btnText.cancel"></span>
     </button>
     <button type="button" class="btn btn-default pull-left"
-            ng-click="toggleAdvanced()" ng-show="::viewModel.advanced.showButton && !::viewModel.advanced.showTabs">Show Advanced</button>
+            ng-click="toggleAdvanced()" ng-show="showAdvancedButton()">Show Advanced</button>
     <button type="button" class="btn btn-default pull-left"
-            ng-click="toggleAdvanced()" ng-show="::viewModel.advanced.showButton && ::viewModel.advanced.showTabs">Hide Advanced</button>
+            ng-click="toggleAdvanced()" ng-show="hideAdvancedButton()">Hide Advanced</button>
 
     <button type="button" class="btn btn-default back"
       ng-click="switchTo(currentIndex - 1)"
