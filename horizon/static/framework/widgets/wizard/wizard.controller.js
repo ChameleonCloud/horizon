@@ -68,7 +68,7 @@
     viewModel.btnIcon = $scope.workflow.btnIcon || {};
     viewModel.showSpinner = false;
     viewModel.hasError = false;
-    viewModel.advanced = extend({}, {showButton: false, showTabs: true}, $scope.workflow.advanced);
+    viewModel.advanced = extend({showButton: false, showTabs: true}, $scope.workflow.advanced);
     viewModel.onClickFinishBtn = onClickFinishBtn;
     viewModel.isSubmitting = false;
 
@@ -219,15 +219,9 @@
         step.ready = !step.checkReadiness;
 
         if (step.checkReadiness) {
-          var promise;
-          if (step.checkReadiness.length === 1) {
-            promise = step.checkReadiness($scope);
-          } else {
-            promise = step.checkReadiness();
-          }
+          var promise = step.checkReadiness();
           stepReadyPromises.push(promise);
           promise.then(function(isReady) {
-            console.log(`STEP ${JSON.stringify(step)} IS READY ${isReady}`);
             step.ready = isReady;
           });
         }
@@ -236,7 +230,11 @@
       viewModel.ready = stepReadyPromises.length === 0;
       return $q.all(stepReadyPromises).finally(function() {
         $scope.steps = $scope.steps.filter(function(step) {
-          return step.ready;
+          if (step.isAdvanced) {
+            return step.ready && step.showTabs;
+          } else {
+            return step.ready;
+          }
         });
       });
     }

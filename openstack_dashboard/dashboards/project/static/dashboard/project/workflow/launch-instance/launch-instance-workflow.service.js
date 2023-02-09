@@ -104,7 +104,7 @@
           templateUrl: basePath + 'configuration/configuration.html',
           helpUrl: basePath + 'configuration/configuration.help.html',
           formName: 'launchInstanceConfigurationForm',
-          checkReadiness: showTabsPromise
+          isAdvanced: true,
         },
         {
           id: 'servergroups',
@@ -113,7 +113,7 @@
           helpUrl: basePath + 'server-groups/server-groups.help.html',
           formName: 'launchInstanceServerGroupsForm',
           policy: stepPolicy.serverGroups,
-          checkReadiness: showTabsPromise
+          isAdvanced: true,
         },
         {
           id: 'hints',
@@ -123,7 +123,7 @@
           formName: 'launchInstanceSchedulerHintsForm',
           policy: stepPolicy.schedulerHints,
           setting: 'LAUNCH_INSTANCE_DEFAULTS.enable_scheduler_hints',
-          checkReadiness: showTabsPromise
+          isAdvanced: true,
         },
         {
           id: 'metadata',
@@ -131,7 +131,7 @@
           templateUrl: basePath + 'metadata/metadata.html',
           helpUrl: basePath + 'metadata/metadata.help.html',
           formName: 'launchInstanceMetadataForm',
-          checkReadiness: showTabsPromise
+          isAdvanced: true,
         }
       ],
 
