@@ -81,7 +81,6 @@
     };
     $scope.shouldShowStep = function(step) {
       if (step.isAdvanced) {
-        console.log(`STEP ${JSON.stringify(step)} VIEW ${$scope.advanced.showTabs}`);
         return step.ready && $scope.advanced.showTabs;
       } else {
         return step.ready;
@@ -114,6 +113,9 @@
       $scope.currentIndex = index;
       $scope.openHelp = false;
       /*eslint-enable angular/controller-as*/
+      if (steps[index].isAdvanced) {
+        $scope.advanced.showTabs = true;
+      }
     }
 
     function toggleAdvanced() {
