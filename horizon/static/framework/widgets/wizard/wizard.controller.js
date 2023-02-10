@@ -237,7 +237,7 @@
       viewModel.ready = stepReadyPromises.length === 0;
       return $q.all(stepReadyPromises).finally(function() {
         $scope.steps = $scope.steps.filter(function(step) {
-          $scope.shouldShowStep(step);
+          return $scope.shouldShowStep(step);
         });
       });
     }
