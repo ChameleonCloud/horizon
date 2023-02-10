@@ -21,13 +21,12 @@
     .factory('horizon.dashboard.project.workflow.launch-instance.workflow', launchInstanceWorkflow);
 
   launchInstanceWorkflow.$inject = [
-    '$q',
     'horizon.dashboard.project.workflow.launch-instance.basePath',
     'horizon.dashboard.project.workflow.launch-instance.step-policy',
     'horizon.app.core.workflow.factory'
   ];
 
-  function launchInstanceWorkflow($q, basePath, stepPolicy, dashboardWorkflow) {
+  function launchInstanceWorkflow(basePath, stepPolicy, dashboardWorkflow) {
     return dashboardWorkflow({
       title: gettext('Launch Instance'),
 
