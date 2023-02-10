@@ -80,6 +80,7 @@
     };
     $scope.shouldShowStep = function(step) {
       if (step.isAdvanced) {
+        console.log(`STEP ${JSON.stringify(step)} VIEW ${viewModel.advanced.showTabs}`);
         return step.ready && viewModel.advanced.showTabs;
       } else {
         return step.ready;
