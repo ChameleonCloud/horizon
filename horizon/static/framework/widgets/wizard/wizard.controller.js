@@ -79,8 +79,7 @@
       return viewModel.advanced.showButton && viewModel.advanced.showTabs;
     };
     $scope.shouldShowStep = function(step) {
-      console.log(`STEP ${JSON.stringify(step)} VIEW ${JSON.stringify(viewModel.advanced.showTabs)}`);
-      if (step.advanced) {
+      if (step.isAdvanced) {
         return step.ready && viewModel.advanced.showTabs;
       } else {
         return step.ready;
