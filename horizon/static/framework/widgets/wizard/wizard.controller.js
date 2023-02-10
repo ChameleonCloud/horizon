@@ -79,6 +79,7 @@
       return viewModel.advanced.showButton && viewModel.advanced.showTabs;
     };
     $scope.shouldShowStep = function(step) {
+      console.log(`STEP ${step} VIEW ${viewModel.advanced.showTabs}`);
       if (step.advanced) {
         return step.ready && viewModel.advanced.showTabs;
       } else {
