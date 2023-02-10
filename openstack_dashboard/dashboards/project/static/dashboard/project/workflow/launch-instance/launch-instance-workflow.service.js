@@ -28,12 +28,6 @@
   ];
 
   function launchInstanceWorkflow($q, basePath, stepPolicy, dashboardWorkflow) {
-    const showTabsPromise = function ($scope) {
-      return new Promise(function (resolve, reject) {
-        resolve($scope.viewModel.advanced.showTabs);
-      });
-    };
-
     return dashboardWorkflow({
       title: gettext('Launch Instance'),
 

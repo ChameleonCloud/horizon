@@ -52,6 +52,8 @@
     var steps = $scope.steps = $scope.workflow.steps || [];
     $scope.wizardForm = {};
 
+    $scope.advanced = extend({showButton: false, showTabs: true}, $scope.workflow.advanced);
+
     // a place to keep each step's captured data, named for their step.formName
     $scope.stepModels = {};
 
@@ -68,20 +70,19 @@
     viewModel.btnIcon = $scope.workflow.btnIcon || {};
     viewModel.showSpinner = false;
     viewModel.hasError = false;
-    viewModel.advanced = extend({showButton: false, showTabs: true}, $scope.workflow.advanced);
     viewModel.onClickFinishBtn = onClickFinishBtn;
     viewModel.isSubmitting = false;
 
     $scope.showAdvancedButton = function() {
-      return viewModel.advanced.showButton && !viewModel.advanced.showTabs;
+      return $scope.advanced.showButton && !$scope.advanced.showTabs;
     };
     $scope.hideAdvancedButton = function() {
-      return viewModel.advanced.showButton && viewModel.advanced.showTabs;
+      return $scope.advanced.showButton && $scope.advanced.showTabs;
     };
     $scope.shouldShowStep = function(step) {
       if (step.isAdvanced) {
-        console.log(`STEP ${JSON.stringify(step)} VIEW ${viewModel.advanced.showTabs}`);
-        return step.ready && viewModel.advanced.showTabs;
+        console.log(`STEP ${JSON.stringify(step)} VIEW ${$scope.advanced.showTabs}`);
+        return step.ready && $scope.advanced.showTabs;
       } else {
         return step.ready;
       }
@@ -116,7 +117,7 @@
     }
 
     function toggleAdvanced() {
-      viewModel.advanced.showTabs = !viewModel.advanced.showTabs;
+      $scope.advanced.showTabs = !$scope.advanced.showTabs;
     }
 
     function showError(errorMessage) {
