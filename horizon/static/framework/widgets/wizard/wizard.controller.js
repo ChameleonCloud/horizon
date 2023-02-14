@@ -52,11 +52,14 @@
     var steps = $scope.steps = $scope.workflow.steps || [];
     $scope.wizardForm = {};
 
+    $scope.advanced = extend({showButton: false, showTabs: true}, $scope.workflow.advanced);
+
     // a place to keep each step's captured data, named for their step.formName
     $scope.stepModels = {};
 
     $scope.switchTo = switchTo;
     $scope.showError = showError;
+    $scope.toggleAdvanced = toggleAdvanced;
     ctrl.toggleHelpBtn = toggleHelpBtn;
     ctrl.onInitSuccess = onInitSuccess;
     ctrl.onInitError = onInitError;
@@ -69,6 +72,20 @@
     viewModel.hasError = false;
     viewModel.onClickFinishBtn = onClickFinishBtn;
     viewModel.isSubmitting = false;
+
+    $scope.showAdvancedButton = function() {
+      return $scope.advanced.showButton && !$scope.advanced.showTabs;
+    };
+    $scope.hideAdvancedButton = function() {
+      return $scope.advanced.showButton && $scope.advanced.showTabs;
+    };
+    $scope.shouldShowStep = function(step) {
+      if (step.isAdvanced) {
+        return step.ready && $scope.advanced.showTabs;
+      } else {
+        return step.ready;
+      }
+    };
 
     $scope.initPromise.then(onInitSuccess, onInitError);
 
@@ -96,6 +113,13 @@
       $scope.currentIndex = index;
       $scope.openHelp = false;
       /*eslint-enable angular/controller-as*/
+      if (steps[index].isAdvanced) {
+        $scope.advanced.showTabs = true;
+      }
+    }
+
+    function toggleAdvanced() {
+      $scope.advanced.showTabs = !$scope.advanced.showTabs;
     }
 
     function showError(errorMessage) {

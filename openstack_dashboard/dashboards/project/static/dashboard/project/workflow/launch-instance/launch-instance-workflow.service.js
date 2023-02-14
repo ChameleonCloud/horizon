@@ -96,18 +96,18 @@
           title: gettext('Configuration'),
           templateUrl: basePath + 'configuration/configuration.html',
           helpUrl: basePath + 'configuration/configuration.help.html',
-          formName: 'launchInstanceConfigurationForm'
+          formName: 'launchInstanceConfigurationForm',
+          isAdvanced: true,
         },
-        // We remove server groups from the instance creation dialogue
-        // because they are not used
-        // {
-        //   id: 'servergroups',
-        //   title: gettext('Server Groups'),
-        //   templateUrl: basePath + 'server-groups/server-groups.html',
-        //   helpUrl: basePath + 'server-groups/server-groups.help.html',
-        //   formName: 'launchInstanceServerGroupsForm',
-        //   policy: stepPolicy.serverGroups
-        // },
+        {
+          id: 'servergroups',
+          title: gettext('Server Groups'),
+          templateUrl: basePath + 'server-groups/server-groups.html',
+          helpUrl: basePath + 'server-groups/server-groups.help.html',
+          formName: 'launchInstanceServerGroupsForm',
+          policy: stepPolicy.serverGroups,
+          isAdvanced: true,
+        },
         {
           id: 'hints',
           title: gettext('Scheduler Hints'),
@@ -115,14 +115,16 @@
           helpUrl: basePath + 'scheduler-hints/scheduler-hints.help.html',
           formName: 'launchInstanceSchedulerHintsForm',
           policy: stepPolicy.schedulerHints,
-          setting: 'LAUNCH_INSTANCE_DEFAULTS.enable_scheduler_hints'
+          setting: 'LAUNCH_INSTANCE_DEFAULTS.enable_scheduler_hints',
+          isAdvanced: true,
         },
         {
           id: 'metadata',
           title: gettext('Metadata'),
           templateUrl: basePath + 'metadata/metadata.html',
           helpUrl: basePath + 'metadata/metadata.help.html',
-          formName: 'launchInstanceMetadataForm'
+          formName: 'launchInstanceMetadataForm',
+          isAdvanced: true,
         }
       ],
 
@@ -132,6 +134,11 @@
 
       btnIcon: {
         finish: 'fa-cloud-upload'
+      },
+
+      advanced: {
+        showButton: true,
+        showTabs: false,
       }
     });
   }
