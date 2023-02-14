@@ -27,7 +27,7 @@
                 ng-class="{'active': currentIndex===$index}"
                 ng-click="switchTo($index)"
                 ng-repeat="step in steps"
-                ng-show="step.ready">
+                ng-show="shouldShowStep(step)">
               <a href="#">
                 <span ng-bind="::step.title"></span>
                 <span class="hz-icon-required fa fa-asterisk"
@@ -65,6 +65,10 @@
       <span ng-class="::viewModel.btnIcon.cancel||'fa fa-close'"></span>
       <span ng-bind="::viewModel.btnText.cancel"></span>
     </button>
+    <button type="button" class="btn btn-default pull-left"
+            ng-click="toggleAdvanced()" ng-show="showAdvancedButton()">Show Advanced</button>
+    <button type="button" class="btn btn-default pull-left"
+            ng-click="toggleAdvanced()" ng-show="hideAdvancedButton()">Hide Advanced</button>
 
     <button type="button" class="btn btn-default back"
       ng-click="switchTo(currentIndex - 1)"
