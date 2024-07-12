@@ -41,7 +41,7 @@
      */
     function reservations(params, suppressError) {
       var promise = apiService.get('/api/blazar/reservations/', params);
-      return suppressError ? promise : promise.error(function() {
+      return suppressError ? promise : promise.catch(function onError() {
         toastService.add('error', gettext('Unable to get active reservations.'));
       });
     }
