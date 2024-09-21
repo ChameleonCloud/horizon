@@ -5,10 +5,8 @@
     <h3 class="quota-heading">{% trans "Limit Summary" %}</h3>
     {% for section in charts %}
       <h4>{{ section.title }}</h4>
+      <div class="row">
       {% for chart in section.charts %}
-        {% if forloop.first or forloop.counter0|divisibleby:6 %}
-          <div class="row">
-        {% endif %}
             <div class="d3_quota_bar col-lg-2 col-md-4 col-sm-4 col-xs-6">
               <div class="pie-chart-usage" data-used="{% quotapercent chart.used chart.quota %}"></div>
               <div class="quota_title" title="{{ chart.name }}" data-toggle="tooltip"> {{ chart.name }}</div>
@@ -24,12 +22,8 @@
                 {% endif %}
               </div>
             </div>
-        {% if forloop.last or forloop.counter|divisibleby:6 %}
-          {% if not forloop.first %}
-          </div>
-          {% endif %}
-        {% endif %}
       {% endfor %}
+      </div>
     {% endfor %}
   </div>
 {% endspaceless %}
