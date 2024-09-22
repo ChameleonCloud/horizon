@@ -261,8 +261,10 @@
       if (allocatedFlavors && allocatedFlavors.length > 0) {
         var allocatedFlavorFacade = allocatedFlavors[0];
         var isValid = allocatedFlavorFacade.enabled;
-        $scope.launchInstanceFlavorForm['allocated-flavor']
-              .$setValidity('flavor', isValid);
+        if ($scope.launchInstanceFlavorForm){
+          $scope.launchInstanceFlavorForm['allocated-flavor']
+                .$setValidity('flavor', isValid);
+        }
       }
     }
 
@@ -289,11 +291,6 @@
           extras:        flavor.extras
         };
         ctrl.availableFlavorFacades.push(facade);
-      }
-
-      // Set default flavor if only one available
-      if(ctrl.allocatedFlavorFacades.length < 1 && ctrl.availableFlavorFacades.length == 1){
-        ctrl.allocatedFlavorFacades.push(ctrl.availableFlavorFacades[0]);
       }
     }
 
@@ -359,6 +356,11 @@
         var errors = ctrl.getErrors(facade.flavor);
         facade.errors = errors;
         facade.enabled = Object.keys(errors).length === 0;
+      }
+      
+      // Set default flavor if only one available
+      if(ctrl.allocatedFlavorFacades.length < 1 && ctrl.availableFlavorFacades.length == 1 && ctrl.availableFlavorFacades[0].enabled){
+        ctrl.allocatedFlavorFacades.push(ctrl.availableFlavorFacades[0]);
       }
     }
 
