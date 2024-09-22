@@ -78,6 +78,7 @@
           helpUrl: basePath + 'security-groups/security-groups.help.html',
           formName: 'launchInstanceAccessAndSecurityForm',
           requiredServiceTypes: ['network'],
+          setting: 'LAUNCH_INSTANCE_DEFAULTS.enable_secgroups',
           isAdvanced: true,
         },
         {
@@ -102,6 +103,7 @@
           helpUrl: basePath + 'server-groups/server-groups.help.html',
           formName: 'launchInstanceServerGroupsForm',
           policy: stepPolicy.serverGroups,
+          setting: 'LAUNCH_INSTANCE_DEFAULTS.enable_servergroups',
           isAdvanced: true,
         },
         {
