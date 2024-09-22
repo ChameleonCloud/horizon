@@ -346,6 +346,12 @@
         var errors = ctrl.getErrors(facade.flavor);
         facade.errors = errors;
         facade.enabled = Object.keys(errors).length === 0;
+
+        if (facade.enabled && facade.flavor.name == launchInstanceModel.default_flavor_name){
+          if (ctrl.allocatedFlavorFacades.length == 0) {
+            ctrl.allocatedFlavorFacades.push(facade)
+          }
+        }
       }
       
       // Set default flavor if only one available
