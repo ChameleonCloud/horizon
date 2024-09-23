@@ -102,29 +102,6 @@
       detailsTemplateUrl: basePath + 'flavor/flavor-details.html',
       columns: [
         {id: 'name', title: gettext('Name'), priority: 1},
-        {id: 'vcpus', title: gettext('VCPUS'), priority: 1,
-          template: `<span class="invalid fa fa-exclamation-triangle"
-            ng-show="item.errors.vcpus"
-            uib-popover="{$ item.errors.vcpus $}"
-            popover-placement="top" popover-append-to-body="true"
-            popover-trigger="'mouseenter'"></span>
-            <span>{$ item.vcpus $}</span>`},
-        {id: 'ram', title: gettext('RAM'), priority: 1,
-          template: `<span class="invalid fa fa-exclamation-triangle"
-            ng-show="item.errors.ram"
-            uib-popover="{$ item.errors.ram $}"
-            popover-placement="top" popover-append-to-body="true"
-            popover-trigger="'mouseenter'"></span>
-            <span>{$ item.ram | mb $}</span>`},
-        {id: 'totalDisk', title: gettext('Total Disk'), filters: ['gb'], priority: 1},
-        {id: 'rootDisk', title: gettext('Root Disk'), priority: 2,
-          template: `<span class="invalid fa fa-exclamation-triangle"
-            ng-show="item.errors.disk"
-            uib-popover="{$ item.errors.disk $}"
-            popover-placement="top" popover-append-to-body="true"
-            popover-trigger="'mouseenter'"></span>
-            <span>{$ item.rootDisk | gb $}</span>`},
-        {id: 'ephemeralDisk', title: gettext('Ephemeral Disk'), filters: ['gb'], priority: 2},
         {id: 'isPublic', title: gettext('Public'), filters: ['yesno'], priority: 1}
       ]
     };
@@ -310,20 +287,6 @@
         var createVolume = launchInstanceModel.newInstanceSpec.vol_create;
 
         facade.instancesChartData = instancesChartData;
-
-        facade.vcpusChartData = ctrl.getChartData(
-          ctrl.chartTotalVcpusLabel,
-          ctrl.instanceCount * facade.vcpus,
-          launchInstanceModel.novaLimits.totalCoresUsed,
-          launchInstanceModel.novaLimits.maxTotalCores);
-
-        facade.ramChartData = ctrl.getChartData(
-          ctrl.chartTotalRamLabel,
-          ctrl.instanceCount * facade.ram,
-          launchInstanceModel.novaLimits.totalRAMUsed,
-          launchInstanceModel.novaLimits.maxTotalRAMSize,
-          "MB"
-        );
 
         if (launchInstanceModel.cinderLimits) {
           facade.volumeChartData = ctrl.getChartData(
