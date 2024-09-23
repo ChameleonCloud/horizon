@@ -113,9 +113,6 @@
       $scope.currentIndex = index;
       $scope.openHelp = false;
       /*eslint-enable angular/controller-as*/
-      if (steps[index].isAdvanced) {
-        $scope.advanced.showTabs = true;
-      }
     }
 
     function toggleAdvanced() {
