@@ -248,6 +248,7 @@
         facade = {
           flavor:        flavor,
           id:            flavor.id,
+          description:   flavor.description ? flavor.description : "",
           name:          flavor.name,
           vcpus:         flavor.vcpus,
           ram:           flavor.ram,
@@ -255,6 +256,7 @@
           rootDisk:      flavor.disk,
           ephemeralDisk: flavor['OS-FLV-EXT-DATA:ephemeral'],
           isPublic:      flavor['os-flavor-access:is_public'],
+          vgpu:          flavor["extra_specs"]["resources:VGPU"],
           extras:        flavor.extras
         };
         ctrl.availableFlavorFacades.push(facade);
