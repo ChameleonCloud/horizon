@@ -523,10 +523,11 @@ class Flavors(generic.View):
         """
         is_public = request.GET.get('is_public')
         is_public = (is_public and is_public.lower() == 'true')
+        detailed = request.GET.get('detailed', "false").lower() == 'true'
         get_extras = request.GET.get('get_extras')
         get_extras = bool(get_extras and get_extras.lower() == 'true')
         flavors = api.nova.flavor_list(request, is_public=is_public,
-                                       get_extras=get_extras)
+                                       get_extras=get_extras, detailed=detailed)
         flavors = instances_utils.sort_flavor_list(request, flavors,
                                                    with_menu_label=False)
         result = {'items': []}
