@@ -258,7 +258,7 @@ def flavor_get(request, flavor_id, get_extras=False):
 
 
 @profiler.trace
-def flavor_list(request, is_public=True, get_extras=False, detailed=False):
+def flavor_list(request, is_public=True, get_extras=False, detailed=True):
     """Get the list of available instance sizes (flavors)."""
     flavors = _nova.novaclient(request, version="2.61").flavors.list(is_public=is_public, detailed=detailed)
 
