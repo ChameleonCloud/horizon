@@ -80,7 +80,8 @@ class Image(base.APIResourceWrapper):
 
     @property
     def project_supported(self):
-        return self.get_is_project_supported()
+        value = getattr(self._apiresource, 'chameleon-supported', False)
+        return str(value).lower() == 'true'
 
     @property
     def published_in_app_catalog(self):
@@ -137,9 +138,6 @@ class Image(base.APIResourceWrapper):
 
     def get_catalog_id(self):
         return Image._published_appliances.get(self.id, {}).get('id', -1)
-
-    def get_is_project_supported(self):
-        return Image._published_appliances.get(self.id, {}).get('project_supported', False)
 
     def get_is_published_in_app_catalog(self):
         return Image._published_appliances.get(self.id) is not None
