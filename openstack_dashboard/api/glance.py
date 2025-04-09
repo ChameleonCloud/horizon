@@ -80,8 +80,19 @@ class Image(base.APIResourceWrapper):
 
     @property
     def project_supported(self):
-        value = getattr(self._apiresource, 'chameleon-supported', False)
-        return str(value).lower() == 'true'
+        raw = getattr(self._apiresource, 'chameleon-supported', None)
+        if raw is None or str(raw).strip() == "":
+            return 'No'
+
+        value = str(raw).strip().lower()
+        if value in ('true', 'yes'):
+            return 'Yes'
+        elif value in ('false', 'no'):
+            return 'No'
+        elif value == 'deprecated':
+            return 'Deprecated'
+        else:
+            return 'Unknown'
 
     @property
     def published_in_app_catalog(self):
