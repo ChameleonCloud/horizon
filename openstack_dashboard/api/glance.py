@@ -83,7 +83,7 @@ class Image(base.APIResourceWrapper):
         # Use the old way (for now) to get the project_supported attribute
         # if the site is not showing the Chameleon Support column
         if not settings.SHOW_CHAMELEON_SUPPORT_COLUMN:
-            return self.get_is_project_supported()
+            return str(self.get_is_project_supported())
 
         raw = getattr(self._apiresource, 'chameleon-supported', None)
         if raw is None or str(raw).strip() == "":
