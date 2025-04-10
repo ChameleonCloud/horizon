@@ -80,6 +80,11 @@ class Image(base.APIResourceWrapper):
 
     @property
     def project_supported(self):
+        # Use the old way (for now) to get the project_supported attribute
+        # if the site is not showing the Chameleon Support column
+        if not settings.SHOW_CHAMELEON_SUPPORT_COLUMN:
+            return self.get_is_project_supported()
+
         raw = getattr(self._apiresource, 'chameleon-supported', None)
         if raw is None or str(raw).strip() == "":
             return 'No'
@@ -149,6 +154,9 @@ class Image(base.APIResourceWrapper):
 
     def get_catalog_id(self):
         return Image._published_appliances.get(self.id, {}).get('id', -1)
+
+    def get_is_project_supported(self):
+        return Image._published_appliances.get(self.id, {}).get('project_supported', False)
 
     def get_is_published_in_app_catalog(self):
         return Image._published_appliances.get(self.id) is not None
