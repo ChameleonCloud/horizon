@@ -52,6 +52,8 @@ DEBUG = False
 
 ROOT_URLCONF = 'openstack_dashboard.urls'
 
+SHOW_CHAMELEON_SUPPORT_COLUMN = True
+
 HORIZON_CONFIG = {
     'user_home': 'openstack_dashboard.views.get_user_home',
     'ajax_queue_limit': 10,
@@ -71,7 +73,8 @@ HORIZON_CONFIG = {
     'js_spec_files': [],
     'external_templates': [],
     'plugins': [],
-    'integration_tests_support': INTEGRATION_TESTS_SUPPORT
+    'integration_tests_support': INTEGRATION_TESTS_SUPPORT,
+    'show_chameleon_support_column': SHOW_CHAMELEON_SUPPORT_COLUMN,
 }
 
 MIDDLEWARE = (
