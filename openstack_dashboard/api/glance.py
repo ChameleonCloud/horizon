@@ -85,7 +85,7 @@ class Image(base.APIResourceWrapper):
         if not settings.SHOW_CHAMELEON_SUPPORT_COLUMN:
             return str(self.get_is_project_supported())
 
-        raw = getattr(self._apiresource, 'chameleon-supported', None)
+        raw = getattr(self._apiresource, settings.CHAMELEON_SUPPORT_METADATA_NAME, None)
         if raw is None or str(raw).strip() == "":
             return 'No'
 

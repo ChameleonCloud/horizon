@@ -53,6 +53,7 @@ DEBUG = False
 ROOT_URLCONF = 'openstack_dashboard.urls'
 
 SHOW_CHAMELEON_SUPPORT_COLUMN = True
+CHAMELEON_SUPPORT_METADATA_NAME = 'chameleon-supported'
 
 HORIZON_CONFIG = {
     'user_home': 'openstack_dashboard.views.get_user_home',
