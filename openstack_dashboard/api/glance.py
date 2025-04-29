@@ -80,7 +80,24 @@ class Image(base.APIResourceWrapper):
 
     @property
     def project_supported(self):
-        return self.get_is_project_supported()
+        # Use the old way (for now) to get the project_supported attribute
+        # if the site is not showing the Chameleon Support column
+        if not settings.SHOW_CHAMELEON_SUPPORT_COLUMN:
+            return str(self.get_is_project_supported())
+
+        raw = getattr(self._apiresource, settings.CHAMELEON_SUPPORT_METADATA_NAME, None)
+        if raw is None or str(raw).strip() == "":
+            return 'No'
+
+        value = str(raw).strip().lower()
+        if value in ('true', 'yes'):
+            return 'Yes'
+        elif value in ('false', 'no'):
+            return 'No'
+        elif value == 'deprecated':
+            return 'Deprecated'
+        else:
+            return 'Unknown'
 
     @property
     def published_in_app_catalog(self):
