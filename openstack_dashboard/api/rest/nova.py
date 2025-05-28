@@ -15,6 +15,7 @@
 from collections import OrderedDict
 from urllib import parse
 
+from django.conf import settings
 from django.utils import http as utils_http
 from django.utils.translation import gettext_lazy as _
 from django.views import generic
@@ -531,11 +532,24 @@ class Flavors(generic.View):
         flavors = instances_utils.sort_flavor_list(request, flavors,
                                                    with_menu_label=False)
         result = {'items': []}
+
+        # If using blazar with reservation trait, filter out reservation only flavors
+        blazar_flavor_reservation_trait = getattr(
+            settings, 'OPENSTACK_BLAZAR_FLAVOR_RESERVATION', {
+                'blazar_flavor_reservation_trait': ''
+            }
+        ).get('blazar_flavor_reservation_trait')
+
         for flavor in flavors:
             d = flavor.to_dict()
             if get_extras:
                 d['extras'] = flavor.extras
-            result['items'].append(d)
+            # Include flavor if not using blazar or if the trait is not set
+            if (not blazar_flavor_reservation_trait or
+                d['extra_specs'].get(
+                    f"trait:{blazar_flavor_reservation_trait}") != "required"
+            ):
+                result['items'].append(d)
         return result
 
     @rest_utils.ajax(data_required=True)
