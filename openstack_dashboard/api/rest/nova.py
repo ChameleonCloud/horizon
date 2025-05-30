@@ -544,10 +544,19 @@ class Flavors(generic.View):
             d = flavor.to_dict()
             if get_extras:
                 d['extras'] = flavor.extras
-            # Include flavor if not using blazar or if the trait is not set
-            if (not blazar_flavor_reservation_trait or
-                d['extra_specs'].get(
-                    f"trait:{blazar_flavor_reservation_trait}") != "required"
+
+            is_active_reservation_flavor = any(
+                key.startswith("resources:CUSTOM_RESERVATION_")
+                for key in d['extra_specs']
+            )
+            has_reservation_trait = d['extra_specs'].get(f"trait:{blazar_flavor_reservation_trait}") == "required"
+            # Include flavor
+            # if from an active reservation
+            # if blazar trait is not configured
+            # or if flavor doesn't haven't blazar trait
+            if (is_active_reservation_flavor or
+                not blazar_flavor_reservation_trait or
+                not has_reservation_trait
             ):
                 result['items'].append(d)
         return result
