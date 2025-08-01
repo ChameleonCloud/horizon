@@ -533,13 +533,6 @@ class Flavors(generic.View):
                                                    with_menu_label=False)
         result = {'items': []}
 
-        # If using blazar with reservation trait, filter out reservation only flavors
-        blazar_flavor_reservation_trait = getattr(
-            settings, 'OPENSTACK_BLAZAR_FLAVOR_RESERVATION', {
-                'blazar_flavor_reservation_trait': ''
-            }
-        ).get('blazar_flavor_reservation_trait')
-
         for flavor in flavors:
             d = flavor.to_dict()
             if get_extras:
@@ -549,15 +542,8 @@ class Flavors(generic.View):
                 key.startswith("resources:CUSTOM_RESERVATION_")
                 for key in d['extra_specs']
             )
-            has_reservation_trait = d['extra_specs'].get(f"trait:{blazar_flavor_reservation_trait}") == "required"
-            # Include flavor
-            # if from an active reservation
-            # if blazar trait is not configured
-            # or if flavor doesn't haven't blazar trait
-            if (is_active_reservation_flavor or
-                not blazar_flavor_reservation_trait or
-                not has_reservation_trait
-            ):
+            # Include flavor if from an active reservation
+            if is_active_reservation_flavor:
                 result['items'].append(d)
         return result
 
