@@ -89,6 +89,11 @@ def login(request):
     # redirect to the default websso url
     if (request.method == 'GET' and settings.WEBSSO_ENABLED and
             settings.WEBSSO_DEFAULT_REDIRECT):
+        # Store next parameter in session instead of URL
+        next_param = request.GET.get(auth.REDIRECT_FIELD_NAME)
+        if next_param:
+            request.session['websso_next'] = next_param
+
         protocol = settings.WEBSSO_DEFAULT_REDIRECT_PROTOCOL
         region = settings.WEBSSO_DEFAULT_REDIRECT_REGION
         origin = utils.build_absolute_uri(request, '/auth/websso/')
@@ -238,8 +243,14 @@ def websso(request):
     auth.login(request, request.user)
     if request.session.test_cookie_worked():
         request.session.delete_test_cookie()
-    return django_http.HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
 
+    # Get next URL from session if it exists
+    redirect_to = request.session.pop('websso_next', settings.LOGIN_REDIRECT_URL)
+    if not http.is_safe_url(url=redirect_to,
+                            allowed_hosts={request.get_host()}):
+        redirect_to = settings.LOGIN_REDIRECT_URL
+
+    return django_http.HttpResponseRedirect(redirect_to)
 
 # TODO(stephenfin): Migrate to CBV
 def logout(request, login_url=None, **kwargs):
