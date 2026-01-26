@@ -118,7 +118,6 @@
             popover-trigger="'mouseenter'"></span>
             <span>{$ item.ram | mb $}</span>`},
         {id: 'totalDisk', title: gettext('Total Disk'), filters: ['gb'], priority: 1},
-        {id: 'vgpu', title: gettext('VGPU'), priority: 1},
       ]
     };
 
@@ -272,7 +271,6 @@
           rootDisk:      flavor.disk,
           ephemeralDisk: flavor['OS-FLV-EXT-DATA:ephemeral'],
           isPublic:      flavor['os-flavor-access:is_public'],
-          vgpu:          flavor["extra_specs"]["resources:VGPU"],
           extras:        flavor.extras
         };
         ctrl.availableFlavorFacades.push(facade);
