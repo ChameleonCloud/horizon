@@ -50,7 +50,8 @@
           title: gettext('Flavor'),
           templateUrl: basePath + 'flavor/flavor.html',
           helpUrl: basePath + 'flavor/flavor.help.html',
-          formName: 'launchInstanceFlavorForm'
+          formName: 'launchInstanceFlavorForm',
+          isAdvanced: true,
         },
         {
           id: 'networks',
@@ -67,7 +68,8 @@
           helpUrl: basePath + 'networkports/ports.help.html',
           formName: 'launchInstanceNetworkPortForm',
           requiredServiceTypes: ['network'],
-          setting: 'LAUNCH_INSTANCE_DEFAULTS.enable_net_ports'
+          setting: 'LAUNCH_INSTANCE_DEFAULTS.enable_net_ports',
+          isAdvanced: true,
         },
         {
           id: 'secgroups',
@@ -75,7 +77,9 @@
           templateUrl: basePath + 'security-groups/security-groups.html',
           helpUrl: basePath + 'security-groups/security-groups.help.html',
           formName: 'launchInstanceAccessAndSecurityForm',
-          requiredServiceTypes: ['network']
+          requiredServiceTypes: ['network'],
+          setting: 'LAUNCH_INSTANCE_DEFAULTS.enable_secgroups',
+          isAdvanced: true,
         },
         {
           id: 'keypair',
@@ -89,7 +93,8 @@
           title: gettext('Configuration'),
           templateUrl: basePath + 'configuration/configuration.html',
           helpUrl: basePath + 'configuration/configuration.help.html',
-          formName: 'launchInstanceConfigurationForm'
+          formName: 'launchInstanceConfigurationForm',
+          isAdvanced: true,
         },
         {
           id: 'servergroups',
@@ -97,7 +102,9 @@
           templateUrl: basePath + 'server-groups/server-groups.html',
           helpUrl: basePath + 'server-groups/server-groups.help.html',
           formName: 'launchInstanceServerGroupsForm',
-          policy: stepPolicy.serverGroups
+          policy: stepPolicy.serverGroups,
+          setting: 'LAUNCH_INSTANCE_DEFAULTS.enable_servergroups',
+          isAdvanced: true,
         },
         {
           id: 'hints',
@@ -106,7 +113,8 @@
           helpUrl: basePath + 'scheduler-hints/scheduler-hints.help.html',
           formName: 'launchInstanceSchedulerHintsForm',
           policy: stepPolicy.schedulerHints,
-          setting: 'LAUNCH_INSTANCE_DEFAULTS.enable_scheduler_hints'
+          setting: 'LAUNCH_INSTANCE_DEFAULTS.enable_scheduler_hints',
+          isAdvanced: true,
         },
         {
           id: 'metadata',
@@ -114,7 +122,8 @@
           templateUrl: basePath + 'metadata/metadata.html',
           helpUrl: basePath + 'metadata/metadata.help.html',
           formName: 'launchInstanceMetadataForm',
-          setting: 'LAUNCH_INSTANCE_DEFAULTS.enable_metadata'
+          setting: 'LAUNCH_INSTANCE_DEFAULTS.enable_metadata',
+          isAdvanced: true,
         }
       ],
 
@@ -124,6 +133,11 @@
 
       btnIcon: {
         finish: 'fa-cloud-upload'
+      },
+
+      advanced: {
+        showButton: true,
+        showTabs: false,
       }
     });
   }

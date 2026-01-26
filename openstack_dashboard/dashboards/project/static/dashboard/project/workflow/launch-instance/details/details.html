@@ -31,7 +31,7 @@
                ng-model="model.newInstanceSpec.description">
       </div>
 
-      <div class="form-group">
+      <div class="form-group hidden">
         <label class="control-label" translate for="availability-zone">Availability Zone</label>
         <div class="horizon-loading-bar" ng-if="!model.loaded.availabilityZones">
           <div class="progress progress-striped active">
@@ -46,6 +46,23 @@
                 id="availability-zone"
                 ng-options="zone.value as zone.label for zone in model.availabilityZones"
                 ng-model="model.newInstanceSpec.availability_zone">
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="control-label" for="reservation">
+          <translate>Reservation</translate>
+          <span class="hz-icon-required fa fa-asterisk"></span>
+        </label>
+        <div class="alert alert-danger"
+             ng-if="model.reservations.length === 0"
+             translate>There are no active reservations.</div>
+        <select ng-if="model.reservations.length !== 0"
+                class="form-control"
+                id="reservation"
+                ng-options="reserv.value as reserv.label for reserv in model.reservations"
+                ng-model="model.newInstanceSpec.reservation"
+                required>
         </select>
       </div>
 
