@@ -574,3 +574,6 @@ CHAMELEON_REFERENCE_API_URL = "https://api.chameleoncloud.org"
 CHAMELEON_SITE_ID = ""
 # DEPRECATED
 CHAMELEON_SITES = {}
+
+OPENSTACK_SHOW_ONLY_RESERVED_FLAVORS = os.environ.get(
+    'OPENSTACK_SHOW_ONLY_RESERVED_FLAVORS', 'False').lower() in ('true', '1', 't')
