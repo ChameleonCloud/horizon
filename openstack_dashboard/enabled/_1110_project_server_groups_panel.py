@@ -6,5 +6,7 @@ PANEL_DASHBOARD = 'project'
 PANEL_GROUP = 'compute'
 
 # Python panel class of the PANEL to be added.
-ADD_PANEL = ('openstack_dashboard.dashboards.project.server_groups'
-             '.panel.ServerGroups')
+from django.conf import settings
+if not settings.CHAMELEON_BAREMETAL_ONLY:
+    ADD_PANEL = ('openstack_dashboard.dashboards.project.server_groups'
+                 '.panel.ServerGroups')
