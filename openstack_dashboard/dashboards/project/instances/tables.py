@@ -1345,6 +1345,7 @@ class InstancesTable(tables.DataTable):
         launch_actions = (LaunchLinkNG,)
         table_actions = launch_actions + (DeleteInstance,
                                           InstancesFilterAction)
+
         row_actions = (StartInstance, ConfirmResize, RevertResize,
                        CreateSnapshot, AssociateIP, DisassociateIP,
                        AttachInterface, DetachInterface, EditInstance,
@@ -1358,14 +1359,9 @@ class InstancesTable(tables.DataTable):
                        ResizeLink, LockInstance, UnlockInstance,
                        SoftRebootInstance, RebootInstance,
                        StopInstance, RebuildInstance, DeleteInstance)
-
-    def get_row_actions(self, datum):
-        row_actions = super().get_row_actions(datum)
-        if (settings.CHAMELEON_ENABLE_BAREMETAL and
-                instance_utils.is_baremetal_instance(datum)):
-            return [
-                action
-                for action in row_actions
-                if action.name not in BAREMETAL_UNSUPPORTED_ACTIONS
-            ]
-        return row_actions
+        # If BM, override row actions
+        if settings.CHAMELEON_BAREMETAL_ONLY:
+            row_actions = (StartInstance, AttachInterface, DetachInterface,
+                        EditInstance, ConsoleLink, SoftRebootInstance,
+                        RebootInstance, StopInstance, RebuildInstance,
+                        DeleteInstance)
