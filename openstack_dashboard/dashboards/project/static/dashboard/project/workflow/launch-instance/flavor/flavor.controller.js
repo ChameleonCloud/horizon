@@ -55,15 +55,6 @@
         name: 'name',
         singleton: true
       },
-      {
-        label: gettext('Public'),
-        name: 'isPublic',
-        singleton: true,
-        options: [
-          { label: gettext('No'), key: false },
-          { label: gettext('Yes'), key: true }
-        ]
-      }
     ];
 
     // Labels for error message on ram/disk validation
