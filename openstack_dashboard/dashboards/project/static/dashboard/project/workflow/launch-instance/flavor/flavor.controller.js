@@ -55,15 +55,6 @@
         name: 'name',
         singleton: true
       },
-      {
-        label: gettext('Public'),
-        name: 'isPublic',
-        singleton: true,
-        options: [
-          { label: gettext('No'), key: false },
-          { label: gettext('Yes'), key: true }
-        ]
-      }
     ];
 
     // Labels for error message on ram/disk validation
@@ -102,6 +93,7 @@
       detailsTemplateUrl: basePath + 'flavor/flavor-details.html',
       columns: [
         {id: 'name', title: gettext('Name'), priority: 1},
+        {id: 'description', title: gettext('Description'), priority: 1},
         {id: 'vcpus', title: gettext('VCPUS'), priority: 1,
           template: `<span class="invalid fa fa-exclamation-triangle"
             ng-show="item.errors.vcpus"
@@ -117,15 +109,6 @@
             popover-trigger="'mouseenter'"></span>
             <span>{$ item.ram | mb $}</span>`},
         {id: 'totalDisk', title: gettext('Total Disk'), filters: ['gb'], priority: 1},
-        {id: 'rootDisk', title: gettext('Root Disk'), priority: 2,
-          template: `<span class="invalid fa fa-exclamation-triangle"
-            ng-show="item.errors.disk"
-            uib-popover="{$ item.errors.disk $}"
-            popover-placement="top" popover-append-to-body="true"
-            popover-trigger="'mouseenter'"></span>
-            <span>{$ item.rootDisk | gb $}</span>`},
-        {id: 'ephemeralDisk', title: gettext('Ephemeral Disk'), filters: ['gb'], priority: 2},
-        {id: 'isPublic', title: gettext('Public'), filters: ['yesno'], priority: 1}
       ]
     };
 
@@ -279,7 +262,6 @@
           rootDisk:      flavor.disk,
           ephemeralDisk: flavor['OS-FLV-EXT-DATA:ephemeral'],
           isPublic:      flavor['os-flavor-access:is_public'],
-          vgpu:          flavor["extra_specs"]["resources:VGPU"],
           extras:        flavor.extras
         };
         ctrl.availableFlavorFacades.push(facade);

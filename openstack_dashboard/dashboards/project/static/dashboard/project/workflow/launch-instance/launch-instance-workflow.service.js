@@ -23,14 +23,15 @@
   launchInstanceWorkflow.$inject = [
     'horizon.dashboard.project.workflow.launch-instance.basePath',
     'horizon.dashboard.project.workflow.launch-instance.step-policy',
-    'horizon.app.core.workflow.factory'
+    'horizon.app.core.workflow.factory',
+    'horizon.app.core.openstack-service-api.settings',
   ];
 
-  function launchInstanceWorkflow(basePath, stepPolicy, dashboardWorkflow) {
-    return dashboardWorkflow({
-      title: gettext('Launch Instance'),
-
-      steps: [
+  function launchInstanceWorkflow(basePath, stepPolicy, dashboardWorkflow, settings) {
+    return settings.getSetting(
+      'CHAMELEON_BAREMETAL_ONLY'
+    ).then(chameleonBaremetalOnly => {
+      var steps = [
         {
           id: 'details',
           title: gettext('Details'),
@@ -51,7 +52,7 @@
           templateUrl: basePath + 'flavor/flavor.html',
           helpUrl: basePath + 'flavor/flavor.help.html',
           formName: 'launchInstanceFlavorForm',
-          isAdvanced: true,
+          isAdvanced: chameleonBaremetalOnly, // Only advanced on BM site
         },
         {
           id: 'networks',
@@ -69,7 +70,7 @@
           formName: 'launchInstanceNetworkPortForm',
           requiredServiceTypes: ['network'],
           setting: 'LAUNCH_INSTANCE_DEFAULTS.enable_net_ports',
-          isAdvanced: true,
+          isAdvanced: chameleonBaremetalOnly, // Only advanced on BM site,
         },
         {
           id: 'secgroups',
@@ -79,7 +80,8 @@
           formName: 'launchInstanceAccessAndSecurityForm',
           requiredServiceTypes: ['network'],
           setting: 'LAUNCH_INSTANCE_DEFAULTS.enable_secgroups',
-          isAdvanced: true,
+          isAdvanced: chameleonBaremetalOnly, // Only advanced on BM site,
+          isVMOnly: true,
         },
         {
           id: 'keypair',
@@ -94,7 +96,7 @@
           templateUrl: basePath + 'configuration/configuration.html',
           helpUrl: basePath + 'configuration/configuration.help.html',
           formName: 'launchInstanceConfigurationForm',
-          isAdvanced: true,
+          isAdvanced: chameleonBaremetalOnly,
         },
         {
           id: 'servergroups',
@@ -104,7 +106,8 @@
           formName: 'launchInstanceServerGroupsForm',
           policy: stepPolicy.serverGroups,
           setting: 'LAUNCH_INSTANCE_DEFAULTS.enable_servergroups',
-          isAdvanced: true,
+          isAdvanced: chameleonBaremetalOnly,
+          isVMOnly: true,
         },
         {
           id: 'hints',
@@ -114,7 +117,7 @@
           formName: 'launchInstanceSchedulerHintsForm',
           policy: stepPolicy.schedulerHints,
           setting: 'LAUNCH_INSTANCE_DEFAULTS.enable_scheduler_hints',
-          isAdvanced: true,
+          isAdvanced: chameleonBaremetalOnly,
         },
         {
           id: 'metadata',
@@ -123,23 +126,31 @@
           helpUrl: basePath + 'metadata/metadata.help.html',
           formName: 'launchInstanceMetadataForm',
           setting: 'LAUNCH_INSTANCE_DEFAULTS.enable_metadata',
-          isAdvanced: true,
+          isAdvanced: chameleonBaremetalOnly,
         }
-      ],
+      ];
 
-      btnText: {
-        finish: gettext('Launch Instance')
-      },
-
-      btnIcon: {
-        finish: 'fa-cloud-upload'
-      },
-
-      advanced: {
-        showButton: true,
-        showTabs: false,
+      // Completely remove VM only steps
+      if (chameleonBaremetalOnly) {
+        steps = steps.filter(step => !step.isVMOnly);
       }
+
+      return dashboardWorkflow({
+        title: gettext('Launch Instance'),
+        steps: steps,
+        btnText: {
+          finish: gettext('Launch Instance')
+        },
+
+        btnIcon: {
+          finish: 'fa-cloud-upload'
+        },
+
+        advanced: {
+          showButton: chameleonBaremetalOnly,
+          showTabs: false,
+        }
+      });
     });
   }
-
 })();
