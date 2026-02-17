@@ -1036,7 +1036,8 @@ def get_flavor(instance):
             "size_disk": size_disk,
             "size_ram": size_ram,
             "vcpus": instance.full_flavor.vcpus,
-            "flavor_id": getattr(instance.full_flavor, 'id', None)
+            "flavor_id": getattr(instance.full_flavor, 'id', None),
+            "chameleon_baremetal_only": settings.CHAMELEON_BAREMETAL_ONLY,
         }
         return template.loader.render_to_string(template_name, context)
     return _("Not available")
