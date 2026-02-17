@@ -49,9 +49,27 @@ class OverviewTab(tabs.Tab):
             hardware_catalog_url = '/'.join([
                 portal_base, 'hardware/node/sites', site,
                 'clusters/chameleon/nodes'])
+        instance = self.tab_group.kwargs['instance']
+        if instance.volumes and not instance.image:
+            try:
+                volume = api.cinder.volume_get(
+                    self.request, volume_id=instance.volumes[0].volumeId)
+            except Exception:
+                exceptions.handle(self.request,
+                                  _('Failed to get attached volume.'))
+            try:
+                instance.image = {
+                    'id': volume.volume_image_metadata['image_id'],
+                    'name': volume.volume_image_metadata['image_name'],
+                }
+            except (AttributeError, KeyError):
+                # AttributeError is raised when volume_image_metadata does not
+                # exist. KeyError is raised when volume_image_metadata exists
+                # but image_id or image_name is not included.
+                instance.image = None
         # TODO(Mike): Set baremetal per-instance instead of site-wide.
         return {
-            "instance": self.tab_group.kwargs["instance"],
+            "instance": instance,
             "is_superuser": request.user.is_superuser,
             "hardware_catalog_url": hardware_catalog_url,
             "chameleon_enable_baremetal": settings.CHAMELEON_ENABLE_BAREMETAL,
