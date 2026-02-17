@@ -6,6 +6,8 @@
     <dd data-display="{{ instance.name|default:instance.id }}" class="word-wrap">{{ instance.name }}</dd>
     <dt>{% trans "ID" %}</dt>
     <dd>{{ instance.id }}</dd>
+    <dt>{% trans "Description" %}</dt>
+    <dd>{{ instance.description|default:_("-") }}</dd>
     <dt>{% trans "Physical Host Name" %}</dt>
     <dd>
     {% if hardware_catalog_url and instance.hypervisor_hostname %}
