@@ -1,11 +1,12 @@
 .themable-spinner {
   display: flex;
 
-  // Remove default spinner styles here
-  // **********************************
-  input {
-    -moz-appearance: textfield;
-  }
+  // Re-add default spinner styles here
+  // // Remove default spinner styles here
+  // // **********************************
+  // input {
+  //   -moz-appearance: textfield;
+  // }
 
   & input::-webkit-inner-spin-button,
   & input::-webkit-outer-spin-button {
@@ -26,6 +27,8 @@
   }
 
   .input-group-btn-vertical {
+    // (Chameleon) Hide spinner buttons
+    display: none;
 
     .btn {
       line-height: 1;
