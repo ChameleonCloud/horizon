@@ -55,15 +55,6 @@
         name: 'name',
         singleton: true
       },
-      {
-        label: gettext('Public'),
-        name: 'isPublic',
-        singleton: true,
-        options: [
-          { label: gettext('No'), key: false },
-          { label: gettext('Yes'), key: true }
-        ]
-      }
     ];
 
     // Labels for error message on ram/disk validation
@@ -102,7 +93,22 @@
       detailsTemplateUrl: basePath + 'flavor/flavor-details.html',
       columns: [
         {id: 'name', title: gettext('Name'), priority: 1},
-        {id: 'isPublic', title: gettext('Public'), filters: ['yesno'], priority: 1}
+        {id: 'description', title: gettext('Description'), priority: 1},
+        {id: 'vcpus', title: gettext('VCPUS'), priority: 1,
+          template: `<span class="invalid fa fa-exclamation-triangle"
+            ng-show="item.errors.vcpus"
+            uib-popover="{$ item.errors.vcpus $}"
+            popover-placement="top" popover-append-to-body="true"
+            popover-trigger="'mouseenter'"></span>
+            <span>{$ item.vcpus $}</span>`},
+        {id: 'ram', title: gettext('RAM'), priority: 1,
+          template: `<span class="invalid fa fa-exclamation-triangle"
+            ng-show="item.errors.ram"
+            uib-popover="{$ item.errors.ram $}"
+            popover-placement="top" popover-append-to-body="true"
+            popover-trigger="'mouseenter'"></span>
+            <span>{$ item.ram | mb $}</span>`},
+        {id: 'totalDisk', title: gettext('Total Disk'), filters: ['gb'], priority: 1},
       ]
     };
 
@@ -248,6 +254,7 @@
         facade = {
           flavor:        flavor,
           id:            flavor.id,
+          description:   flavor.description ? flavor.description : "",
           name:          flavor.name,
           vcpus:         flavor.vcpus,
           ram:           flavor.ram,
@@ -287,6 +294,20 @@
         var createVolume = launchInstanceModel.newInstanceSpec.vol_create;
 
         facade.instancesChartData = instancesChartData;
+
+        facade.vcpusChartData = ctrl.getChartData(
+          ctrl.chartTotalVcpusLabel,
+          ctrl.instanceCount * facade.vcpus,
+          launchInstanceModel.novaLimits.totalCoresUsed,
+          launchInstanceModel.novaLimits.maxTotalCores);
+
+        facade.ramChartData = ctrl.getChartData(
+          ctrl.chartTotalRamLabel,
+          ctrl.instanceCount * facade.ram,
+          launchInstanceModel.novaLimits.totalRAMUsed,
+          launchInstanceModel.novaLimits.maxTotalRAMSize,
+          "MB"
+        );
 
         if (launchInstanceModel.cinderLimits) {
           facade.volumeChartData = ctrl.getChartData(

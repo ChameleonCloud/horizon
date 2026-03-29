@@ -554,7 +554,9 @@ REST_API_REQUIRED_SETTINGS = [
 # !! Please use extreme caution as the settings are transferred via HTTP/S
 # and are not encrypted on the browser. This is an experimental API and
 # may be deprecated in the future without notice.
-REST_API_ADDITIONAL_SETTINGS = []
+REST_API_ADDITIONAL_SETTINGS = [
+    'CHAMELEON_BAREMETAL_ONLY'
+]
 
 # Kubernetes clusters can use Keystone as an external identity provider.
 # Horizon can generate a 'kubeconfig' file from the application credentials
@@ -574,3 +576,6 @@ CHAMELEON_REFERENCE_API_URL = "https://api.chameleoncloud.org"
 CHAMELEON_SITE_ID = ""
 # DEPRECATED
 CHAMELEON_SITES = {}
+
+OPENSTACK_SHOW_ONLY_RESERVED_FLAVORS = os.environ.get(
+    'OPENSTACK_SHOW_ONLY_RESERVED_FLAVORS', 'False').lower() in ('true', '1', 't')
