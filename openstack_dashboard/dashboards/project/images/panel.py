@@ -23,3 +23,12 @@ class Images(horizon.Panel):
     slug = 'images'
     permissions = ('openstack.services.image',)
     policy_rules = (('image', 'get_images'),)
+
+class VirtualImages(Images):
+    name = _("Images")
+    slug = 'virtual_images'
+
+    urls = 'openstack_dashboard.dashboards.project.images.vm_urls'
+
+    def get_absolute_url(self):
+        return super().get_absolute_url()

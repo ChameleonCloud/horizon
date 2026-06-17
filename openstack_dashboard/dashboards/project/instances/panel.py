@@ -18,6 +18,34 @@ import horizon
 
 
 class Instances(horizon.Panel):
-    name = _("Instances")
+    name = _("Baremetal Instances")
     slug = 'instances'
     permissions = ('openstack.services.compute',)
+
+
+class ComputeVirtual(horizon.Panel):
+    """A thin panel entry that links to the instances virtual view.
+
+    This avoids duplicating the instances code while presenting a separate
+    sidebar entry for virtual instances.
+    """
+    name = _("Compute Virtual")
+    slug = 'compute_virtual'
+    permissions = ('openstack.services.compute',)
+
+
+class VirtualInstances(Instances):
+    """Panel that exposes the instances UI but links to the virtual view.
+
+    This class intentionally reuses the `Instances` implementation so no
+    instance-management code is duplicated; only the navigation grouping
+    and URL differ.
+    """
+    name = _("Instances")
+    slug = 'instances_virtual'
+
+    urls = 'openstack_dashboard.dashboards.project.instances.vm_urls'
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('horizon:project:instances_virtual:index')

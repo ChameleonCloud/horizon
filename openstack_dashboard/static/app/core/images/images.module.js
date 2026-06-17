@@ -354,6 +354,11 @@
       templateUrl: path + 'panel.html'
     });
 
+    // Support chameleon virtual images panel path
+    $routeProvider.when('/project/virtual_images', {
+      templateUrl: path + 'panel.html'
+    });
+
     $routeProvider.when('/admin/images', {
       templateUrl: path + 'admin-panel.html'
     });
