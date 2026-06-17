@@ -25,6 +25,9 @@ INSTANCES = r'^(?P<instance_id>[^/]+)/%s$'
 INSTANCES_KEYPAIR = r'^(?P<instance_id>[^/]+)/(?P<keypair_name>[^/]+)/%s$'
 
 urlpatterns = [
+        
+    re_path(r'^virtual/$', views.VirtualIndexView.as_view(), name='virtual'),
+    re_path(r'^baremetal/$', views.BaremetalIndexView.as_view(), name='baremetal'),
     re_path(r'^$', views.IndexView.as_view(), name='index'),
     re_path(r'^(?P<instance_id>[^/]+)/$',
             views.DetailView.as_view(), name='detail'),

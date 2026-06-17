@@ -60,6 +60,11 @@ class IndexView(tables.DataTableView):
         return keypairs
 
 
+class VirtuaIndexView(IndexView):
+    """IndexView preset for baremetal key pairs."""
+    instance_type = 'baremetal'
+
+
 class ImportView(forms.ModalFormView):
     form_class = key_pairs_forms.ImportKeypair
     template_name = 'project/key_pairs/import.html'

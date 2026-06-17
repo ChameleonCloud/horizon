@@ -28,6 +28,7 @@
   ];
 
   function launchInstanceWorkflow(basePath, stepPolicy, dashboardWorkflow, settings) {
+    console.log(basePath)
     return settings.getSetting(
       'CHAMELEON_BAREMETAL_ONLY'
     ).then(chameleonBaremetalOnly => {

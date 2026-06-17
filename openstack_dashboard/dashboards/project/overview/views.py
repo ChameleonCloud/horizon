@@ -66,3 +66,13 @@ class ProjectOverview(usage.ProjectUsageView):
 
 class WarningView(views.HorizonTemplateView):
     template_name = "project/_warning.html"
+
+
+class BaremetalIndexView(ProjectOverview):
+    """Baremetal-specific index view reusing ProjectOverview behavior.
+
+    This thin subclass exists so the baremetal URLconf can reference a
+    distinct view class (so request.horizon['panel'] is set correctly
+    when the baremetal overview is requested).
+    """
+    pass
