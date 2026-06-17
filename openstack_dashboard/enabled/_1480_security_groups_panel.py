@@ -1,5 +1,7 @@
 PANEL_DASHBOARD = 'project'
-PANEL_GROUP = 'network'
+
+# NOTE: Updated for Chameleon
+PANEL_GROUP = 'virtual_compute'
 PANEL = 'security_groups'
 
 from django.conf import settings

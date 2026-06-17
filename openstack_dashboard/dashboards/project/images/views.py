@@ -82,3 +82,8 @@ class IndexView(tables.DataTableView):
             self._prev = self._more = False
             exceptions.handle(self.request, _("Unable to retrieve images."))
         return images
+
+
+class VirtualIndexView(IndexView):
+    """IndexView preset for virtual images."""
+    instance_type = 'virtual'

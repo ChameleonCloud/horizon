@@ -23,3 +23,10 @@ class KeyPairs(horizon.Panel):
     permissions = ('openstack.services.compute',)
     policy_rules = (("compute", "os_compute_api:os-keypairs:index"),
                     ("compute", "os_compute_api:os-keypairs:create"),)
+
+
+class VirtualKeyPairs(KeyPairs):
+    name = _("Key Pairs")
+    slug = 'key_pairs_virtual'
+
+    urls = 'openstack_dashboard.dashboards.project.key_pairs.vm_urls'

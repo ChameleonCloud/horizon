@@ -25,3 +25,17 @@ class Overview(horizon.Panel):
     name = _("Overview")
     slug = 'overview'
     permissions = ('openstack.services.compute',)
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('horizon:project:overview:index')
+
+
+class VirtualOverview(Overview):
+    name = _("Overview")
+    slug = 'overview_virtual'
+    urls = 'openstack_dashboard.dashboards.project.overview.vm_urls'
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('horizon:project:overview_virtual:index')

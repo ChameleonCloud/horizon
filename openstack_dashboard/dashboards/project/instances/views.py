@@ -180,7 +180,26 @@ class IndexView(tables.PagedTableMixin, tables.DataTableView):
                 LOG.info('Unable to retrieve flavor "%s" for instance "%s".',
                          flavor_id, instance.id)
 
+        # Optionally filter instances by type: 'baremetal' or 'virtual'.
+        instance_type = (self.request.GET.get('instance_type') or
+                         getattr(self, 'instance_type', None) or
+                         self.kwargs.get('instance_type'))
+        if instance_type == 'baremetal':
+            instances = [i for i in instances if project_tables.is_baremetal_instance(i)]
+        elif instance_type == 'virtual':
+            instances = [i for i in instances if not project_tables.is_baremetal_instance(i)]
+
         return instances
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        instype = (self.request.GET.get('instance_type') or
+                   self.kwargs.get('instance_type'))
+        if instype == 'baremetal':
+            context['page_title'] = _("Bare Metal Instances")
+        elif instype == 'virtual':
+            context['page_title'] = _("Virtual Instances")
+        return context
 
     def _populate_image_info(self, instance, image_dict, volume_dict):
         if not hasattr(instance, 'image'):
@@ -224,6 +243,14 @@ class IndexView(tables.PagedTableMixin, tables.DataTableView):
                     # KeyError occurs when volume was created from image and
                     # then this image is deleted.
                     pass
+
+
+class VirtualIndexView(IndexView):
+    instance_type = 'virtual'
+
+
+class BaremetalIndexView(IndexView):
+    instance_type = 'baremetal'
 
 
 def process_non_api_filters(search_opts, non_api_filter_info):
