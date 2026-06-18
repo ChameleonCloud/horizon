@@ -446,6 +446,7 @@ class LaunchLinkNG(tables.LinkAction):
     classes = ("btn-launch", )
     icon = "cloud-upload"
     policy_rules = (("compute", "os_compute_api:servers:create"),)
+    instance_type = 'baremetal'
 
     def __init__(self, attrs=None, **kwargs):
         kwargs['preempt'] = True
@@ -486,7 +487,7 @@ class LaunchLinkNG(tables.LinkAction):
     def get_default_attrs(self):
         url = urls.reverse(self.url)
         ngclick = "modal.openLaunchInstanceWizard(" \
-            "{ successUrl: '%s' })" % url
+            "{ instanceType: '%s', successUrl: '%s' })" % (self.instance_type, url)
         self.attrs.update({
             'ng-controller': 'LaunchInstanceModalController as modal',
             'ng-click': ngclick
@@ -495,6 +496,12 @@ class LaunchLinkNG(tables.LinkAction):
 
     def get_link_url(self, datum=None):
         return "javascript:void(0);"
+
+
+class LaunchVirtualInstanceLinkNG(LaunchLinkNG):
+    name = "launch-virtual-ng"
+    verbose_name = _("Launch Virtual Instance")
+    instance_type = 'virtual'
 
 
 class EditInstance(policy.PolicyTargetMixin, tables.LinkAction):
@@ -1313,14 +1320,28 @@ class InstancesTable(tables.DataTable):
 
     class Meta(object):
         name = "instances"
-        verbose_name = _("Instances")
+        verbose_name = _("Bare Metal Instances")
         status_columns = ["status", "task"]
         row_class = UpdateRow
         table_actions_menu = (StartInstance, StopInstance, SoftRebootInstance)
         launch_actions = (LaunchLinkNG,)
         table_actions = launch_actions + (DeleteInstance,
                                           InstancesFilterAction)
+        row_actions = (StartInstance, AttachInterface, DetachInterface,
+                    EditInstance, ConsoleLink, SoftRebootInstance,
+                    RebootInstance, StopInstance, RebuildInstance,
+                    DeleteInstance)
 
+
+class VirtualInstancesTable(InstancesTable):
+    """Table for virtual instances with VM-specific actions."""
+    
+    class Meta(object):
+        name = "virtual_instances"
+        verbose_name = _("Virtual Instances")
+        launch_actions = (LaunchVirtualInstanceLinkNG,)
+        
+        # Virtual instances get full VM-specific row actions
         row_actions = (StartInstance, ConfirmResize, RevertResize,
                        CreateSnapshot, AssociateIP, DisassociateIP,
                        AttachInterface, DetachInterface, EditInstance,
@@ -1334,9 +1355,3 @@ class InstancesTable(tables.DataTable):
                        ResizeLink, LockInstance, UnlockInstance,
                        SoftRebootInstance, RebootInstance,
                        StopInstance, RebuildInstance, DeleteInstance)
-        # If BM, override row actions
-        if settings.CHAMELEON_BAREMETAL_ONLY:
-            row_actions = (StartInstance, AttachInterface, DetachInterface,
-                        EditInstance, ConsoleLink, SoftRebootInstance,
-                        RebootInstance, StopInstance, RebuildInstance,
-                        DeleteInstance)
