@@ -23,12 +23,13 @@
   launchInstanceWorkflow.$inject = [
     'horizon.dashboard.project.workflow.launch-instance.basePath',
     'horizon.dashboard.project.workflow.launch-instance.step-policy',
+    'launchInstanceModel',
     'horizon.app.core.workflow.factory',
   ];
 
-  function launchInstanceWorkflow(basePath, stepPolicy, dashboardWorkflow) {
-    return function(instanceType) {
-      instanceType = instanceType || 'baremetal';
+  function launchInstanceWorkflow(basePath, stepPolicy, launchInstanceModel, dashboardWorkflow) {
+    return function createWorkflow() {
+      var instanceType = launchInstanceModel.instanceType || 'baremetal';
       var isBaremetal = instanceType === 'baremetal';
       var steps = [
         {
@@ -124,7 +125,7 @@
       }
 
       // Configure and return workflow wrapped in a promise
-      var workflow = dashboardWorkflow({
+      return dashboardWorkflow({
         title: gettext('Launch Instance'),
         steps: steps,
         btnText: {
@@ -138,7 +139,6 @@
           showTabs: false,
         }
       });
-      return workflow;
-    }();
+    };
   }
 })();

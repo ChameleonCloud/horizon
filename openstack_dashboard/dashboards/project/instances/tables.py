@@ -1362,10 +1362,12 @@ class InstancesTable(tables.DataTable):
 class VirtualInstancesTable(InstancesTable):
     """Table for virtual instances with VM-specific actions."""
     
-    class Meta(object):
+    class Meta(InstancesTable.Meta):
         name = "virtual_instances"
         verbose_name = _("Virtual Instances")
         launch_actions = (LaunchVirtualInstanceLinkNG,)
+        table_actions = launch_actions + (DeleteInstance,
+                                          InstancesFilterAction)
         
         # Virtual instances get full VM-specific row actions
         row_actions = (StartInstance, ConfirmResize, RevertResize,

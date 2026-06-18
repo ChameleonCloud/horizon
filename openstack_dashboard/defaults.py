@@ -554,9 +554,7 @@ REST_API_REQUIRED_SETTINGS = [
 # !! Please use extreme caution as the settings are transferred via HTTP/S
 # and are not encrypted on the browser. This is an experimental API and
 # may be deprecated in the future without notice.
-REST_API_ADDITIONAL_SETTINGS = [
-    'CHAMELEON_BAREMETAL_ONLY'
-]
+REST_API_ADDITIONAL_SETTINGS = []
 
 # Kubernetes clusters can use Keystone as an external identity provider.
 # Horizon can generate a 'kubeconfig' file from the application credentials
