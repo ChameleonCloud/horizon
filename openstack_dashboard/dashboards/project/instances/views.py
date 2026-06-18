@@ -245,12 +245,16 @@ class IndexView(tables.PagedTableMixin, tables.DataTableView):
                     pass
 
 
-class VirtualIndexView(IndexView):
-    instance_type = 'virtual'
-
-
 class BaremetalIndexView(IndexView):
+    table_class = project_tables.InstancesTable
     instance_type = 'baremetal'
+    page_title = _("Baremetal Instances")
+
+
+class VirtualIndexView(IndexView):
+    table_class = project_tables.VirtualInstancesTable
+    instance_type = 'virtual'
+    page_title = _("Virtual Instances")
 
 
 def process_non_api_filters(search_opts, non_api_filter_info):
