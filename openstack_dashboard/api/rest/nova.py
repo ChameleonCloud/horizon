@@ -542,6 +542,7 @@ class Flavors(generic.View):
                 key.startswith("resources:CUSTOM_RESERVATION_")
                 for key in d['extra_specs']
             )
+            # TODO filter based on type
             if settings.OPENSTACK_SHOW_ONLY_RESERVED_FLAVORS:
                 # Include flavor only if from an active reservation
                 if is_active_reservation_flavor:

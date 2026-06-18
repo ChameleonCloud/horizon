@@ -6,4 +6,6 @@ PANEL_DASHBOARD = 'project'
 PANEL_GROUP = 'virtual_compute'
 
 # Python panel class of the PANEL to be added.
-ADD_PANEL = 'openstack_dashboard.dashboards.project.images.panel.VirtualImages'
+from django.conf import settings
+if settings.CHAMELEON_ENABLE_VMS:
+    ADD_PANEL = 'openstack_dashboard.dashboards.project.images.panel.VirtualImages'
