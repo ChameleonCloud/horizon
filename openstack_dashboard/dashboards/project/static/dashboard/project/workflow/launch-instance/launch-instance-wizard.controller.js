@@ -37,12 +37,10 @@
     launchInstanceModel.isVirtual = (launchInstanceModel.instanceType === 'virtual');
 
     // Create workflow for the specified instance type
-    launchInstanceWorkflow.then(function(workflow) {
-      $scope.workflow = workflow;                   // eslint-disable-line angular/controller-as
-      $scope.model = launchInstanceModel;           // eslint-disable-line angular/controller-as
-      $scope.model.initialize(true);
-      $scope.submit = $scope.model.createInstance;  // eslint-disable-line angular/controller-as
-    });
+    $scope.workflow = launchInstanceWorkflow();     // eslint-disable-line angular/controller-as
+    $scope.model = launchInstanceModel;           // eslint-disable-line angular/controller-as
+    $scope.model.initialize(true);
+    $scope.submit = $scope.model.createInstance;  // eslint-disable-line angular/controller-as
   }
 
 })();
