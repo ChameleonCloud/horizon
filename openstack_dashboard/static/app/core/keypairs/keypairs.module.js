@@ -112,6 +112,9 @@
     $routeProvider.when('/project/key_pairs', {
       templateUrl: path + 'panel.html'
     })
+    .when('/project/key_pairs_virtual', {
+      templateUrl: path + 'panel.html'
+    })
     .when('/project/key_pairs/:id', {
       redirectTo: goToAngularDetails
     });

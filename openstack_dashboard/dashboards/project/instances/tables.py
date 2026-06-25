@@ -83,6 +83,25 @@ def is_deleting(instance):
     return task_state.lower() == "deleting"
 
 
+def is_baremetal_instance(instance):
+    """Check if an instance is a baremetal (Ironic) instance."""
+    hypervisor_type = getattr(instance, 'hypervisor_type', '').lower()
+    if hypervisor_type == 'ironic':
+        return True
+    metadata = getattr(instance, 'metadata', {})
+    return metadata.get('baremetal') or metadata.get('ironic')
+
+
+class BaremetalAwareMixin:
+    """Mixin to make actions conditional on instance type."""
+    supports_baremetal = True
+
+    def allowed(self, request, instance=None):
+        if not self.supports_baremetal and instance and is_baremetal_instance(instance):
+            return False
+        return super().allowed(request, instance)
+
+
 class DeleteInstance(policy.PolicyTargetMixin, tables.DeleteAction):
     policy_rules = (("compute", "os_compute_api:servers:delete"),)
     help_text = _("Deleted instances are not recoverable.")
@@ -114,10 +133,11 @@ class DeleteInstance(policy.PolicyTargetMixin, tables.DeleteAction):
         api.nova.server_delete(request, obj_id)
 
 
-class RebootInstance(policy.PolicyTargetMixin, tables.BatchAction):
+class RebootInstance(BaremetalAwareMixin, policy.PolicyTargetMixin, tables.BatchAction):
     name = "reboot"
     classes = ('btn-reboot',)
     policy_rules = (("compute", "os_compute_api:servers:reboot"),)
+    supports_baremetal = False
     help_text = _("Restarted instances will lose any data"
                   " not saved in persistent storage.")
     action_type = "danger"
@@ -221,9 +241,10 @@ class UnRescueInstance(tables.BatchAction):
         return False
 
 
-class TogglePause(tables.BatchAction):
+class TogglePause(BaremetalAwareMixin, tables.BatchAction):
     name = "pause"
     icon = "pause"
+    supports_baremetal = False
 
     @staticmethod
     def action_present(count):
@@ -285,9 +306,10 @@ class TogglePause(tables.BatchAction):
             self.current_past_action = PAUSE
 
 
-class ToggleSuspend(tables.BatchAction):
+class ToggleSuspend(BaremetalAwareMixin, tables.BatchAction):
     name = "suspend"
     classes = ("btn-suspend",)
+    supports_baremetal = False
 
     @staticmethod
     def action_present(count):
@@ -349,9 +371,10 @@ class ToggleSuspend(tables.BatchAction):
             self.current_past_action = SUSPEND
 
 
-class ToggleShelve(tables.BatchAction):
+class ToggleShelve(BaremetalAwareMixin, tables.BatchAction):
     name = "shelve"
     icon = "shelve"
+    supports_baremetal = False
 
     @staticmethod
     def action_present(count):
@@ -423,6 +446,7 @@ class LaunchLinkNG(tables.LinkAction):
     classes = ("btn-launch", )
     icon = "cloud-upload"
     policy_rules = (("compute", "os_compute_api:servers:create"),)
+    instance_type = 'baremetal'
 
     def __init__(self, attrs=None, **kwargs):
         kwargs['preempt'] = True
@@ -463,7 +487,7 @@ class LaunchLinkNG(tables.LinkAction):
     def get_default_attrs(self):
         url = urls.reverse(self.url)
         ngclick = "modal.openLaunchInstanceWizard(" \
-            "{ successUrl: '%s' })" % url
+            "{ instanceType: '%s', successUrl: '%s' })" % (self.instance_type, url)
         self.attrs.update({
             'ng-controller': 'LaunchInstanceModalController as modal',
             'ng-click': ngclick
@@ -472,6 +496,12 @@ class LaunchLinkNG(tables.LinkAction):
 
     def get_link_url(self, datum=None):
         return "javascript:void(0);"
+
+
+class LaunchVirtualInstanceLinkNG(LaunchLinkNG):
+    name = "launch-virtual-ng"
+    verbose_name = _("Launch Virtual Instance")
+    instance_type = 'virtual'
 
 
 class EditInstance(policy.PolicyTargetMixin, tables.LinkAction):
@@ -575,12 +605,13 @@ class LogLink(policy.PolicyTargetMixin, tables.LinkAction):
         return "?".join([base_url, tab_query_string])
 
 
-class ResizeLink(policy.PolicyTargetMixin, tables.LinkAction):
+class ResizeLink(BaremetalAwareMixin, policy.PolicyTargetMixin, tables.LinkAction):
     name = "resize"
     verbose_name = _("Resize Instance")
     url = "horizon:project:instances:resize"
     classes = ("ajax-modal", "btn-resize")
     policy_rules = (("compute", "os_compute_api:servers:resize"),)
+    supports_baremetal = False
     action_type = "danger"
 
     def get_link_url(self, project):
@@ -600,11 +631,12 @@ class ResizeLink(policy.PolicyTargetMixin, tables.LinkAction):
                 not is_deleting(instance))
 
 
-class ConfirmResize(policy.PolicyTargetMixin, tables.Action):
+class ConfirmResize(BaremetalAwareMixin, policy.PolicyTargetMixin, tables.Action):
     name = "confirm"
     verbose_name = _("Confirm Resize/Migrate")
     classes = ("btn-confirm", "btn-action-required")
     policy_rules = (("compute", "os_compute_api:servers:confirm_resize"),)
+    supports_baremetal = False
 
     def allowed(self, request, instance):
         return instance.status == 'VERIFY_RESIZE'
@@ -620,11 +652,12 @@ class ConfirmResize(policy.PolicyTargetMixin, tables.Action):
         return shortcuts.redirect(request.get_full_path())
 
 
-class RevertResize(policy.PolicyTargetMixin, tables.Action):
+class RevertResize(BaremetalAwareMixin, policy.PolicyTargetMixin, tables.Action):
     name = "revert"
     verbose_name = _("Revert Resize/Migrate")
     classes = ("btn-revert", "btn-action-required")
     policy_rules = (("compute", "os_compute_api:servers:revert_resize"),)
+    supports_baremetal = False
 
     def allowed(self, request, instance):
         return instance.status == 'VERIFY_RESIZE'
@@ -639,12 +672,13 @@ class RevertResize(policy.PolicyTargetMixin, tables.Action):
                               % (instance.name or instance.id))
 
 
-class RebuildInstance(policy.PolicyTargetMixin, tables.LinkAction):
+class RebuildInstance(BaremetalAwareMixin, policy.PolicyTargetMixin, tables.LinkAction):
     name = "rebuild"
     verbose_name = _("Rebuild Instance")
     classes = ("btn-rebuild", "ajax-modal")
     url = "horizon:project:instances:rebuild"
     policy_rules = (("compute", "os_compute_api:servers:rebuild"),)
+    supports_baremetal = False
     action_type = "danger"
 
     def allowed(self, request, instance):
@@ -1037,7 +1071,6 @@ def get_flavor(instance):
             "size_ram": size_ram,
             "vcpus": instance.full_flavor.vcpus,
             "flavor_id": getattr(instance.full_flavor, 'id', None),
-            "chameleon_baremetal_only": settings.CHAMELEON_BAREMETAL_ONLY,
         }
         return template.loader.render_to_string(template_name, context)
     return _("Not available")
@@ -1266,8 +1299,9 @@ class InstancesTable(tables.DataTable):
     locked = tables.Column(render_locked,
                            verbose_name="",
                            sortable=False)
-    az = tables.Column("availability_zone",
-                       verbose_name=_("Availability Zone"))
+    # Removed in Chameleon
+    # az = tables.Column("availability_zone",
+    #                    verbose_name=_("Availability Zone"))
     task = tables.Column("OS-EXT-STS:task_state",
                          verbose_name=_("Task"),
                          empty_value=TASK_DISPLAY_NONE,
@@ -1286,14 +1320,30 @@ class InstancesTable(tables.DataTable):
 
     class Meta(object):
         name = "instances"
-        verbose_name = _("Instances")
+        verbose_name = _("Bare Metal Instances")
         status_columns = ["status", "task"]
         row_class = UpdateRow
         table_actions_menu = (StartInstance, StopInstance, SoftRebootInstance)
         launch_actions = (LaunchLinkNG,)
         table_actions = launch_actions + (DeleteInstance,
                                           InstancesFilterAction)
+        row_actions = (StartInstance, AttachInterface, DetachInterface,
+                    EditInstance, ConsoleLink, SoftRebootInstance,
+                    RebootInstance, StopInstance, RebuildInstance,
+                    DeleteInstance)
 
+
+class VirtualInstancesTable(InstancesTable):
+    """Table for virtual instances with VM-specific actions."""
+    
+    class Meta(InstancesTable.Meta):
+        name = "virtual_instances"
+        verbose_name = _("Virtual Instances")
+        launch_actions = (LaunchVirtualInstanceLinkNG,)
+        table_actions = launch_actions + (DeleteInstance,
+                                          InstancesFilterAction)
+        
+        # Virtual instances get full VM-specific row actions
         row_actions = (StartInstance, ConfirmResize, RevertResize,
                        CreateSnapshot, AssociateIP, DisassociateIP,
                        AttachInterface, DetachInterface, EditInstance,
@@ -1307,9 +1357,3 @@ class InstancesTable(tables.DataTable):
                        ResizeLink, LockInstance, UnlockInstance,
                        SoftRebootInstance, RebootInstance,
                        StopInstance, RebuildInstance, DeleteInstance)
-        # If BM, override row actions
-        if settings.CHAMELEON_BAREMETAL_ONLY:
-            row_actions = (StartInstance, AttachInterface, DetachInterface,
-                        EditInstance, ConsoleLink, SoftRebootInstance,
-                        RebootInstance, StopInstance, RebuildInstance,
-                        DeleteInstance)

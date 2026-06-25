@@ -257,10 +257,6 @@
           function (response) {
             model.newInstanceSpec.default_user_data = response;
           });
-        settings.getSetting("CHAMELEON_BAREMETAL_ONLY").then(
-          function (response) {
-            model.chameleonBaremetalOnly = response;
-          });
         promise = $q.all([
           launchInstanceDefaults.then(setDefaultValues, noop),
           blazarAPI.reservations().then(onGetReservations),

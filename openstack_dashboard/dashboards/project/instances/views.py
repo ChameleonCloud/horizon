@@ -61,9 +61,17 @@ from openstack_dashboard.views import get_url_with_pagination
 LOG = logging.getLogger(__name__)
 
 
+def is_baremetal_flavor_instance(instance):
+    """Check if an instance uses the ``baremetal`` flavor."""
+    if instance.flavor['id']:
+        return instance.full_flavor.name.lower() == 'baremetal'
+    return instance.flavor['original_name'].lower() == 'baremetal'
+
+
 class IndexView(tables.PagedTableMixin, tables.DataTableView):
     table_class = project_tables.InstancesTable
     page_title = _("Instances")
+    instance_type = "baremetal"
 
     def has_prev_data(self, table):
         return getattr(self, "_prev", False)
@@ -166,7 +174,7 @@ class IndexView(tables.PagedTableMixin, tables.DataTableView):
             return []
 
         instances = self._get_instances(search_opts, sort_dir)
-
+        flavor_name_dict = {flavor.name: flavor for flavor in flavor_dict.values()}
         # Loop through instances to get flavor info.
         for instance in instances:
             self._populate_image_info(instance, image_dict, volume_dict)
@@ -174,11 +182,24 @@ class IndexView(tables.PagedTableMixin, tables.DataTableView):
             flavor_id = instance.flavor["id"]
             if flavor_id in flavor_dict:
                 instance.full_flavor = flavor_dict[flavor_id]
+            elif instance.flavor['original_name'] in flavor_name_dict:
+                instance.full_flavor = flavor_name_dict[
+                    instance.flavor['original_name']
+                ]
             else:
                 # If the flavor_id is not in flavor_dict,
                 # put info in the log file.
                 LOG.info('Unable to retrieve flavor "%s" for instance "%s".',
                          flavor_id, instance.id)
+
+        # Optionally filter instances by type: 'baremetal' or 'virtual'.
+        instance_type = self.instance_type
+        if instance_type == 'virtual':
+            instances = [i for i in instances
+                         if not is_baremetal_flavor_instance(i)]
+        else:
+            instances = [i for i in instances
+                         if is_baremetal_flavor_instance(i)]
 
         return instances
 
@@ -224,6 +245,18 @@ class IndexView(tables.PagedTableMixin, tables.DataTableView):
                     # KeyError occurs when volume was created from image and
                     # then this image is deleted.
                     pass
+
+
+class BaremetalIndexView(IndexView):
+    table_class = project_tables.InstancesTable
+    instance_type = 'baremetal'
+    page_title = _("Baremetal Instances")
+
+
+class VirtualIndexView(IndexView):
+    table_class = project_tables.VirtualInstancesTable
+    instance_type = 'virtual'
+    page_title = _("Virtual Instances")
 
 
 def process_non_api_filters(search_opts, non_api_filter_info):

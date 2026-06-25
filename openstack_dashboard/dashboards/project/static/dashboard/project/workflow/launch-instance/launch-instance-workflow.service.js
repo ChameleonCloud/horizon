@@ -23,14 +23,14 @@
   launchInstanceWorkflow.$inject = [
     'horizon.dashboard.project.workflow.launch-instance.basePath',
     'horizon.dashboard.project.workflow.launch-instance.step-policy',
+    'launchInstanceModel',
     'horizon.app.core.workflow.factory',
-    'horizon.app.core.openstack-service-api.settings',
   ];
 
-  function launchInstanceWorkflow(basePath, stepPolicy, dashboardWorkflow, settings) {
-    return settings.getSetting(
-      'CHAMELEON_BAREMETAL_ONLY'
-    ).then(chameleonBaremetalOnly => {
+  function launchInstanceWorkflow(basePath, stepPolicy, launchInstanceModel, dashboardWorkflow) {
+    return function createWorkflow() {
+      var instanceType = launchInstanceModel.instanceType || 'baremetal';
+      var isBaremetal = instanceType === 'baremetal';
       var steps = [
         {
           id: 'details',
@@ -52,7 +52,7 @@
           templateUrl: basePath + 'flavor/flavor.html',
           helpUrl: basePath + 'flavor/flavor.help.html',
           formName: 'launchInstanceFlavorForm',
-          isAdvanced: chameleonBaremetalOnly, // Only advanced on BM site
+          isAdvanced: isBaremetal, // Only advanced on BM site
         },
         {
           id: 'networks',
@@ -70,7 +70,7 @@
           formName: 'launchInstanceNetworkPortForm',
           requiredServiceTypes: ['network'],
           setting: 'LAUNCH_INSTANCE_DEFAULTS.enable_net_ports',
-          isAdvanced: chameleonBaremetalOnly, // Only advanced on BM site,
+          isAdvanced: isBaremetal, // Only advanced on BM site,
         },
         {
           id: 'secgroups',
@@ -80,7 +80,7 @@
           formName: 'launchInstanceAccessAndSecurityForm',
           requiredServiceTypes: ['network'],
           setting: 'LAUNCH_INSTANCE_DEFAULTS.enable_secgroups',
-          isAdvanced: chameleonBaremetalOnly, // Only advanced on BM site,
+          isAdvanced: isBaremetal, // Only advanced on BM site,
           isVMOnly: true,
         },
         {
@@ -96,18 +96,7 @@
           templateUrl: basePath + 'configuration/configuration.html',
           helpUrl: basePath + 'configuration/configuration.help.html',
           formName: 'launchInstanceConfigurationForm',
-          isAdvanced: chameleonBaremetalOnly,
-        },
-        {
-          id: 'servergroups',
-          title: gettext('Server Groups'),
-          templateUrl: basePath + 'server-groups/server-groups.html',
-          helpUrl: basePath + 'server-groups/server-groups.help.html',
-          formName: 'launchInstanceServerGroupsForm',
-          policy: stepPolicy.serverGroups,
-          setting: 'LAUNCH_INSTANCE_DEFAULTS.enable_servergroups',
-          isAdvanced: chameleonBaremetalOnly,
-          isVMOnly: true,
+          isAdvanced: isBaremetal,
         },
         {
           id: 'hints',
@@ -117,7 +106,7 @@
           formName: 'launchInstanceSchedulerHintsForm',
           policy: stepPolicy.schedulerHints,
           setting: 'LAUNCH_INSTANCE_DEFAULTS.enable_scheduler_hints',
-          isAdvanced: chameleonBaremetalOnly,
+          isAdvanced: isBaremetal,
         },
         {
           id: 'metadata',
@@ -126,31 +115,30 @@
           helpUrl: basePath + 'metadata/metadata.help.html',
           formName: 'launchInstanceMetadataForm',
           setting: 'LAUNCH_INSTANCE_DEFAULTS.enable_metadata',
-          isAdvanced: chameleonBaremetalOnly,
+          isAdvanced: isBaremetal,
         }
       ];
 
       // Completely remove VM only steps
-      if (chameleonBaremetalOnly) {
+      if (isBaremetal) {
         steps = steps.filter(step => !step.isVMOnly);
       }
 
+      // Configure and return workflow wrapped in a promise
       return dashboardWorkflow({
         title: gettext('Launch Instance'),
         steps: steps,
         btnText: {
           finish: gettext('Launch Instance')
         },
-
         btnIcon: {
           finish: 'fa-cloud-upload'
         },
-
         advanced: {
-          showButton: chameleonBaremetalOnly,
+          showButton: isBaremetal,
           showTabs: false,
         }
       });
-    });
+    };
   }
 })();
