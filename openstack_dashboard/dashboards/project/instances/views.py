@@ -61,9 +61,17 @@ from openstack_dashboard.views import get_url_with_pagination
 LOG = logging.getLogger(__name__)
 
 
+def is_baremetal_flavor_instance(instance):
+    """Check if an instance uses the ``baremetal`` flavor."""
+    if instance.flavor['id']:
+        return instance.full_flavor.name.lower() == 'baremetal'
+    return instance.flavor['original_name'].lower() == 'baremetal'
+
+
 class IndexView(tables.PagedTableMixin, tables.DataTableView):
     table_class = project_tables.InstancesTable
     page_title = _("Instances")
+    instance_type = "baremetal"
 
     def has_prev_data(self, table):
         return getattr(self, "_prev", False)
@@ -166,7 +174,7 @@ class IndexView(tables.PagedTableMixin, tables.DataTableView):
             return []
 
         instances = self._get_instances(search_opts, sort_dir)
-
+        flavor_name_dict = {flavor.name: flavor for flavor in flavor_dict.values()}
         # Loop through instances to get flavor info.
         for instance in instances:
             self._populate_image_info(instance, image_dict, volume_dict)
@@ -174,6 +182,10 @@ class IndexView(tables.PagedTableMixin, tables.DataTableView):
             flavor_id = instance.flavor["id"]
             if flavor_id in flavor_dict:
                 instance.full_flavor = flavor_dict[flavor_id]
+            elif instance.flavor['original_name'] in flavor_name_dict:
+                instance.full_flavor = flavor_name_dict[
+                    instance.flavor['original_name']
+                ]
             else:
                 # If the flavor_id is not in flavor_dict,
                 # put info in the log file.
@@ -181,25 +193,15 @@ class IndexView(tables.PagedTableMixin, tables.DataTableView):
                          flavor_id, instance.id)
 
         # Optionally filter instances by type: 'baremetal' or 'virtual'.
-        instance_type = (self.request.GET.get('instance_type') or
-                         getattr(self, 'instance_type', None) or
-                         self.kwargs.get('instance_type'))
-        if instance_type == 'baremetal':
-            instances = [i for i in instances if project_tables.is_baremetal_instance(i)]
-        elif instance_type == 'virtual':
-            instances = [i for i in instances if not project_tables.is_baremetal_instance(i)]
+        instance_type = self.instance_type
+        if instance_type == 'virtual':
+            instances = [i for i in instances
+                         if not is_baremetal_flavor_instance(i)]
+        else:
+            instances = [i for i in instances
+                         if is_baremetal_flavor_instance(i)]
 
         return instances
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        instype = (self.request.GET.get('instance_type') or
-                   self.kwargs.get('instance_type'))
-        if instype == 'baremetal':
-            context['page_title'] = _("Bare Metal Instances")
-        elif instype == 'virtual':
-            context['page_title'] = _("Virtual Instances")
-        return context
 
     def _populate_image_info(self, instance, image_dict, volume_dict):
         if not hasattr(instance, 'image'):
