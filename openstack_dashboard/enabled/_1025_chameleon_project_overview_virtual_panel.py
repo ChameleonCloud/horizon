@@ -1,6 +1,3 @@
-from horizon.horizon.utils import settings
-
-
 PANEL = 'overview_virtual'
 PANEL_DASHBOARD = 'project'
 PANEL_GROUP = 'virtual_compute'
