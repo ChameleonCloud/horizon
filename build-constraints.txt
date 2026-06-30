@@ -1,1 +1,1 @@
-setuptools<82
+setuptools<82.0.0
