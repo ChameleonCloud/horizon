@@ -38,6 +38,7 @@ class OverviewTab(tabs.Tab):
 
     def get_context_data(self, request):
         site = None
+        hardware_catalog_url = None
         if settings.CHAMELEON_MULTISITE_SUPPORT:
             site = settings.CHAMELEON_SITE_ID
         elif settings.CHAMELEON_SITES:
