@@ -4,8 +4,10 @@ from openstack_dashboard import api
 from openstack_dashboard.api.rest import urls
 from openstack_dashboard.api.rest import utils as rest_utils
 
-from blazar_dashboard.api.client import lease_list
-
+try:
+    from blazar_dashboard.api.client import lease_list
+except ImportError as ex:
+    lease_list = None
 
 @urls.register
 class Reservations(generic.View):
