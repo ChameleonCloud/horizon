@@ -51,7 +51,7 @@ class Image(base.APIResourceWrapper):
     _attrs = {"architecture", "container_format", "disk_format", "created_at",
               "owner", "size", "id", "status", "updated_at", "checksum",
               "visibility", "name", "is_public", "protected", "min_disk",
-              "min_ram"}
+              "min_ram", "project_supported"}
     _ext_attrs = {"file", "locations", "schema", "tags", "virtual_size",
                   "kernel_id", "ramdisk_id", "image_url"}
 
@@ -156,6 +156,7 @@ KNOWN_PROPERTIES = [
     'deleted_at', 'is_public', 'virtual_size',
     'status', 'size', 'owner', 'id', 'updated_at',
     'kernel_id', 'ramdisk_id', 'image_file',
+    'project_supported',
 ]
 
 
