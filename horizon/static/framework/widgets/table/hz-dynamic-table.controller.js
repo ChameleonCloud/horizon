@@ -22,12 +22,14 @@
 
   controller.$inject = [
     '$scope',
+    '$window',
     'horizon.framework.conf.permissions.service'
   ];
 
   function controller($scope, permissionsService) {
     // For now, NOT using controller as syntax. See directive definition
     $scope.items = [];
+    $scope.staticUrl = $window.STATIC_URL;
     $scope.columnAllowed = columnAllowed;
 
     var allowedColumns = {};
