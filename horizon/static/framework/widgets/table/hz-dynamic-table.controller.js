@@ -26,7 +26,7 @@
     'horizon.framework.conf.permissions.service'
   ];
 
-  function controller($scope, permissionsService) {
+  function controller($scope, $window, permissionsService) {
     // For now, NOT using controller as syntax. See directive definition
     $scope.items = [];
     $scope.staticUrl = $window.STATIC_URL;
