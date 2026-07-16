@@ -39,9 +39,7 @@
     'horizon.app.core.images.actions.launch-instance.service',
     'horizon.app.core.images.actions.update-metadata.service',
     'horizon.app.core.images.resourceType',
-    'horizon.app.core.images.basePath',
-    'horizon.app.core.images.actions.publish-image.service',
-    'horizon.app.core.images.actions.link-to-appliance-catalog.service'
+    'horizon.app.core.images.basePath'
   ];
 
   function registerImageActions(
@@ -53,9 +51,7 @@
     launchInstanceService,
     updateMetadataService,
     imageResourceTypeCode,
-    basePath,
-    publishImageService,
-    linkToApplianceCatalogService
+    basePath
   ) {
     var imageResourceType = registry.getResourceType(imageResourceTypeCode);
     imageResourceType.itemActions
@@ -93,20 +89,6 @@
         template: {
           text: gettext('Delete Image'),
           type: 'delete'
-        }
-      })
-      .append({
-        id: 'publishImageService',
-        service: publishImageService,
-        template: {
-          text: gettext('Publish to Appliance Catalog')
-        }
-      })
-      .append({
-        id: 'linkToApplianceCatalogService',
-        service: linkToApplianceCatalogService,
-        template: {
-          text: gettext('Details')
         }
       });
 

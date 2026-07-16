@@ -23,8 +23,6 @@ import itertools
 import json
 import logging
 import os
-import requests
-from django.core.cache import cache
 
 from django.conf import settings
 from django.core.files.uploadedfile import InMemoryUploadedFile
@@ -41,8 +39,6 @@ from openstack_dashboard.api import base
 from openstack_dashboard.contrib.developer.profiler import api as profiler
 from openstack_dashboard.utils import settings as utils
 
-import urllib3
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 LOG = logging.getLogger(__name__)
 VERSIONS = base.APIVersionManager("image", preferred_version=2)
@@ -55,12 +51,9 @@ class Image(base.APIResourceWrapper):
     _attrs = {"architecture", "container_format", "disk_format", "created_at",
               "owner", "size", "id", "status", "updated_at", "checksum",
               "visibility", "name", "is_public", "protected", "min_disk",
-              "min_ram", "project_supported", "published_in_app_catalog"}
+              "min_ram", "project_supported"}
     _ext_attrs = {"file", "locations", "schema", "tags", "virtual_size",
                   "kernel_id", "ramdisk_id", "image_url"}
-
-    # These are Appliance published to the Chameleon portal
-    _published_appliances = {}
 
     def __getattribute__(self, attr):
         # Because Glance v2 treats custom properties as normal
@@ -80,11 +73,6 @@ class Image(base.APIResourceWrapper):
 
     @property
     def project_supported(self):
-        # Use the old way (for now) to get the project_supported attribute
-        # if the site is not showing the Chameleon Support column
-        if not settings.SHOW_CHAMELEON_SUPPORT_COLUMN:
-            return str(self.get_is_project_supported())
-
         raw = getattr(self._apiresource, settings.CHAMELEON_SUPPORT_METADATA_NAME, None)
         if raw is None or str(raw).strip() == "":
             return 'No'
@@ -98,14 +86,6 @@ class Image(base.APIResourceWrapper):
             return 'Deprecated'
         else:
             return 'Unknown'
-
-    @property
-    def published_in_app_catalog(self):
-        return self.get_is_published_in_app_catalog()
-
-    @property
-    def appliance_catalog_id(self):
-        return self.get_catalog_id()
 
     @property
     def size(self):
@@ -135,12 +115,6 @@ class Image(base.APIResourceWrapper):
             return self._apiresource.to_dict()
         image_dict = super().to_dict()
         image_dict['is_public'] = self.is_public
-        image_dict['project_supported'] = self.project_supported
-        image_dict['published_in_app_catalog'] = self.published_in_app_catalog
-        image_dict['appliance_catalog_id'] = self.appliance_catalog_id
-        image_dict['appliance_catalog_details_path'] = settings.APPLIANCE_CATALOG_DETAILS_PATH
-        image_dict['appliance_catalog_host'] = settings.CHAMELEON_PORTAL_API_BASE_URL
-        image_dict['publish_appliance_path'] = settings.PUBLISH_APPLIANCE_PATH
         image_dict['properties'] = {
             k: self._apiresource[k] for k in self._apiresource
             if self.property_visible(k, show_ext_attrs=show_ext_attrs)}
@@ -152,41 +126,11 @@ class Image(base.APIResourceWrapper):
     def __ne__(self, other_image):
         return not self.__eq__(other_image)
 
-    def get_catalog_id(self):
-        return Image._published_appliances.get(self.id, {}).get('id', -1)
-
-    def get_is_project_supported(self):
-        return Image._published_appliances.get(self.id, {}).get('project_supported', False)
-
-    def get_is_published_in_app_catalog(self):
-        return Image._published_appliances.get(self.id) is not None
-
-def fetch_published_appliances():
-    Image._published_appliances = cache.get('published_appliances', {})
-    if not Image._published_appliances:
-        try:
-            LOG.info('Fetching appliances from ' + settings.CHAMELEON_PORTAL_API_BASE_URL\
-                + settings.APPLIANCE_CATALOG_API_PATH)
-            appliance_list = requests.get(settings.CHAMELEON_PORTAL_API_BASE_URL\
-                + settings.APPLIANCE_CATALOG_API_PATH).json().get('result')
-            appliance_dict = {}
-            for appliance in appliance_list:
-                if appliance.get('chi_uc_appliance_id', False):
-                    appliance_dict[appliance.get('chi_uc_appliance_id')] = appliance
-                if appliance.get('chi_tacc_appliance_id', False):
-                    appliance_dict[appliance.get('chi_tacc_appliance_id')] = appliance
-                if appliance.get('kvm_tacc_appliance_id', False):
-                    appliance_dict[appliance.get('kvm_tacc_appliance_id')] = appliance
-            cache.set('published_appliances', appliance_dict, 60*15)
-            Image._published_appliances = appliance_dict
-            LOG.info('Appliance Catalog cache updated')
-        except Exception as e:
-            LOG.error(e)
 
 @memoized
 def glanceclient(request):
     api_version = VERSIONS.get_active_version()
-    fetch_published_appliances()
+
     url = base.url_for(request, 'image')
     insecure = settings.OPENSTACK_SSL_NO_VERIFY
     cacert = settings.OPENSTACK_SSL_CACERT
@@ -212,6 +156,7 @@ KNOWN_PROPERTIES = [
     'deleted_at', 'is_public', 'virtual_size',
     'status', 'size', 'owner', 'id', 'updated_at',
     'kernel_id', 'ramdisk_id', 'image_file',
+    'project_supported',
 ]
 
 
@@ -365,13 +310,6 @@ def image_list_detailed(request, marker=None, sort_dir='desc',
 
 @profiler.trace
 def image_update(request, image_id, **kwargs):
-    ## Ensuring custom properties aren't sent to glance on upate
-    kwargs.pop('appliance_catalog_id', None)
-    kwargs.pop('project_supported', None)
-    kwargs.pop('appliance_catalog_host', None)
-    kwargs.pop('publish_appliance_path', None)
-    kwargs.pop('published_in_app_catalog', None)
-
     image_data = kwargs.get('data', None)
     try:
         return Image(glanceclient(request).images.update(
