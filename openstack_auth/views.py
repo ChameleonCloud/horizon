@@ -245,9 +245,11 @@ def websso(request):
         request.session.delete_test_cookie()
 
     # Get next URL from session if it exists
-    redirect_to = request.session.pop('websso_next', settings.LOGIN_REDIRECT_URL)
-    if not http.is_safe_url(url=redirect_to,
-                            allowed_hosts={request.get_host()}):
+    redirect_to = request.session.pop("websso_next", settings.LOGIN_REDIRECT_URL)
+    if not http.url_has_allowed_host_and_scheme(
+        url=redirect_to,
+        allowed_hosts={request.get_host()},
+    ):
         redirect_to = settings.LOGIN_REDIRECT_URL
 
     return django_http.HttpResponseRedirect(redirect_to)
