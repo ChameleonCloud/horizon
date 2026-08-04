@@ -15,6 +15,7 @@
 from collections import OrderedDict
 from urllib import parse
 
+from django.conf import settings
 from django.utils import http as utils_http
 from django.utils.translation import gettext_lazy as _
 from django.views import generic
@@ -523,18 +524,31 @@ class Flavors(generic.View):
         """
         is_public = request.GET.get('is_public')
         is_public = (is_public and is_public.lower() == 'true')
+        detailed = request.GET.get('detailed', "false").lower() == 'true'
         get_extras = request.GET.get('get_extras')
         get_extras = bool(get_extras and get_extras.lower() == 'true')
         flavors = api.nova.flavor_list(request, is_public=is_public,
-                                       get_extras=get_extras)
+                                       get_extras=get_extras, detailed=detailed)
         flavors = instances_utils.sort_flavor_list(request, flavors,
                                                    with_menu_label=False)
         result = {'items': []}
+
         for flavor in flavors:
             d = flavor.to_dict()
             if get_extras:
                 d['extras'] = flavor.extras
-            result['items'].append(d)
+
+            is_active_reservation_flavor = any(
+                key.startswith("resources:CUSTOM_RESERVATION_")
+                for key in d['extra_specs']
+            )
+            if settings.OPENSTACK_SHOW_ONLY_RESERVED_FLAVORS:
+                # Include flavor only if from an active reservation
+                if is_active_reservation_flavor:
+                    result['items'].append(d)
+            else:
+                # Include all flavors
+                result['items'].append(d)
         return result
 
     @rest_utils.ajax(data_required=True)
