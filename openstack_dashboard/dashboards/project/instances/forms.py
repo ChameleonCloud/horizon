@@ -56,6 +56,11 @@ class RebuildInstanceForm(forms.SelfHandlingForm):
         required=False,
         strip=False,
         widget=forms.PasswordInput(render_value=False))
+    disk_config = forms.ChoiceField(
+        label=_("Disk Partition"),
+        choices=[("AUTO", _("Automatic")),
+                 ("MANUAL", _("Manual"))],
+        required=False)
     description = forms.CharField(
         label=_("Description"),
         widget=forms.Textarea(attrs={'rows': 4}),
