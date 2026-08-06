@@ -19,6 +19,7 @@
 import collections
 import json
 import logging
+import types
 from unittest import mock
 
 from django.conf import settings
@@ -36,6 +37,7 @@ from openstack_dashboard import api
 from openstack_dashboard.dashboards.project.instances import console
 from openstack_dashboard.dashboards.project.instances import tables
 from openstack_dashboard.dashboards.project.instances import tabs
+from openstack_dashboard.dashboards.project.instances import utils as instance_utils
 from openstack_dashboard.dashboards.project.instances import workflows
 from openstack_dashboard.test import helpers
 from openstack_dashboard.views import get_url_with_pagination
@@ -3391,3 +3393,27 @@ class ConsoleManagerTests(helpers.ResetImageAPIVersionMixin, helpers.TestCase):
                                                     device_id=server.id)
         self.mock_interface_detach.assert_called_once_with(
             helpers.IsHttpRequest(), server.id, port.id)
+
+
+class IsBaremetalInstanceTests(django.test.SimpleTestCase):
+
+    @django.test.utils.override_settings(
+        CHAMELEON_BAREMETAL_FLAVOR_NAME='baremetal')
+    def test_a_different_flavor_is_not_baremetal(self):
+        instance = types.SimpleNamespace(
+            full_flavor=types.SimpleNamespace(name='m1.small'))
+        self.assertFalse(instance_utils.is_baremetal_instance(instance))
+
+    @django.test.utils.override_settings(
+        CHAMELEON_BAREMETAL_FLAVOR_NAME='ironic-node')
+    def test_the_flavor_name_comes_from_the_setting(self):
+        # Ensure test fails if value is hardcoded instead of from config.
+        instance = types.SimpleNamespace(
+            full_flavor=types.SimpleNamespace(name='ironic-node'))
+        self.assertTrue(instance_utils.is_baremetal_instance(instance))
+
+    def test_an_unresolved_flavor_is_not_baremetal(self):
+        # if lookup of flavor fails, default to treating instance like a VM
+        # instead of hiding options not relevant to baremetal.
+        self.assertFalse(
+            instance_utils.is_baremetal_instance(types.SimpleNamespace()))

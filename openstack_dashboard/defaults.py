@@ -575,3 +575,6 @@ CHAMELEON_REFERENCE_API_URL = "https://api.chameleoncloud.org"
 CHAMELEON_SITE_ID = ""
 # DEPRECATED
 CHAMELEON_SITES = {}
+
+# If a flavor has this name, apply chameleon baremetal customizations.
+CHAMELEON_BAREMETAL_FLAVOR_NAME = 'baremetal'
