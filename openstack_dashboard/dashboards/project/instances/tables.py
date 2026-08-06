@@ -1229,6 +1229,58 @@ def get_server_detail_link(obj, request):
                                    obj.id)
 
 
+# List instance row actions that should be hidden for ironic instances
+# TODO(chameleon): these should probably be settable per-feature
+BAREMETAL_UNSUPPORTED_ACTIONS = frozenset(
+    [
+        # Baremetal does not support pause, suspend, or shelve, the physical
+        # host can't be freed up in this way.
+        "pause",
+        "suspend",
+        "shelve",
+
+        # Baremetal does not support nova snapshot
+        "snapshot",
+
+        # Baremetal does not support console log
+        "log",
+
+        # Baremetal does not support volumes
+        "attach_volume",
+        "detach_volume",
+
+        # Baremetal does not support security groups
+        "edit_port_secgroups",
+        "edit_secgroups",
+
+        # rescue and unrescue should work, but need fixing :(
+        "rescue",
+        "unrescue",
+
+        # CHI only: floating IPs are managed from the Floating IPs panel
+        "associate",
+        "disassociate",
+
+        # CHI only: resize hidden for baremetal
+        # does not make sense with only one baremetal flavor
+        "resize",
+        "confirm",
+        "revert",
+
+        # CHI only: lock and unlock hidden for baremetal
+        "lock",
+        "unlock",
+
+        # CHI only: update metadata hidden for baremetal
+        "update_metadata",
+
+        # CHI only: decrypt password hidden for baremetal
+        # unused
+        "decryptpassword",
+    ]
+)
+
+
 class InstancesTable(tables.DataTable):
     TASK_STATUS_CHOICES = (
         (None, True),
@@ -1305,3 +1357,13 @@ class InstancesTable(tables.DataTable):
                        ResizeLink, LockInstance, UnlockInstance,
                        SoftRebootInstance, RebootInstance,
                        StopInstance, RebuildInstance, DeleteInstance)
+
+    def get_row_actions(self, datum):
+        row_actions = super().get_row_actions(datum)
+        if instance_utils.is_baremetal_instance(datum):
+            return [
+                action
+                for action in row_actions
+                if action.name not in BAREMETAL_UNSUPPORTED_ACTIONS
+            ]
+        return row_actions
