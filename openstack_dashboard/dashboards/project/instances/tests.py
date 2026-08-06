@@ -37,7 +37,8 @@ from openstack_dashboard import api
 from openstack_dashboard.dashboards.project.instances import console
 from openstack_dashboard.dashboards.project.instances import tables
 from openstack_dashboard.dashboards.project.instances import tabs
-from openstack_dashboard.dashboards.project.instances import utils as instance_utils
+from openstack_dashboard.dashboards.project.instances \
+    import utils as instance_utils
 from openstack_dashboard.dashboards.project.instances import workflows
 from openstack_dashboard.test import helpers
 from openstack_dashboard.views import get_url_with_pagination
@@ -3417,3 +3418,59 @@ class IsBaremetalInstanceTests(django.test.SimpleTestCase):
         # instead of hiding options not relevant to baremetal.
         self.assertFalse(
             instance_utils.is_baremetal_instance(types.SimpleNamespace()))
+
+
+# Rendering a row runs every action's allowed(), some of which call out.
+# Without a mock they will attempt a real connection, silently fail, and hide
+# the action from the row due to failure, not due to the baremetal filter.
+ROW_RENDER_MOCKS = {
+    api.neutron: ('floating_ip_supported',
+                  'floating_ip_simple_associate_supported'),
+    api.nova: ('is_feature_available',),
+}
+
+
+class BaremetalRowActionTests(helpers.TestCase):
+    """get_row_actions() hides actions by type, leaving row_actions intact."""
+
+    def _row_action_names(self, flavor):
+        self.mock_floating_ip_supported.return_value = True
+        self.mock_floating_ip_simple_associate_supported.return_value = True
+        self.mock_is_feature_available.return_value = True
+
+        # The fixture server is shared with the rest of the suite, so put it
+        # back as we found it. It cannot simply be copied: novaclient's
+        # Resource.__getattr__ lazy-loads any missing attribute, so deepcopy
+        # recurses on its __setstate__ probe.
+        server = self.servers.first()
+        server.full_flavor = flavor
+        self.addCleanup(delattr, server, 'full_flavor')
+
+        table = tables.InstancesTable(self.request, [server])
+        return {action.name for action in table.get_row_actions(server)}
+
+    def test_every_hidden_name_is_a_real_action(self):
+        # A typo in BAREMETAL_UNSUPPORTED_ACTIONS would not raise; check that
+        # they really exist.
+        names = {action.name
+                 for action in tables.InstancesTable._meta.row_actions}
+        self.assertLessEqual(tables.BAREMETAL_UNSUPPORTED_ACTIONS, names)
+
+    # The fixture flavor is m1.tiny, configure baremetal flavor to match.
+    @django.test.utils.override_settings(
+        CHAMELEON_BAREMETAL_FLAVOR_NAME='m1.tiny')
+    @helpers.create_mocks(ROW_RENDER_MOCKS)
+    def test_baremetal_instance_loses_hidden_actions(self):
+        names = self._row_action_names(self.flavors.first())
+
+        self.assertFalse(names & tables.BAREMETAL_UNSUPPORTED_ACTIONS)
+        # Common actions still in the list
+        self.assertLessEqual({'rebuild', 'reboot', 'delete'}, names)
+
+    @django.test.utils.override_settings(
+        CHAMELEON_BAREMETAL_FLAVOR_NAME='baremetal')
+    @helpers.create_mocks(ROW_RENDER_MOCKS)
+    def test_virtual_instance_keeps_them(self):
+        names = self._row_action_names(self.flavors.first())
+        # vm-only actions still in the list
+        self.assertLessEqual({'resize', 'pause', 'lock'}, names)
