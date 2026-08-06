@@ -13,6 +13,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from django.conf import settings
 from django.template.defaultfilters import filesizeformat
 from django.urls import reverse
 from django.urls import reverse_lazy
@@ -56,6 +57,11 @@ class RebuildInstanceForm(forms.SelfHandlingForm):
         required=False,
         strip=False,
         widget=forms.PasswordInput(render_value=False))
+    disk_config = forms.ChoiceField(
+        label=_("Disk Partition"),
+        choices=[("AUTO", _("Automatic")),
+                 ("MANUAL", _("Manual"))],
+        required=False)
     description = forms.CharField(
         label=_("Description"),
         widget=forms.Textarea(attrs={'rows': 4}),
@@ -67,6 +73,10 @@ class RebuildInstanceForm(forms.SelfHandlingForm):
         super().__init__(request, *args, **kwargs)
         if not api.nova.is_feature_available(request, "instance_description"):
             del self.fields['description']
+        if (settings.CHAMELEON_ENABLE_BAREMETAL and
+                not settings.CHAMELEON_ENABLE_VMS):
+            # ironic ignores disk_config, so offering the choice misleads.
+            del self.fields['disk_config']
         instance_id = kwargs.get('initial', {}).get('instance_id')
         self.fields['instance_id'].initial = instance_id
 
