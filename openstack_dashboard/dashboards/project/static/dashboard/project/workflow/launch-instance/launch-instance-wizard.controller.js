@@ -27,6 +27,13 @@
   ];
 
   function LaunchInstanceWizardController($scope, launchInstanceModel, launchInstanceWorkflow) {
+    var launchContext = $scope.launchContext;
+
+    launchInstanceModel.instanceType =
+      (launchContext && launchContext.instanceType) || 'baremetal';
+    launchInstanceModel.isBaremetal = launchInstanceModel.instanceType === 'baremetal';
+    launchInstanceModel.isVirtual = launchInstanceModel.instanceType === 'virtual';
+
     // Note: we set these attributes on the $scope so that the scope inheritance used all
     // through the launch instance wizard continues to work.
     $scope.workflow = launchInstanceWorkflow;     // eslint-disable-line angular/controller-as

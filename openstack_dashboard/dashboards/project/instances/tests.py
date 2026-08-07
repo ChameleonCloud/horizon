@@ -3474,3 +3474,16 @@ class BaremetalRowActionTests(helpers.TestCase):
         names = self._row_action_names(self.flavors.first())
         # vm-only actions still in the list
         self.assertLessEqual({'resize', 'pause', 'lock'}, names)
+
+
+class LaunchLinkNGTests(helpers.TestCase):
+    """The instanceType the launch wizard reads out of launchContext."""
+
+    def test_default_attrs_carry_baremetal_instance_type(self):
+        action = tables.LaunchLinkNG()
+        action.table = tables.InstancesTable(self.request)
+        action.get_default_attrs()
+        ngclick = action.attrs['ng-click']
+
+        self.assertIn("instanceType: 'baremetal'", ngclick)
+        self.assertIn("successUrl: '%s'" % INDEX_URL, ngclick)

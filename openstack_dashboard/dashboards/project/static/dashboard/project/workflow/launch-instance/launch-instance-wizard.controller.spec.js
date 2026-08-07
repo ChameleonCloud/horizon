@@ -54,6 +54,27 @@
       expect(scope.submit).toBeDefined();
       expect(scope.submit()).toBe('created');
     });
+
+    it('defaults the instance type to baremetal with no launchContext', function() {
+      expect(model.instanceType).toBe('baremetal');
+      expect(model.isBaremetal).toBe(true);
+      expect(model.isVirtual).toBe(false);
+    });
+
+    describe('with a virtual launchContext', function() {
+      var virtualScope;
+
+      beforeEach(inject(function ($controller) {
+        virtualScope = { launchContext: { instanceType: 'virtual' } };
+        $controller('LaunchInstanceWizardController', {$scope: virtualScope});
+      }));
+
+      it('records the instance type from launchContext', function() {
+        expect(model.instanceType).toBe('virtual');
+        expect(model.isBaremetal).toBe(false);
+        expect(model.isVirtual).toBe(true);
+      });
+    });
   });
 
 })();
