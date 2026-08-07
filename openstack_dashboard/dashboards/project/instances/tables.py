@@ -424,6 +424,9 @@ class LaunchLinkNG(tables.LinkAction):
     icon = "cloud-upload"
     policy_rules = (("compute", "os_compute_api:servers:create"),)
 
+    # CHI: Default instance type to baremetal if not set
+    instance_type = 'baremetal'
+
     def __init__(self, attrs=None, **kwargs):
         kwargs['preempt'] = True
         super().__init__(attrs, **kwargs)
@@ -462,8 +465,10 @@ class LaunchLinkNG(tables.LinkAction):
 
     def get_default_attrs(self):
         url = urls.reverse(self.url)
-        ngclick = "modal.openLaunchInstanceWizard(" \
-            "{ successUrl: '%s' })" % url
+        ngclick = (
+            "modal.openLaunchInstanceWizard("
+            "{ instanceType: '%s', successUrl: '%s' })" % (self.instance_type, url)
+        )
         self.attrs.update({
             'ng-controller': 'LaunchInstanceModalController as modal',
             'ng-click': ngclick
