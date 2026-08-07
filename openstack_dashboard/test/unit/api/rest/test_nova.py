@@ -26,6 +26,9 @@ from openstack_dashboard.test import helpers as test
 from openstack_dashboard.usage import quotas
 
 
+RESERVATION_ID = 'cfc6161d-c4ab-4c85-8bcc-31764db17554'
+
+
 # NOTE(flwang): mock.Mock and mock.MagicMock do not support sort, so the test
 # case involved sorted will fail. This fake class is for the flavor test cases
 # related to sort.
@@ -819,6 +822,40 @@ class NovaRestTestCase(test.RestAPITestCase):
 
     def test_flavor_list_extras_absent(self):
         self._test_flavor_list_extras(get_extras=None)
+
+    @test.create_mocks({api.nova: ['flavor_list']})
+    def _test_flavor_list_reserved(self, reserved_only):
+        reservation = FakeFlavor("2")
+        reservation.to_dict = lambda: {
+            "id": "2", "name": "reservation:" + RESERVATION_ID}
+        self.mock_flavor_list.return_value = [FakeFlavor("1"), reservation]
+
+        request = self.mock_rest_request(
+            GET={'reserved_only': 'true'} if reserved_only else {})
+        response = nova.Flavors().get(request)
+
+        self.assertStatusCode(response, 200)
+        return [item['id'] for item in response.json['items']]
+
+    def test_flavor_list_omits_reservation_flavors(self):
+        self.assertEqual(["1"], self._test_flavor_list_reserved(False))
+
+    def test_flavor_list_reserved_only_keeps_them(self):
+        self.assertEqual(["2"], self._test_flavor_list_reserved(True))
+
+    def test_reservation_flavor_recognised_by_extra_spec(self):
+        # Blazar sets this spec, and it is what nova schedules on. Recognise it
+        # even when the name does not follow the convention.
+        self.assertTrue(nova.is_reservation_flavor({
+            'name': 'renamed-by-hand',
+            'extras': {
+                'resources:CUSTOM_RESERVATION_' + RESERVATION_ID.upper():
+                    '1'}}))
+
+    def test_ordinary_flavor_is_not_a_reservation(self):
+        self.assertFalse(nova.is_reservation_flavor(
+            {'name': 'm1.small', 'extras': {}}))
+        self.assertFalse(nova.is_reservation_flavor({'id': '1'}))
 
     @test.create_mocks({api.nova: ['flavor_get_extras']})
     def test_flavor_get_extra_specs(self):

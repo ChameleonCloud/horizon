@@ -500,6 +500,14 @@ class ServerMetadata(generic.View):
             api.nova.server_metadata_delete(request, server_id, removed)
 
 
+def is_reservation_flavor(flavor):
+    """CHI: Whether this flavor dict was created by a blazar reservation."""
+    if str(flavor.get('name', '')).startswith('reservation:'):
+        return True
+    return any(key.startswith('resources:CUSTOM_RESERVATION_')
+               for key in flavor.get('extras') or {})
+
+
 @urls.register
 class Flavors(generic.View):
     """API for nova flavors."""
@@ -517,6 +525,8 @@ class Flavors(generic.View):
         :param is_public: For a regular user, set to True to see all public
             flavors. For an admin user, set to False to not see public flavors.
         :param get_extras: Also retrieve the extra specs.
+        :param reserved_only: CHI, return the blazar reservation flavors
+            instead of the ordinary ones.
 
         Example GET:
         http://localhost/api/nova/flavors?is_public=true
@@ -525,17 +535,27 @@ class Flavors(generic.View):
         is_public = (is_public and is_public.lower() == 'true')
         get_extras = request.GET.get('get_extras')
         get_extras = bool(get_extras and get_extras.lower() == 'true')
+        reserved_only = request.GET.get('reserved_only')
+        reserved_only = bool(reserved_only and
+                             reserved_only.lower() == 'true')
         flavors = api.nova.flavor_list(request, is_public=is_public,
                                        get_extras=get_extras)
         flavors = instances_utils.sort_flavor_list(request, flavors,
                                                    with_menu_label=False)
-        result = {'items': []}
+        items = []
         for flavor in flavors:
             d = flavor.to_dict()
             if get_extras:
                 d['extras'] = flavor.extras
-            result['items'].append(d)
-        return result
+            items.append(d)
+
+        # CHI: a reservation flavor only schedules against its own lease, so it
+        # belongs in one list or the other, never both.
+        if reserved_only:
+            items = [d for d in items if is_reservation_flavor(d)]
+        else:
+            items = [d for d in items if not is_reservation_flavor(d)]
+        return {'items': items}
 
     @rest_utils.ajax(data_required=True)
     def post(self, request):
