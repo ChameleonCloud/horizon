@@ -479,6 +479,22 @@ class LaunchLinkNG(tables.LinkAction):
         return "javascript:void(0);"
 
 
+class LaunchVirtualInstanceLinkNG(LaunchLinkNG):
+    name = "launch-virtual-ng"
+    verbose_name = _("Launch Virtual Instance")
+    instance_type = 'virtual'
+
+    def allowed(self, request, datum):
+        allowed = (settings.CHAMELEON_ENABLE_VMS and
+                   super().allowed(request, datum))
+        # LaunchLinkNG.allowed() assigns its own verbose_name, and table
+        # actions are shared between requests, so restate ours. Guarded the
+        # same way, to keep the "(Quota exceeded)" suffix it may have added.
+        if "disabled" not in self.classes:
+            self.verbose_name = _("Launch Virtual Instance")
+        return allowed
+
+
 class EditInstance(policy.PolicyTargetMixin, tables.LinkAction):
     name = "edit"
     verbose_name = _("Edit Instance")
@@ -1342,7 +1358,7 @@ class InstancesTable(tables.DataTable):
         status_columns = ["status", "task"]
         row_class = UpdateRow
         table_actions_menu = (StartInstance, StopInstance, SoftRebootInstance)
-        launch_actions = (LaunchLinkNG,)
+        launch_actions = (LaunchLinkNG, LaunchVirtualInstanceLinkNG)
         table_actions = launch_actions + (DeleteInstance,
                                           InstancesFilterAction)
         row_actions = (StartInstance, ConfirmResize, RevertResize,

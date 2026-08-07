@@ -3498,3 +3498,37 @@ class LaunchLinkNGTests(helpers.TestCase):
 
         self.assertIn("instanceType: 'baremetal'", ngclick)
         self.assertIn("successUrl: '%s'" % INDEX_URL, ngclick)
+
+    def test_default_attrs_carry_virtual_instance_type(self):
+        action = tables.LaunchVirtualInstanceLinkNG()
+        action.table = tables.InstancesTable(self.request)
+        action.get_default_attrs()
+
+        self.assertIn("instanceType: 'virtual'", action.attrs['ng-click'])
+
+    @django.test.utils.override_settings(CHAMELEON_ENABLE_VMS=False)
+    @helpers.create_mocks({api.nova: ('tenant_absolute_limits',)})
+    def test_virtual_launch_hidden_without_vms(self):
+        self.mock_tenant_absolute_limits.return_value = self.limits['absolute']
+        action = tables.LaunchVirtualInstanceLinkNG()
+
+        self.assertFalse(action.allowed(self.request, None))
+
+    @django.test.utils.override_settings(CHAMELEON_ENABLE_VMS=True)
+    @helpers.create_mocks({api.nova: ('tenant_absolute_limits',)})
+    def test_virtual_launch_shown_with_vms(self):
+        self.mock_tenant_absolute_limits.return_value = self.limits['absolute']
+        action = tables.LaunchVirtualInstanceLinkNG()
+
+        self.assertTrue(action.allowed(self.request, None))
+
+    @django.test.utils.override_settings(CHAMELEON_ENABLE_VMS=True)
+    @helpers.create_mocks({api.nova: ('tenant_absolute_limits',)})
+    def test_virtual_launch_keeps_its_name_after_allowed(self):
+        # LaunchLinkNG.allowed() assigns verbose_name, and the table shares one
+        # action between requests, so a lost label stays lost.
+        self.mock_tenant_absolute_limits.return_value = self.limits['absolute']
+        action = tables.LaunchVirtualInstanceLinkNG()
+        action.allowed(self.request, None)
+
+        self.assertEqual("Launch Virtual Instance", str(action.verbose_name))
