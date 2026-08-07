@@ -579,6 +579,10 @@ CHAMELEON_SITES = {}
 # If a flavor has this name, apply chameleon baremetal customizations.
 CHAMELEON_BAREMETAL_FLAVOR_NAME = 'baremetal'
 
-# Whether this site runs VMs alongside baremetal. 
+# Whether this site runs baremetal instances.
+# When false, baremetal customizations are not applied.
+CHAMELEON_ENABLE_BAREMETAL = True
+
+# Whether this site runs virtual machines.
 # When false, panels that only make sense for VMs are not shown.
 CHAMELEON_ENABLE_VMS = False
