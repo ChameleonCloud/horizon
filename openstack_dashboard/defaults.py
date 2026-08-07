@@ -576,5 +576,9 @@ CHAMELEON_SITE_ID = ""
 # DEPRECATED
 CHAMELEON_SITES = {}
 
+# Apply chameleon customizations for virtual instances
+CHAMELEON_ENABLE_VMS = False
+# Apply chameleon customizations for baremetal instances
+CHAMELEON_ENABLE_BAREMETAL = False
 # If a flavor has this name, apply chameleon baremetal customizations.
 CHAMELEON_BAREMETAL_FLAVOR_NAME = 'baremetal'

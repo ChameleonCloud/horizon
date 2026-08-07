@@ -3458,7 +3458,8 @@ class BaremetalRowActionTests(helpers.TestCase):
 
     # The fixture flavor is m1.tiny, configure baremetal flavor to match.
     @django.test.utils.override_settings(
-        CHAMELEON_BAREMETAL_FLAVOR_NAME='m1.tiny')
+        CHAMELEON_BAREMETAL_FLAVOR_NAME='m1.tiny',
+        CHAMELEON_ENABLE_BAREMETAL=True)
     @helpers.create_mocks(ROW_RENDER_MOCKS)
     def test_baremetal_instance_loses_hidden_actions(self):
         names = self._row_action_names(self.flavors.first())
@@ -3471,6 +3472,16 @@ class BaremetalRowActionTests(helpers.TestCase):
         CHAMELEON_BAREMETAL_FLAVOR_NAME='baremetal')
     @helpers.create_mocks(ROW_RENDER_MOCKS)
     def test_virtual_instance_keeps_them(self):
+        names = self._row_action_names(self.flavors.first())
+        # vm-only actions still in the list
+        self.assertLessEqual({'resize', 'pause', 'lock'}, names)
+
+    # Flavor name matches, but the site does not apply CHI customizations.
+    @django.test.utils.override_settings(
+        CHAMELEON_BAREMETAL_FLAVOR_NAME='m1.tiny',
+        CHAMELEON_ENABLE_BAREMETAL=False)
+    @helpers.create_mocks(ROW_RENDER_MOCKS)
+    def test_nothing_hidden_when_site_has_no_baremetal(self):
         names = self._row_action_names(self.flavors.first())
         # vm-only actions still in the list
         self.assertLessEqual({'resize', 'pause', 'lock'}, names)
