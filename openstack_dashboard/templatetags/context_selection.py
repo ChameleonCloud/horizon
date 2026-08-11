@@ -173,4 +173,5 @@ def get_project_name(project_id, projects):
     """
     for project in projects:
         if project_id == project.id:
-            return getattr(project, 'nickname', None) or project.name
+            # Chameleon Feature: Return project nickname if set.
+            return project.to_dict().get('nickname') or project.name
