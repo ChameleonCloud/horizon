@@ -3447,6 +3447,14 @@ ROW_RENDER_MOCKS = {
     api.nova: ('is_feature_available',),
 }
 
+# Meta.row_actions as it stood before the upstream list was restored. Nothing
+# outside this set may show up on a baremetal instance, or upgrading changes
+# what operators see without them opting in.
+PREVIOUS_BAREMETAL_ROW_ACTIONS = frozenset([
+    'start', 'attach_interface', 'detach_interface', 'edit', 'console',
+    'soft_reboot', 'reboot', 'stop', 'rebuild', 'delete',
+])
+
 
 class BaremetalRowActionTests(helpers.TestCase):
     """get_row_actions() hides actions by type, leaving row_actions intact."""
@@ -3474,8 +3482,26 @@ class BaremetalRowActionTests(helpers.TestCase):
                  for action in tables.InstancesTable._meta.row_actions}
         self.assertLessEqual(tables.BAREMETAL_UNSUPPORTED_ACTIONS, names)
 
+    def test_what_is_left_is_what_row_actions_used_to_hold(self):
+        names = {action.name
+                 for action in tables.InstancesTable._meta.row_actions}
+        self.assertEqual(names - tables.BAREMETAL_UNSUPPORTED_ACTIONS,
+                         PREVIOUS_BAREMETAL_ROW_ACTIONS)
+
+    # Stock config, ie. the upgrade case. Set explicitly: test/settings.py
+    # turns CHAMELEON_ENABLE_VMS on so the upstream suite passes, which is not
+    # what a baremetal site ships.
+    @django.test.utils.override_settings(
+        CHAMELEON_ENABLE_VMS=False,
+        CHAMELEON_ENABLE_BAREMETAL=True)
+    @helpers.create_mocks(ROW_RENDER_MOCKS)
+    def test_baremetal_site_gains_no_action_it_did_not_have(self):
+        names = self._row_action_names(self.flavors.first())
+        self.assertFalse(names - PREVIOUS_BAREMETAL_ROW_ACTIONS)
+
     # The fixture flavor is m1.tiny, configure baremetal flavor to match.
     @django.test.utils.override_settings(
+        CHAMELEON_ENABLE_VMS=True,
         CHAMELEON_BAREMETAL_FLAVOR_NAME='m1.tiny')
     @helpers.create_mocks(ROW_RENDER_MOCKS)
     def test_baremetal_instance_loses_hidden_actions(self):
@@ -3486,6 +3512,7 @@ class BaremetalRowActionTests(helpers.TestCase):
         self.assertLessEqual({'rebuild', 'reboot', 'delete'}, names)
 
     @django.test.utils.override_settings(
+        CHAMELEON_ENABLE_VMS=True,
         CHAMELEON_BAREMETAL_FLAVOR_NAME='baremetal')
     @helpers.create_mocks(ROW_RENDER_MOCKS)
     def test_virtual_instance_keeps_them(self):
@@ -3495,6 +3522,7 @@ class BaremetalRowActionTests(helpers.TestCase):
 
     # Flavor name matches, but the site does not apply CHI customizations.
     @django.test.utils.override_settings(
+        CHAMELEON_ENABLE_VMS=True,
         CHAMELEON_BAREMETAL_FLAVOR_NAME='m1.tiny',
         CHAMELEON_ENABLE_BAREMETAL=False)
     @helpers.create_mocks(ROW_RENDER_MOCKS)
@@ -3502,3 +3530,37 @@ class BaremetalRowActionTests(helpers.TestCase):
         names = self._row_action_names(self.flavors.first())
         # vm-only actions still in the list
         self.assertLessEqual({'resize', 'pause', 'lock'}, names)
+
+
+class RebuildDiskConfigTests(helpers.TestCase):
+    """Disk Partition is meaningless on ironic, which ignores disk_config."""
+
+    @helpers.create_mocks({api.glance: ('image_list_detailed',),
+                           api.nova: ('server_get',
+                                      'is_feature_available',)})
+    def _rebuild_form_fields(self):
+        server = self.servers.first()
+        self.mock_image_list_detailed.side_effect = [
+            [self.images.list(), False, False],
+            [[], False, False],
+        ]
+        self.mock_is_feature_available.return_value = False
+        self.mock_server_get.return_value = server
+
+        url = reverse('horizon:project:instances:rebuild', args=[server.id])
+        return self.client.get(url).context['form'].fields
+
+    @django.test.utils.override_settings(
+        CHAMELEON_ENABLE_BAREMETAL=True, CHAMELEON_ENABLE_VMS=False)
+    def test_hidden_on_a_baremetal_only_site(self):
+        self.assertNotIn('disk_config', self._rebuild_form_fields())
+
+    @django.test.utils.override_settings(
+        CHAMELEON_ENABLE_BAREMETAL=True, CHAMELEON_ENABLE_VMS=True)
+    def test_shown_on_a_hybrid_site(self):
+        self.assertIn('disk_config', self._rebuild_form_fields())
+
+    @django.test.utils.override_settings(
+        CHAMELEON_ENABLE_BAREMETAL=False, CHAMELEON_ENABLE_VMS=False)
+    def test_shown_when_baremetal_customizations_are_off(self):
+        self.assertIn('disk_config', self._rebuild_form_fields())
