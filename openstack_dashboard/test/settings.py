@@ -31,6 +31,10 @@ from openstack_dashboard.defaults import *  # noqa: E402,F403,H303
 
 WEBROOT = '/'
 
+# For baremetal only configs, CHI hides these when CHAMELEON_ENABLE_VMS = False
+# Set to true so upstream tests pass.
+CHAMELEON_ENABLE_VMS = True
+
 # The following need to Set explicitly
 # as they defaults to None in openstack_dashboard.defaults.
 # TODO(amotoki): Move them to a common function.
