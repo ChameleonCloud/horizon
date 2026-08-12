@@ -37,7 +37,8 @@ from openstack_dashboard import api
 from openstack_dashboard.dashboards.project.instances import console
 from openstack_dashboard.dashboards.project.instances import tables
 from openstack_dashboard.dashboards.project.instances import tabs
-from openstack_dashboard.dashboards.project.instances import utils as instance_utils
+from openstack_dashboard.dashboards.project.instances \
+    import utils as instance_utils
 from openstack_dashboard.dashboards.project.instances import workflows
 from openstack_dashboard.test import helpers
 from openstack_dashboard.views import get_url_with_pagination
@@ -3451,3 +3452,91 @@ class IsBaremetalInstanceTests(django.test.SimpleTestCase):
         # Callers may still opt in to using the result.
         self.assertTrue(instance_utils.is_baremetal_instance(
             self._instance('ironic-node')))
+
+
+# Rendering a row calls allowed() on every action; without these, unmocked
+# network calls hide actions for the wrong reason.
+ROW_RENDER_MOCKS = {
+    api.neutron: (
+        "floating_ip_supported",
+        "floating_ip_simple_associate_supported",
+    ),
+    api.nova: ("is_feature_available",),
+}
+
+# Valid row_actions for baremetal nodes.
+BAREMETAL_ROW_ACTIONS = frozenset(
+    [
+        "start",
+        "attach_interface",
+        "detach_interface",
+        "edit",
+        "console",
+        "soft_reboot",
+        "reboot",
+        "stop",
+        "rebuild",
+        "delete",
+    ]
+)
+VM_ONLY_ACTIONS = frozenset(["resize", "pause", "lock"])
+
+
+class BaremetalRowActionTests(helpers.TestCase):
+    # The fixture server's flavor is named m1.tiny.
+
+    def _row_actions(self):
+        self.mock_floating_ip_supported.return_value = True
+        self.mock_floating_ip_simple_associate_supported.return_value = True
+        self.mock_is_feature_available.return_value = True
+
+        server = self.servers.first()
+        server.full_flavor = self.flavors.first()
+        self.addCleanup(delattr, server, "full_flavor")
+        table = tables.InstancesTable(self.request, [server])
+        return {action.name for action in table.get_row_actions(server)}
+
+    def test_unsupported_actions_partition_row_actions(self):
+        declared = {a.name for a in tables.InstancesTable._meta.row_actions}
+        self.assertLessEqual(tables.BAREMETAL_UNSUPPORTED_ACTIONS, declared)
+        self.assertEqual(
+            BAREMETAL_ROW_ACTIONS,
+            declared - tables.BAREMETAL_UNSUPPORTED_ACTIONS,
+        )
+
+    @django.test.utils.override_settings(CHAMELEON_ENABLE_BAREMETAL=True)
+    @helpers.create_mocks(ROW_RENDER_MOCKS)
+    def test_baremetal_only_site_adds_no_actions(self):
+        actions = self._row_actions()
+        self.assertTrue(actions)
+        self.assertLessEqual(actions, BAREMETAL_ROW_ACTIONS)
+
+    # enable_vms needed to bypass short-circuit in _row_actions
+    @django.test.utils.override_settings(
+        CHAMELEON_ENABLE_BAREMETAL=True,
+        CHAMELEON_ENABLE_VMS=True,
+        CHAMELEON_BAREMETAL_FLAVOR_NAME="m1.tiny",
+    )
+    @helpers.create_mocks(ROW_RENDER_MOCKS)
+    def test_baremetal_instance_loses_unsupported_actions(self):
+        self.assertFalse(
+            self._row_actions() & tables.BAREMETAL_UNSUPPORTED_ACTIONS
+        )
+
+    # enable_vms needed to bypass short-circuit in _row_actions
+    @django.test.utils.override_settings(
+        CHAMELEON_ENABLE_BAREMETAL=True,
+        CHAMELEON_ENABLE_VMS=True,
+        CHAMELEON_BAREMETAL_FLAVOR_NAME="ironic-node",
+    )
+    @helpers.create_mocks(ROW_RENDER_MOCKS)
+    def test_vm_instance_keeps_all_actions(self):
+        self.assertLessEqual(VM_ONLY_ACTIONS, self._row_actions())
+
+    @django.test.utils.override_settings(
+        CHAMELEON_ENABLE_BAREMETAL=False,
+        CHAMELEON_BAREMETAL_FLAVOR_NAME="m1.tiny",
+    )
+    @helpers.create_mocks(ROW_RENDER_MOCKS)
+    def test_no_filtering_when_baremetal_disabled(self):
+        self.assertLessEqual(VM_ONLY_ACTIONS, self._row_actions())
