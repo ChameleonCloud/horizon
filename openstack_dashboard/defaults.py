@@ -575,3 +575,9 @@ CHAMELEON_REFERENCE_API_URL = "https://api.chameleoncloud.org"
 CHAMELEON_SITE_ID = ""
 # DEPRECATED
 CHAMELEON_SITES = {}
+
+# Whether to hide the security groups panel.
+CHAMELEON_HIDE_SECURITY_GROUPS = True   # upstream False
+
+# Whether to hide the server groups panel.
+CHAMELEON_HIDE_SERVER_GROUPS = True  # upstream False

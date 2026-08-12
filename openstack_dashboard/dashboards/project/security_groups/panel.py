@@ -12,6 +12,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
 import horizon
@@ -21,3 +22,7 @@ class SecurityGroups(horizon.Panel):
     name = _("Security Groups")
     slug = 'security_groups'
     permissions = ('openstack.services.network',)
+
+    @staticmethod
+    def can_register():
+        return not settings.CHAMELEON_HIDE_SECURITY_GROUPS
