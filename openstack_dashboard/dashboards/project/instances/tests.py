@@ -19,6 +19,7 @@
 import collections
 import json
 import logging
+import types
 from unittest import mock
 
 from django.conf import settings
@@ -36,6 +37,7 @@ from openstack_dashboard import api
 from openstack_dashboard.dashboards.project.instances import console
 from openstack_dashboard.dashboards.project.instances import tables
 from openstack_dashboard.dashboards.project.instances import tabs
+from openstack_dashboard.dashboards.project.instances import utils as instance_utils
 from openstack_dashboard.dashboards.project.instances import workflows
 from openstack_dashboard.test import helpers
 from openstack_dashboard.views import get_url_with_pagination
@@ -3391,3 +3393,59 @@ class ConsoleManagerTests(helpers.ResetImageAPIVersionMixin, helpers.TestCase):
                                                     device_id=server.id)
         self.mock_interface_detach.assert_called_once_with(
             helpers.IsHttpRequest(), server.id, port.id)
+
+
+class IsBaremetalInstanceTests(django.test.SimpleTestCase):
+    """Answers from the site config first, the instance's flavor second."""
+
+    def _instance(self, flavor_name=None):
+        """An instance whose flavor resolved to flavor_name, or did not."""
+        if flavor_name is None:
+            return types.SimpleNamespace()
+        return types.SimpleNamespace(
+            full_flavor=types.SimpleNamespace(name=flavor_name))
+
+    @django.test.utils.override_settings(
+        CHAMELEON_ENABLE_BAREMETAL=True,
+        CHAMELEON_ENABLE_VMS=False,
+        CHAMELEON_BAREMETAL_FLAVOR_NAME='baremetal')
+    def test_baremetal_only_site_does_not_consult_the_flavor(self):
+        # Backwards compat: baremetal-only site treat everything as baremetal.
+        self.assertTrue(
+            instance_utils.is_baremetal_instance(self._instance('m1.small')))
+
+    @django.test.utils.override_settings(
+        CHAMELEON_ENABLE_BAREMETAL=True,
+        CHAMELEON_ENABLE_VMS=True,
+        CHAMELEON_BAREMETAL_FLAVOR_NAME='ironic-node')
+    def test_hybrid_site_matches_the_configured_flavor_name(self):
+        # Check that non-default flavor name can work
+        self.assertTrue(instance_utils.is_baremetal_instance(
+            self._instance('ironic-node')))
+
+    @django.test.utils.override_settings(
+        CHAMELEON_ENABLE_BAREMETAL=True,
+        CHAMELEON_ENABLE_VMS=True,
+        CHAMELEON_BAREMETAL_FLAVOR_NAME='ironic-node')
+    def test_hybrid_site_rejects_any_other_flavor_name(self):
+        self.assertFalse(
+            instance_utils.is_baremetal_instance(self._instance('m1.small')))
+
+    @django.test.utils.override_settings(
+        CHAMELEON_ENABLE_BAREMETAL=True,
+        CHAMELEON_ENABLE_VMS=True)
+    def test_unresolvable_flavor_is_treated_as_a_vm(self):
+        # Private and blazar-deleted flavors don't resolve flavor name, treat
+        # them as VM flavors.
+        self.assertFalse(instance_utils.is_baremetal_instance(
+            self._instance()))
+
+    @django.test.utils.override_settings(
+        CHAMELEON_ENABLE_BAREMETAL=False,
+        CHAMELEON_ENABLE_VMS=True,
+        CHAMELEON_BAREMETAL_FLAVOR_NAME='ironic-node')
+    def test_still_reports_baremetal_when_customizations_are_off(self):
+        # This reports what the instance is, not whether to customize it;
+        # Callers may still opt in to using the result.
+        self.assertTrue(instance_utils.is_baremetal_instance(
+            self._instance('ironic-node')))
