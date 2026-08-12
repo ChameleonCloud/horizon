@@ -12,6 +12,7 @@
 
 import logging
 
+from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
 import horizon
@@ -25,6 +26,10 @@ class ServerGroups(horizon.Panel):
     slug = "server_groups"
     permissions = ('openstack.services.compute',)
     policy_rules = (("compute", "os_compute_api:os-server-groups:index"),)
+
+    @staticmethod
+    def can_register():
+        return not settings.CHAMELEON_HIDE_SERVER_GROUPS
 
     def allowed(self, context):
         request = context['request']
