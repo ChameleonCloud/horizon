@@ -31,6 +31,10 @@ from openstack_dashboard.defaults import *  # noqa: E402,F403,H303
 
 WEBROOT = '/'
 
+# Override these while CHI defaults differ from upstream.
+CHAMELEON_HIDE_SECURITY_GROUPS = False
+CHAMELEON_HIDE_SERVER_GROUPS = False
+
 # The following need to Set explicitly
 # as they defaults to None in openstack_dashboard.defaults.
 # TODO(amotoki): Move them to a common function.
