@@ -276,3 +276,35 @@ def resolve_flavor(request, instance, flavors=None, **kwargs):
     else:
         instance.flavor['name'] = instance.flavor['original_name']
         return flavor_from_dict(instance.flavor)
+
+
+def is_baremetal_instance(instance):
+    """Does this instance run on baremetal or a hypervisor.
+
+    Detect whether an instance is baremetal or not.
+    NOTE: Nova does not expose the "hypervisor_type" field via the servers API.
+    Instead, check the flavor used to launch the instance, and match against
+    `CHAMELEON_BAREMETAL_FLAVOR_NAME`.
+    """
+
+    if (settings.CHAMELEON_ENABLE_BAREMETAL and
+            not settings.CHAMELEON_ENABLE_VMS):
+        # short circuit for baremetal only sites, flavor info may not be
+        # available.
+        return True
+
+    # metadata available to horizon differs by context. If missing, default to
+    # VM settings which are broader.
+    full_flavor = getattr(instance, 'full_flavor', None)
+    if not full_flavor:
+        LOG.warning("Failed to look up flavor for instance %s",
+                    getattr(instance, 'id', instance))
+        return False
+
+    full_flavor_name = getattr(full_flavor, 'name', None)
+    if not full_flavor_name:
+        LOG.warning("Could not look up name for flavor %s",
+                    getattr(full_flavor, 'id', full_flavor))
+        return False
+
+    return full_flavor_name == settings.CHAMELEON_BAREMETAL_FLAVOR_NAME
