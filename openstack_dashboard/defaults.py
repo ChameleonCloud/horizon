@@ -585,3 +585,13 @@ CHAMELEON_HIDE_SECURITY_GROUPS = True   # upstream False
 
 # Whether to hide the server groups panel.
 CHAMELEON_HIDE_SERVER_GROUPS = True  # upstream False
+
+
+# If a flavor has this name, apply chameleon baremetal customizations.
+CHAMELEON_BAREMETAL_FLAVOR_NAME = 'baremetal'
+
+# Whether to apply Chameleon customizations for baremetal instances
+CHAMELEON_ENABLE_BAREMETAL = True
+
+# Whether to apply Chameleon customizations for virtual instances
+CHAMELEON_ENABLE_VMS = False
