@@ -31,7 +31,10 @@ from openstack_dashboard.defaults import *  # noqa: E402,F403,H303
 
 WEBROOT = '/'
 
-# Override these while CHI defaults differ from upstream.
+# Override these where CHI defaults.py differs from upstream. By matching 
+# upstream behavior here, upstream tests pass as normal, and CHI specific tests
+# opt in via override_settings.
+CHAMELEON_ENABLE_BAREMETAL = False
 CHAMELEON_HIDE_SECURITY_GROUPS = False
 CHAMELEON_HIDE_SERVER_GROUPS = False
 
