@@ -29,14 +29,15 @@
   function LaunchInstanceWizardController($scope, launchInstanceModel, launchInstanceWorkflow) {
     // CHI: which launch button was pressed. Defaults to baremetal because the images,
     // volumes, snapshots and network topology panels open this wizard without one.
-    launchInstanceModel.instanceType =
-      ($scope.launchContext && $scope.launchContext.instanceType) || 'baremetal';
+    var launchContext = $scope.launchContext || {};
+
+    launchInstanceModel.instanceType = launchContext.instanceType || 'baremetal';
     launchInstanceModel.isBaremetal = launchInstanceModel.instanceType === 'baremetal';
     launchInstanceModel.isVirtual = launchInstanceModel.instanceType === 'virtual';
 
     // Note: we set these attributes on the $scope so that the scope inheritance used all
     // through the launch instance wizard continues to work.
-    $scope.workflow = launchInstanceWorkflow;     // eslint-disable-line angular/controller-as
+    $scope.workflow = launchInstanceWorkflow(launchInstanceModel.instanceType);
     $scope.model = launchInstanceModel;           // eslint-disable-line angular/controller-as
     $scope.model.initialize(true);
     $scope.submit = $scope.model.createInstance;  // eslint-disable-line angular/controller-as

@@ -27,119 +27,136 @@
   ];
 
   function launchInstanceWorkflow(basePath, stepPolicy, dashboardWorkflow) {
-    return dashboardWorkflow({
-      title: gettext('Launch Instance'),
+    return createWorkflow;
 
-      steps: [
-        {
-          id: 'details',
-          title: gettext('Details'),
-          templateUrl: basePath + 'details/details.html',
-          helpUrl: basePath + 'details/details.help.html',
-          formName: 'launchInstanceDetailsForm'
+    /**
+     * @name createWorkflow
+     * @param {string} instanceType From the launch context.
+     * @description
+     * Baremetal keeps only Details, Source, Networks and Key Pair as tabs and puts the rest
+     * behind a "Show Advanced" button. Virtual gets the upstream layout: every step a tab, no
+     * button. Rebuilt per modal open, so one instance type cannot leak into the next.
+     * @returns {Object} The workflow
+     */
+    function createWorkflow(instanceType) {
+      var isBaremetal = instanceType === 'baremetal';
+
+      return dashboardWorkflow({
+        title: gettext('Launch Instance'),
+
+        steps: [
+          {
+            id: 'details',
+            title: gettext('Details'),
+            templateUrl: basePath + 'details/details.html',
+            helpUrl: basePath + 'details/details.help.html',
+            formName: 'launchInstanceDetailsForm'
+          },
+          {
+            id: 'source',
+            title: gettext('Source'),
+            templateUrl: basePath + 'source/source.html',
+            helpUrl: basePath + 'source/source.help.html',
+            formName: 'launchInstanceSourceForm'
+          },
+          {
+            id: 'flavor',
+            title: gettext('Flavor'),
+            templateUrl: basePath + 'flavor/flavor.html',
+            helpUrl: basePath + 'flavor/flavor.help.html',
+            formName: 'launchInstanceFlavorForm',
+            isAdvanced: isBaremetal,
+          },
+          {
+            id: 'networks',
+            title: gettext('Networks'),
+            templateUrl: basePath + 'network/network.html',
+            helpUrl: basePath + 'network/network.help.html',
+            formName: 'launchInstanceNetworkForm',
+            requiredServiceTypes: ['network']
+          },
+          {
+            id: 'ports',
+            title: gettext('Network Ports'),
+            templateUrl: basePath + 'networkports/ports.html',
+            helpUrl: basePath + 'networkports/ports.help.html',
+            formName: 'launchInstanceNetworkPortForm',
+            requiredServiceTypes: ['network'],
+            setting: 'LAUNCH_INSTANCE_DEFAULTS.enable_net_ports',
+            isAdvanced: isBaremetal,
+          },
+          {
+            id: 'secgroups',
+            title: gettext('Security Groups'),
+            templateUrl: basePath + 'security-groups/security-groups.html',
+            helpUrl: basePath + 'security-groups/security-groups.help.html',
+            formName: 'launchInstanceAccessAndSecurityForm',
+            requiredServiceTypes: ['network'],
+            setting: 'LAUNCH_INSTANCE_DEFAULTS.enable_secgroups',
+            isAdvanced: isBaremetal,
+          },
+          {
+            id: 'keypair',
+            title: gettext('Key Pair'),
+            templateUrl: basePath + 'keypair/keypair.html',
+            helpUrl: basePath + 'keypair/keypair.help.html',
+            formName: 'launchInstanceKeypairForm'
+          },
+          {
+            id: 'configuration',
+            title: gettext('Configuration'),
+            templateUrl: basePath + 'configuration/configuration.html',
+            helpUrl: basePath + 'configuration/configuration.help.html',
+            formName: 'launchInstanceConfigurationForm',
+            isAdvanced: isBaremetal,
+          },
+          {
+            id: 'servergroups',
+            title: gettext('Server Groups'),
+            templateUrl: basePath + 'server-groups/server-groups.html',
+            helpUrl: basePath + 'server-groups/server-groups.help.html',
+            formName: 'launchInstanceServerGroupsForm',
+            policy: stepPolicy.serverGroups,
+            setting: 'LAUNCH_INSTANCE_DEFAULTS.enable_servergroups',
+            isAdvanced: isBaremetal,
+          },
+          {
+            id: 'hints',
+            title: gettext('Scheduler Hints'),
+            templateUrl: basePath + 'scheduler-hints/scheduler-hints.html',
+            helpUrl: basePath + 'scheduler-hints/scheduler-hints.help.html',
+            formName: 'launchInstanceSchedulerHintsForm',
+            policy: stepPolicy.schedulerHints,
+            setting: 'LAUNCH_INSTANCE_DEFAULTS.enable_scheduler_hints',
+            isAdvanced: isBaremetal,
+          },
+          {
+            id: 'metadata',
+            title: gettext('Metadata'),
+            templateUrl: basePath + 'metadata/metadata.html',
+            helpUrl: basePath + 'metadata/metadata.help.html',
+            formName: 'launchInstanceMetadataForm',
+            setting: 'LAUNCH_INSTANCE_DEFAULTS.enable_metadata',
+            isAdvanced: isBaremetal,
+          }
+        ],
+
+        btnText: {
+          finish: gettext('Launch Instance')
         },
-        {
-          id: 'source',
-          title: gettext('Source'),
-          templateUrl: basePath + 'source/source.html',
-          helpUrl: basePath + 'source/source.help.html',
-          formName: 'launchInstanceSourceForm'
+
+        btnIcon: {
+          finish: 'fa-cloud-upload'
         },
-        {
-          id: 'flavor',
-          title: gettext('Flavor'),
-          templateUrl: basePath + 'flavor/flavor.html',
-          helpUrl: basePath + 'flavor/flavor.help.html',
-          formName: 'launchInstanceFlavorForm',
-          isAdvanced: true,
-        },
-        {
-          id: 'networks',
-          title: gettext('Networks'),
-          templateUrl: basePath + 'network/network.html',
-          helpUrl: basePath + 'network/network.help.html',
-          formName: 'launchInstanceNetworkForm',
-          requiredServiceTypes: ['network']
-        },
-        {
-          id: 'ports',
-          title: gettext('Network Ports'),
-          templateUrl: basePath + 'networkports/ports.html',
-          helpUrl: basePath + 'networkports/ports.help.html',
-          formName: 'launchInstanceNetworkPortForm',
-          requiredServiceTypes: ['network'],
-          setting: 'LAUNCH_INSTANCE_DEFAULTS.enable_net_ports',
-          isAdvanced: true,
-        },
-        {
-          id: 'secgroups',
-          title: gettext('Security Groups'),
-          templateUrl: basePath + 'security-groups/security-groups.html',
-          helpUrl: basePath + 'security-groups/security-groups.help.html',
-          formName: 'launchInstanceAccessAndSecurityForm',
-          requiredServiceTypes: ['network'],
-          setting: 'LAUNCH_INSTANCE_DEFAULTS.enable_secgroups',
-          isAdvanced: true,
-        },
-        {
-          id: 'keypair',
-          title: gettext('Key Pair'),
-          templateUrl: basePath + 'keypair/keypair.html',
-          helpUrl: basePath + 'keypair/keypair.help.html',
-          formName: 'launchInstanceKeypairForm'
-        },
-        {
-          id: 'configuration',
-          title: gettext('Configuration'),
-          templateUrl: basePath + 'configuration/configuration.html',
-          helpUrl: basePath + 'configuration/configuration.help.html',
-          formName: 'launchInstanceConfigurationForm',
-          isAdvanced: true,
-        },
-        {
-          id: 'servergroups',
-          title: gettext('Server Groups'),
-          templateUrl: basePath + 'server-groups/server-groups.html',
-          helpUrl: basePath + 'server-groups/server-groups.help.html',
-          formName: 'launchInstanceServerGroupsForm',
-          policy: stepPolicy.serverGroups,
-          setting: 'LAUNCH_INSTANCE_DEFAULTS.enable_servergroups',
-          isAdvanced: true,
-        },
-        {
-          id: 'hints',
-          title: gettext('Scheduler Hints'),
-          templateUrl: basePath + 'scheduler-hints/scheduler-hints.html',
-          helpUrl: basePath + 'scheduler-hints/scheduler-hints.help.html',
-          formName: 'launchInstanceSchedulerHintsForm',
-          policy: stepPolicy.schedulerHints,
-          setting: 'LAUNCH_INSTANCE_DEFAULTS.enable_scheduler_hints',
-          isAdvanced: true,
-        },
-        {
-          id: 'metadata',
-          title: gettext('Metadata'),
-          templateUrl: basePath + 'metadata/metadata.html',
-          helpUrl: basePath + 'metadata/metadata.help.html',
-          formName: 'launchInstanceMetadataForm',
-          setting: 'LAUNCH_INSTANCE_DEFAULTS.enable_metadata',
-          isAdvanced: true,
+
+        // showTabs is the state of the toggle, so virtual starts with all tabs shown. Keeping
+        // it true also means a step marked advanced later stays reachable without the button.
+        advanced: {
+          showButton: isBaremetal,
+          showTabs: !isBaremetal,
         }
-      ],
-
-      btnText: {
-        finish: gettext('Launch Instance')
-      },
-
-      btnIcon: {
-        finish: 'fa-cloud-upload'
-      },
-
-      advanced: {
-        showButton: true,
-        showTabs: false,
-      }
-    });
+      });
+    }
   }
 
 })();

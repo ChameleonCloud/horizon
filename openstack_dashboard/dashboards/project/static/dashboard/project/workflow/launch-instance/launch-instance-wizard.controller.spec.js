@@ -31,7 +31,9 @@
       $provide.value('serviceCatalog', {});
       $provide.value('launchInstanceModel', model);
       $provide.value('horizon.dashboard.project.workflow.launch-instance.workflow',
-        { thing: true });
+        function(instanceType) {
+          return { thing: true, builtFor: instanceType };
+        });
     }));
     beforeEach(inject(function ($controller) {
       spyOn(model, 'initialize');
@@ -47,7 +49,11 @@
     });
 
     it('sets scope.workflow to the given workflow', function() {
-      expect(scope.workflow).toEqual({ thing: true });
+      expect(scope.workflow.thing).toBe(true);
+    });
+
+    it('CHI: builds the workflow for the launched instance type', function() {
+      expect(scope.workflow.builtFor).toBe('baremetal');
     });
 
     it('defines scope.submit', function() {
