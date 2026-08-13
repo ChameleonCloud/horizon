@@ -72,6 +72,11 @@ class UsageView(tables.DataTableView):
             )
         except Exception:
             context['simple_tenant_usage_enabled'] = True
+        # _usage_summary.html is shared by project, admin and identity. Pass
+        # setting to context so that templates can read it.
+        context["chameleon_enable_baremetal"] = (
+            settings.CHAMELEON_ENABLE_BAREMETAL
+        )
         return context
 
     def render_to_response(self, context, **response_kwargs):
@@ -114,6 +119,8 @@ CHART_DEFS = [
         'title': _("Compute"),
         'charts': [
             ChartDef("instances", _("Instances"), None, None),
+            ChartDef("cores", _("VCPUs"), None, None),
+            ChartDef("ram", _("RAM"), None, (sizeformat.mb_float_format,)),
         ],
     },
     {
@@ -141,6 +148,10 @@ CHART_DEFS = [
         'allowed': _check_network_allowed,
     },
 ]
+
+
+# Quota charts for cores and ram are not relevant to baremetal.
+BAREMETAL_HIDDEN_CHARTS = frozenset(["cores", "ram"])
 
 
 def _apply_filters(value, filters):
@@ -174,6 +185,11 @@ class ProjectUsageView(UsageView):
     def _process_chart_section(self, chart_defs):
         charts = []
         for t in chart_defs:
+            if (
+                settings.CHAMELEON_ENABLE_BAREMETAL
+                and t.quota_key in BAREMETAL_HIDDEN_CHARTS
+            ):
+                continue
             if t.quota_key not in self.usage.limits:
                 continue
             key = t.quota_key
