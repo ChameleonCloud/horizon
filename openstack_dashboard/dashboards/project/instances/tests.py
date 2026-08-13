@@ -1416,6 +1416,16 @@ class InstanceDetailTests(InstanceTestBase):
         self.mock_is_extension_supported.assert_called_once_with(
             helpers.IsHttpRequest(), 'mac-learning')
 
+    @override_settings(CHAMELEON_ENABLE_BAREMETAL=True)
+    @helpers.create_mocks({api.neutron: ['is_extension_supported']})
+    def test_instance_details_chi_baremetal_hides_flavor_specs(self):
+        self.mock_is_extension_supported.return_value = False
+
+        res = self._get_instance_details(self.servers.first())
+
+        self.assertNotContains(res, 'VCPUs')
+        self.assertContains(res, 'Flavor ID')
+
     @override_settings(OPENSTACK_INSTANCE_RETRIEVE_IP_ADDRESSES=False)
     @helpers.create_mocks({api.neutron: ['is_extension_supported']})
     def test_instance_details_skip_servers_update_addresses(self):
