@@ -10,6 +10,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from django.conf import settings
 from django.template.defaultfilters import floatformat
 from django import urls
 from django.utils.translation import gettext_lazy as _
@@ -17,6 +18,11 @@ from django.utils.translation import gettext_lazy as _
 from horizon import tables
 from horizon.templatetags import sizeformat
 from horizon.utils import filters
+
+
+# Per-instance usage columns, vcpus, disk, and memory are not meaningful for
+# chameleon baremetal, all set to 1,0,0 to skip nova scheduling.
+BAREMETAL_HIDDEN_USAGE_COLUMNS = frozenset(["vcpus", "disk", "memory"])
 
 
 class CSVSummary(tables.LinkAction):
@@ -89,10 +95,20 @@ class ProjectUsageTable(BaseUsageTable):
     def get_object_id(self, datum):
         return datum.get('instance_id', id(datum))
 
+    def get_columns(self):
+        columns = super().get_columns()
+        if settings.CHAMELEON_ENABLE_BAREMETAL:
+            return [
+                c
+                for c in columns
+                if c.name not in BAREMETAL_HIDDEN_USAGE_COLUMNS
+            ]
+        return columns
+
     class Meta(object):
         name = "project_usage"
         hidden_title = False
         verbose_name = _("Usage")
-        columns = ("instance", "uptime")
+        columns = ("instance", "vcpus", "disk", "memory", "uptime")
         table_actions = (CSVSummary,)
         multi_select = False
