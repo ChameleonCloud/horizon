@@ -54,6 +54,23 @@
       expect(scope.submit).toBeDefined();
       expect(scope.submit()).toBe('created');
     });
+
+    it('CHI: defaults the instance type to baremetal with no launchContext', function() {
+      expect(model.instanceType).toBe('baremetal');
+      expect(model.isBaremetal).toBe(true);
+      expect(model.isVirtual).toBe(false);
+    });
+
+    it('CHI: records the instance type from launchContext', function() {
+      inject(function ($controller) {
+        $controller('LaunchInstanceWizardController',
+          {$scope: { launchContext: { instanceType: 'virtual' } }});
+      });
+
+      expect(model.instanceType).toBe('virtual');
+      expect(model.isBaremetal).toBe(false);
+      expect(model.isVirtual).toBe(true);
+    });
   });
 
 })();
