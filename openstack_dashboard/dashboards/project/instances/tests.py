@@ -3559,3 +3559,22 @@ class BaremetalRowActionTests(helpers.TestCase):
     @helpers.create_mocks(ROW_RENDER_MOCKS)
     def test_no_filtering_when_baremetal_disabled(self):
         self.assertLessEqual(VM_ONLY_ACTIONS, self._row_actions())
+
+
+class FlavorPopoverTests(helpers.TestCase):
+    """CHI Baremetal nodes don't set resource information in flavors. In this
+    case we link to hardware catalog instead.
+
+    TODO(Mike): what should CHI VM flavors show.
+    """
+
+    @django.test.utils.override_settings(CHAMELEON_ENABLE_BAREMETAL=True)
+    def test_chi_baremetal_links_to_the_hardware_catalog(self):
+        server = self.servers.first()
+        server.full_flavor = self.flavors.first()
+        self.addCleanup(delattr, server, 'full_flavor')
+
+        popover = tables.get_flavor(server)
+
+        self.assertIn('resource discovery interface', popover)
+        self.assertNotIn('VCPUs', popover)
