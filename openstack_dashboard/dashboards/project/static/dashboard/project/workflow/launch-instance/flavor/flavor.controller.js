@@ -56,6 +56,16 @@
         singleton: true
       },
       {
+        label: gettext('VCPUs'),
+        name: 'vcpus',
+        singleton: true
+      },
+      {
+        label: gettext('RAM'),
+        name: 'ram',
+        singleton: true
+      },
+      {
         label: gettext('Public'),
         name: 'isPublic',
         singleton: true,
