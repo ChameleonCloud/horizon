@@ -3601,3 +3601,51 @@ class LaunchLinkNGInstanceTypeTests(helpers.TestCase):
 
         self.assertIn("instanceType: 'baremetal'", ngclick)
         self.assertIn("successUrl: '%s'" % INDEX_URL, ngclick)
+
+    def test_virtual_launch_link_declares_virtual(self):
+        self.assertIn(
+            "instanceType: 'virtual'",
+            self._ngclick(tables.LaunchVirtualInstanceLinkNG),
+        )
+
+
+class LaunchVirtualInstanceLinkNGTests(helpers.TestCase):
+    """Visibility of the virtual launch button."""
+
+    def _table_action_names(self):
+        table = tables.InstancesTable(self.request)
+        return [action.name for action in table.get_table_actions()]
+
+    @django.test.utils.override_settings(CHAMELEON_ENABLE_VMS=False)
+    @helpers.create_mocks({api.nova: ["tenant_absolute_limits"]})
+    def test_baremetal_only_site_shows_one_launch_button(self):
+        self.mock_tenant_absolute_limits.return_value = self.limits["absolute"]
+
+        names = self._table_action_names()
+
+        self.assertIn("launch-ng", names)
+        self.assertNotIn("launch-virtual-ng", names)
+
+    @django.test.utils.override_settings(CHAMELEON_ENABLE_VMS=True)
+    @helpers.create_mocks({api.nova: ["tenant_absolute_limits"]})
+    def test_hybrid_site_shows_both_launch_buttons(self):
+        self.mock_tenant_absolute_limits.return_value = self.limits["absolute"]
+
+        names = self._table_action_names()
+
+        self.assertIn("launch-ng", names)
+        self.assertIn("launch-virtual-ng", names)
+
+    @django.test.utils.override_settings(CHAMELEON_ENABLE_VMS=True)
+    @helpers.create_mocks({api.nova: ["tenant_absolute_limits"]})
+    def test_allowed_keeps_each_button_its_own_name(self):
+        """allowed() rewrites verbose_name, so subclasses can lose theirs."""
+        self.mock_tenant_absolute_limits.return_value = self.limits["absolute"]
+        baremetal = tables.LaunchLinkNG()
+        virtual = tables.LaunchVirtualInstanceLinkNG()
+
+        baremetal.allowed(self.request, None)
+        virtual.allowed(self.request, None)
+
+        self.assertEqual("Launch Instance", str(baremetal.verbose_name))
+        self.assertEqual("Launch Virtual Instance", str(virtual.verbose_name))
