@@ -2386,7 +2386,8 @@ class InstanceTests2(InstanceTestBase, InstanceTableTestMixin):
     @helpers.create_mocks({api.glance: ('image_list_detailed',),
                            api.nova: ('server_get',
                                       'is_feature_available',)})
-    def test_rebuild_instance_get(self, expect_password_fields=True):
+    def test_rebuild_instance_get(self, expect_password_fields=True,
+                                  expect_disk_config=True):
         server = self.servers.first()
         self._mock_glance_image_list_detailed(self.images.list())
         self.mock_is_feature_available.return_value = False
@@ -2403,6 +2404,12 @@ class InstanceTests2(InstanceTestBase, InstanceTableTestMixin):
         else:
             self.assertNotContains(res, password_field_label)
 
+        disk_config_field_label = 'Disk Partition'
+        if expect_disk_config:
+            self.assertContains(res, disk_config_field_label)
+        else:
+            self.assertNotContains(res, disk_config_field_label)
+
         self.mock_server_get.assert_called_once_with(
             helpers.IsHttpRequest(), server.id)
         self._check_glance_image_list_detailed(count=4)
@@ -2414,6 +2421,10 @@ class InstanceTests2(InstanceTestBase, InstanceTableTestMixin):
         OPENSTACK_HYPERVISOR_FEATURES={'can_set_password': False})
     def test_rebuild_instance_get_without_set_password(self):
         self.test_rebuild_instance_get(expect_password_fields=False)
+
+    @django.test.utils.override_settings(CHAMELEON_ENABLE_BAREMETAL=True)
+    def test_rebuild_instance_get_chi_baremetal(self):
+        self.test_rebuild_instance_get(expect_disk_config=False)
 
     def _instance_rebuild_post(self, server_id, image_id,
                                password=None, confirm_password=None,
