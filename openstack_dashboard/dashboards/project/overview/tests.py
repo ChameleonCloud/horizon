@@ -308,6 +308,26 @@ class UsageViewTests(test.TestCase):
         self.assertEqual(1234, chart_fip['used'])
         self.assertEqual('1,234', chart_fip['used_display'])
 
+    @override_settings(CHAMELEON_ENABLE_BAREMETAL=True)
+    def test_chi_baremetal_hides_vcpu_and_ram_charts(self):
+        res = self._test_usage_charts(
+            quota_usage_overrides={'floatingip': {'quota': -1, 'used': 1234}})
+        charts = res.context['charts']
+
+        compute = [c for c in charts if c['title'] == 'Compute'][0]
+        self.assertEqual(['instances'],
+                         [c['type'] for c in compute['charts']])
+        # Only the compute section is trimmed.
+        self.assertEqual(['Compute', 'Volume', 'Network'],
+                         [c['title'] for c in charts])
+        self.assertNotContains(res, "This Period's VCPU-Hours")
+
+    @override_settings(CHAMELEON_ENABLE_BAREMETAL=True)
+    def test_chi_baremetal_hides_per_instance_usage_columns(self):
+        table = usage.ProjectUsageTable(self.request, [])
+        self.assertEqual(['instance', 'uptime'],
+                         [c.name for c in table.get_columns()])
+
     def test_disallowed_network_chart(self):
         res = self._test_usage_charts(
             quota_usage_overrides={'floatingip': {'quota': -1, 'used': 1234}},

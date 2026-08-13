@@ -49,9 +49,13 @@ class OverviewTab(tabs.Tab):
             hardware_catalog_url = '/'.join([
                 portal_base, 'hardware/node/sites', site,
                 'clusters/chameleon/nodes'])
-        return {"instance": self.tab_group.kwargs["instance"],
-                "is_superuser": request.user.is_superuser,
-                "hardware_catalog_url": hardware_catalog_url}
+        # TODO(Mike): Set baremetal per-instance instead of site-wide.
+        return {
+            "instance": self.tab_group.kwargs["instance"],
+            "is_superuser": request.user.is_superuser,
+            "hardware_catalog_url": hardware_catalog_url,
+            "chameleon_enable_baremetal": settings.CHAMELEON_ENABLE_BAREMETAL,
+        }
 
 
 class InterfacesTab(policy.PolicyTargetMixin, tabs.TableTab):
