@@ -316,6 +316,10 @@
       }));
 
       beforeEach(inject(function($injector) {
+        // Reset the flags read by the fake serviceCatalog.
+        cinderEnabled = false;
+        neutronEnabled = false;
+
         model = $injector.get('launchInstanceModel');
         $q = $injector.get('$q');
         scope = $injector.get('$rootScope').$new();
@@ -588,6 +592,7 @@
         });
 
         it('sets the ports properly based on device_owner', function () {
+          neutronEnabled = true;
           model.initialize(true);
           scope.$apply();
           expect(model.ports.length).toBe(1);
@@ -636,6 +641,7 @@
         );
 
         it('should set a network by default if only one network is available', function () {
+          neutronEnabled = true;
           var networks = [ { id: 'net-1', subnets: [ { id: 'subnet1' } ] } ];
           spyOn(neutronApi, 'getNetworks').and.callFake(function () {
             var deferred = $q.defer();
@@ -672,6 +678,7 @@
         });
 
         it('should have the proper entries in allowedBootSources', function() {
+          cinderEnabled = true;
           model.initialize(true);
           scope.$apply();
 
@@ -700,6 +707,7 @@
         });
 
         it('should have proper allowedBootSources if settings are missing', function() {
+          cinderEnabled = true;
           delete settings.LAUNCH_INSTANCE_DEFAULTS;
           model.initialize(true);
           scope.$apply();
@@ -713,6 +721,7 @@
         });
 
         it('should have proper allowedBootSources if specific settings missing', function() {
+          cinderEnabled = true;
           delete settings.LAUNCH_INSTANCE_DEFAULTS.create_volume;
           delete settings.LAUNCH_INSTANCE_DEFAULTS.disable_image;
           delete settings.LAUNCH_INSTANCE_DEFAULTS.disable_instance_snapshot;
@@ -730,6 +739,7 @@
         });
 
         it('should have no images if disable_image is set to true', function() {
+          cinderEnabled = true;
           settings.LAUNCH_INSTANCE_DEFAULTS.disable_image = true;
           model.initialize(true);
           scope.$apply();
@@ -745,6 +755,7 @@
         });
 
         it('should have images if disable_image is missing', function() {
+          cinderEnabled = true;
           delete settings.LAUNCH_INSTANCE_DEFAULTS.disable_image;
           model.initialize(true);
           scope.$apply();
@@ -758,6 +769,7 @@
         });
 
         it('should have no volumes if disable_volume is set to true', function() {
+          cinderEnabled = true;
           settings.LAUNCH_INSTANCE_DEFAULTS.disable_volume = true;
           model.initialize(true);
           scope.$apply();
@@ -776,6 +788,7 @@
         });
 
         it('should have volumes if disable_volume is missing', function() {
+          cinderEnabled = true;
           delete settings.LAUNCH_INSTANCE_DEFAULTS.disable_volume;
           model.initialize(true);
           scope.$apply();
@@ -789,6 +802,7 @@
         });
 
         it('should have volume snapshots if disable_volume_snapshot is missing', function() {
+          cinderEnabled = true;
           delete settings.LAUNCH_INSTANCE_DEFAULTS.disable_volume_snapshot;
           model.initialize(true);
           scope.$apply();
@@ -803,6 +817,7 @@
 
         it('should not have volume snapshots if disable_volume_snapshot is set to true',
         function() {
+          cinderEnabled = true;
           settings.LAUNCH_INSTANCE_DEFAULTS.disable_volume_snapshot = true;
           model.initialize(true);
           scope.$apply();
@@ -816,6 +831,7 @@
         });
 
         it('should have no snapshot if disable_instance_snapshot is set to true', function() {
+          cinderEnabled = true;
           settings.LAUNCH_INSTANCE_DEFAULTS.disable_instance_snapshot = true;
           model.initialize(true);
           scope.$apply();
@@ -829,6 +845,7 @@
         });
 
         it('should have snapshot if disable_instance_snapshot is missing', function() {
+          cinderEnabled = true;
           delete settings.LAUNCH_INSTANCE_DEFAULTS.disable_instance_snapshot;
           model.initialize(true);
           scope.$apply();
@@ -842,6 +859,7 @@
         });
 
         it('should have no snapshot and no image if both are disabled', function() {
+          cinderEnabled = true;
           settings.LAUNCH_INSTANCE_DEFAULTS.disable_image = true;
           settings.LAUNCH_INSTANCE_DEFAULTS.disable_instance_snapshot = true;
 
@@ -857,6 +875,7 @@
         });
 
         it('should have snapshot and image if both are missing', function() {
+          cinderEnabled = true;
           delete settings.LAUNCH_INSTANCE_DEFAULTS.disable_image;
           delete settings.LAUNCH_INSTANCE_DEFAULTS.disable_instance_snapshot;
 
