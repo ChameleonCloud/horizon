@@ -264,7 +264,9 @@
             .finally(onGetAvailabilityZonesComplete),
           novaAPI.getFlavors({
             is_public: true,
-            get_extras: false
+            get_extras: true,
+            // Dropped from the query when undefined, i.e. unfiltered for baremetal.
+            is_blazar_reserved: model.isVirtual ? 'true' : undefined
           }).then(onGetFlavors, noop),
           novaAPI.getKeypairs().then(onGetKeypairs, noop),
           novaAPI.getLimits(true).then(onGetNovaLimits, noop),
