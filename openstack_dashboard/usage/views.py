@@ -74,8 +74,13 @@ class UsageView(tables.DataTableView):
             context['simple_tenant_usage_enabled'] = True
         # _usage_summary.html is shared by project, admin and identity. Pass
         # setting to context so that templates can read it.
+        #
+        # A hybrid site runs VMs alongside baremetal, so its VCPU/RAM/disk
+        # figures are meaningful and stay visible. Only a baremetal-only site
+        # hides them.
         context["chameleon_enable_baremetal"] = (
-            settings.CHAMELEON_ENABLE_BAREMETAL
+            settings.CHAMELEON_ENABLE_BAREMETAL and
+            not settings.CHAMELEON_ENABLE_VMS
         )
         return context
 
@@ -186,8 +191,9 @@ class ProjectUsageView(UsageView):
         charts = []
         for t in chart_defs:
             if (
-                settings.CHAMELEON_ENABLE_BAREMETAL
-                and t.quota_key in BAREMETAL_HIDDEN_CHARTS
+                settings.CHAMELEON_ENABLE_BAREMETAL and
+                not settings.CHAMELEON_ENABLE_VMS and
+                t.quota_key in BAREMETAL_HIDDEN_CHARTS
             ):
                 continue
             if t.quota_key not in self.usage.limits:

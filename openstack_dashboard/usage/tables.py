@@ -97,7 +97,10 @@ class ProjectUsageTable(BaseUsageTable):
 
     def get_columns(self):
         columns = super().get_columns()
-        if settings.CHAMELEON_ENABLE_BAREMETAL:
+        # A hybrid site's VM instances have real vcpu/memory figures, so only
+        # a baremetal-only site drops these columns.
+        if (settings.CHAMELEON_ENABLE_BAREMETAL and
+                not settings.CHAMELEON_ENABLE_VMS):
             return [
                 c
                 for c in columns
