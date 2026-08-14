@@ -27,9 +27,18 @@
   ];
 
   function LaunchInstanceWizardController($scope, launchInstanceModel, launchInstanceWorkflow) {
+    // CHI: which launch button was pressed. Defaults to baremetal for backwards
+    // compatibility.
+    // TODO: Default to upstream/unset once config plumbed through.
+    var launchContext = $scope.launchContext || {};
+
+    launchInstanceModel.instanceType = launchContext.instanceType || 'baremetal';
+    launchInstanceModel.isBaremetal = launchInstanceModel.instanceType === 'baremetal';
+    launchInstanceModel.isVirtual = launchInstanceModel.instanceType === 'virtual';
+
     // Note: we set these attributes on the $scope so that the scope inheritance used all
     // through the launch instance wizard continues to work.
-    $scope.workflow = launchInstanceWorkflow;     // eslint-disable-line angular/controller-as
+    $scope.workflow = launchInstanceWorkflow(launchInstanceModel.instanceType);
     $scope.model = launchInstanceModel;           // eslint-disable-line angular/controller-as
     $scope.model.initialize(true);
     $scope.submit = $scope.model.createInstance;  // eslint-disable-line angular/controller-as
