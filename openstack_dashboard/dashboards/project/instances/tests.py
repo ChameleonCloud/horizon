@@ -3580,3 +3580,24 @@ class FlavorPopoverTests(helpers.TestCase):
 
         self.assertIn('resource discovery interface', popover)
         self.assertNotIn('VCPUs', popover)
+
+
+class LaunchLinkNGInstanceTypeTests(helpers.TestCase):
+    """Check the instanceType carried into the angular launch wizard.
+
+    It travels in launchContext and is read by
+    LaunchInstanceWizardController, which is how the wizard learns which
+    launch button was pressed.
+    """
+
+    def _ngclick(self, action_class):
+        action = action_class()
+        action.table = tables.InstancesTable(self.request)
+        action.get_default_attrs()
+        return action.attrs["ng-click"]
+
+    def test_launch_link_declares_baremetal(self):
+        ngclick = self._ngclick(tables.LaunchLinkNG)
+
+        self.assertIn("instanceType: 'baremetal'", ngclick)
+        self.assertIn("successUrl: '%s'" % INDEX_URL, ngclick)
