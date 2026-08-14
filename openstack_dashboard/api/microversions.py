@@ -37,6 +37,7 @@ MICROVERSION_FEATURES = {
         "auto_allocated_network": ["2.37", "2.60"],
         "key_types": ["2.2", "2.9"],
         "key_type_list": ["2.9"],
+        "flavor_description": ["2.55"],
         "rescue_instance_volume_based": ["2.87", "2.93"],
         "live_migrate": ["2.30"],
     },

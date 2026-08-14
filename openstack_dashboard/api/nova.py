@@ -261,7 +261,9 @@ def flavor_get(request, flavor_id, get_extras=False):
 @memoized.memoized
 def flavor_list(request, is_public=None, get_extras=False):
     """Get the list of available instance sizes (flavors)."""
-    flavors = _nova.novaclient(request).flavors.list(is_public=is_public)
+    microversion = get_microversion(request, "flavor_description")
+    flavors = _nova.novaclient(request, version=microversion).flavors.list(
+        is_public=is_public)
     if get_extras:
         for flavor in flavors:
             flavor.extras = flavor_get_extras(request, flavor.id, True, flavor)

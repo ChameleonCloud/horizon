@@ -56,6 +56,11 @@
         singleton: true
       },
       {
+        label: gettext('Description'),
+        name: 'description',
+        singleton: true
+      },
+      {
         label: gettext('VCPUs'),
         name: 'vcpus',
         singleton: true
@@ -138,7 +143,8 @@
       trackId: 'id',
       detailsTemplateUrl: basePath + 'flavor/flavor-details.html',
       columns: [
-        {id: 'name', title: gettext('Name'), priority: 1}
+        {id: 'name', title: gettext('Name'), priority: 1},
+        {id: 'description', title: gettext('Description'), priority: 1}
       ].concat(resourceColumns, [
         {id: 'isPublic', title: gettext('Public'), filters: ['yesno'], priority: 1}
       ])
@@ -287,6 +293,7 @@
           flavor:        flavor,
           id:            flavor.id,
           name:          flavor.name,
+          description:   flavor.description,
           vcpus:         flavor.vcpus,
           ram:           flavor.ram,
           totalDisk:     flavor.disk + flavor['OS-FLV-EXT-DATA:ephemeral'],

@@ -483,9 +483,28 @@ class ComputeApiTests(test.APIMockTestCase):
     """Flavor Tests"""
 
     @mock.patch.object(api._nova, 'novaclient')
+    def test_flavor_list_negotiates_description(self, mock_novaclient):
+        self._mock_current_version(mock_novaclient.return_value, '2.95')
+
+        api.nova.flavor_list(self.request)
+
+        mock_novaclient.assert_called_with(
+            self.request, version=api_versions.APIVersion('2.55'))
+
+    @mock.patch.object(api._nova, 'novaclient')
+    def test_flavor_list_description_unsupported(self, mock_novaclient):
+        # Below 2.55 nova omits flavor.description
+        self._mock_current_version(mock_novaclient.return_value, '2.54')
+
+        api.nova.flavor_list(self.request)
+
+        mock_novaclient.assert_called_with(self.request, version=None)
+
+    @mock.patch.object(api._nova, 'novaclient')
     def test_flavor_list_no_extras(self, mock_novaclient):
         flavors = self.flavors.list()
         novaclient = mock_novaclient.return_value
+        self._mock_current_version(novaclient, '2.55')
         novaclient.flavors.list.return_value = flavors
 
         api_flavors = api.nova.flavor_list(self.request)
