@@ -328,6 +328,12 @@
             ctrl.buildFlavorFacades();
             expect(ctrl.availableFlavorFacades.length).toBe(1);
           });
+
+          it("replaces the previous facades instead of appending", function () {
+            ctrl.buildFlavorFacades();
+            ctrl.buildFlavorFacades();
+            expect(ctrl.availableFlavorFacades.length).toBe(1);
+          });
         });
       });
 
