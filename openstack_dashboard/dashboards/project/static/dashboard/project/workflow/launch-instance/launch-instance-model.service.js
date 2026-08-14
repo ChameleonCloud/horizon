@@ -279,6 +279,10 @@
         // Require reservation fetch only for baremetal
         if (model.isBaremetal) {
           initTasks.push(blazarAPI.reservations().then(onGetReservations));
+        } else {
+          // Nothing fetches reservations for a virtual launch, so onGetReservations
+          // will not run to clear the previous one's leases.
+          model.reservations.length = 0;
         }
 
         promise = $q.all(initTasks);
