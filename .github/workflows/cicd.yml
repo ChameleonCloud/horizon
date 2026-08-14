@@ -18,3 +18,19 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - run: pip install tox
       - run: tox -e py
+
+  npm:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.10"
+      - run: pip install tox
+      # Run horizon and dashboard tests separately to avoid skipping
+      # first `--` ends tox's args, the second forwards flags to karma
+      - name: karma (horizon)
+        run: tox -e npm -- test:horizon -- --reporters progress
+      - name: karma (openstack_dashboard)
+        if: always()
+        run: tox -e npm -- test:dashboard -- --reporters progress
