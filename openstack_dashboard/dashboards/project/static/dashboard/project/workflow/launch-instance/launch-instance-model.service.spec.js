@@ -19,7 +19,8 @@
   describe('Launch Instance Model', function() {
 
     describe('launchInstanceModel Factory', function() {
-      var model, scope, settings, $q, glance, IMAGE, VOLUME, VOLUME_SNAPSHOT, INSTANCE_SNAPSHOT;
+      var model, scope, settings, $q, glance, blazarApi,
+        IMAGE, VOLUME, VOLUME_SNAPSHOT, INSTANCE_SNAPSHOT;
       var cinderEnabled = false;
       var neutronEnabled = false;
       var ifAllowedResolve = true;
@@ -320,6 +321,7 @@
         $q = $injector.get('$q');
         scope = $injector.get('$rootScope').$new();
         glance = $injector.get('horizon.app.core.openstack-service-api.glance');
+        blazarApi = $injector.get('horizon.app.core.openstack-service-api.blazar');
         spyOn(glance, 'getNamespaces').and.callThrough();
         spyOn(novaApi, 'getServerGroups').and.callThrough();
       }));
@@ -530,6 +532,24 @@
           model.initialize(true);
           scope.$apply();
           expect(model.keypairs.length).toBe(1);
+        });
+
+        it('should not keep reservations from a previous initialize', function() {
+          spyOn(blazarApi, 'reservations').and.callFake(function() {
+            var deferred = $q.defer();
+            deferred.resolve({data: {reservations: [{id: 'r-1', lease_name: 'lease-1'}]}});
+            return deferred.promise;
+          });
+
+          model.isBaremetal = true;
+          model.initialize(true);
+          scope.$apply();
+          expect(model.reservations.length).toBe(1);
+
+          model.isBaremetal = false;
+          model.initialize(true);
+          scope.$apply();
+          expect(model.reservations.length).toBe(0);
         });
 
         it('should default config_drive to false', function() {
