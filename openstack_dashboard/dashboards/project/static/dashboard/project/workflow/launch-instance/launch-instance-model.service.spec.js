@@ -486,6 +486,38 @@
           expect(model.volumeSnapshots.length).toBe(2);
         });
 
+        it('should not keep flavors from a previous initialize', function() {
+          model.initialize(true);
+          scope.$apply();
+          expect(model.flavors.length).toBe(2);
+
+          spyOn(novaApi, 'getFlavors').and.callFake(function() {
+            var deferred = $q.defer();
+            deferred.resolve({ data: { items: [ 'flavor-1' ] } });
+            return deferred.promise;
+          });
+          model.initialize(true);
+          scope.$apply();
+          expect(model.flavors.length).toBe(1);
+        });
+
+        it('should not keep keypairs from a previous initialize', function() {
+          model.initialize(true);
+          scope.$apply();
+          expect(model.keypairs.length).toBe(2);
+
+          // onGetKeypairs merges by index, so a shorter list must not leave the
+          // previous launch's extra entries behind.
+          spyOn(novaApi, 'getKeypairs').and.callFake(function() {
+            var deferred = $q.defer();
+            deferred.resolve({ data: { items: [ { keypair: { name: 'key-1' } } ] } });
+            return deferred.promise;
+          });
+          model.initialize(true);
+          scope.$apply();
+          expect(model.keypairs.length).toBe(1);
+        });
+
         it('should default config_drive to false', function() {
           model.initialize(true);
           scope.$apply();

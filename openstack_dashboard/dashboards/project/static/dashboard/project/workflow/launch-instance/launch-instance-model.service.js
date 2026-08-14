@@ -479,6 +479,9 @@
     // Keypairs
 
     function onGetKeypairs(data) {
+      // angular.extend merges by index, so without this a shorter keypair list
+      // than the previous launch's would leave the extra entries behind.
+      model.keypairs.length = 0;
       angular.extend(
         model.keypairs,
         data.data.items.map(function (e) {
