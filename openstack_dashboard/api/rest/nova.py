@@ -500,6 +500,19 @@ class ServerMetadata(generic.View):
             api.nova.server_metadata_delete(request, server_id, removed)
 
 
+def is_blazar_reserved_flavor(flavor):
+    """Whether this flavor dict was created by a blazar reservation.
+
+    Compares first based on name prefix, and then on the custom resource
+    class blazar puts in the flavor's extra specs.
+    TODO(Mike): Extract blazar prefixes to constants.
+    """
+    if str(flavor.get('name', '')).startswith('reservation:'):
+        return True
+    return any(key.startswith('resources:CUSTOM_RESERVATION_')
+               for key in flavor.get('extras') or {})
+
+
 @urls.register
 class Flavors(generic.View):
     """API for nova flavors."""
@@ -517,6 +530,8 @@ class Flavors(generic.View):
         :param is_public: For a regular user, set to True to see all public
             flavors. For an admin user, set to False to not see public flavors.
         :param get_extras: Also retrieve the extra specs.
+        :param is_blazar_reserved: Set to true for only the blazar reservation
+            flavors, false to exclude them. Omit it to include both.
 
         Example GET:
         http://localhost/api/nova/flavors?is_public=true
@@ -525,17 +540,28 @@ class Flavors(generic.View):
         is_public = (is_public and is_public.lower() == 'true')
         get_extras = request.GET.get('get_extras')
         get_extras = bool(get_extras and get_extras.lower() == 'true')
+        is_blazar_reserved = request.GET.get('is_blazar_reserved', '').lower()
+        is_blazar_reserved = {'true': True, 'false': False}.get(
+            is_blazar_reserved)
+        if is_blazar_reserved is not None:
+            # is_blazar_reserved_flavor() reads extra specs.
+            get_extras = True
+
         flavors = api.nova.flavor_list(request, is_public=is_public,
                                        get_extras=get_extras)
         flavors = instances_utils.sort_flavor_list(request, flavors,
                                                    with_menu_label=False)
-        result = {'items': []}
+        items = []
         for flavor in flavors:
             d = flavor.to_dict()
             if get_extras:
                 d['extras'] = flavor.extras
-            result['items'].append(d)
-        return result
+            items.append(d)
+
+        if is_blazar_reserved is not None:
+            items = [d for d in items
+                     if is_blazar_reserved_flavor(d) == is_blazar_reserved]
+        return {'items': items}
 
     @rest_utils.ajax(data_required=True)
     def post(self, request):
