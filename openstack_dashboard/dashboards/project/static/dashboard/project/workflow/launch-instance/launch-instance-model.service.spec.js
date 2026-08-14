@@ -201,6 +201,14 @@
 
         $provide.value('horizon.app.core.openstack-service-api.neutron', neutronApi);
 
+        $provide.value('horizon.app.core.openstack-service-api.blazar', {
+          reservations: function() {
+            var deferred = $q.defer();
+            deferred.resolve({data: {reservations: []}});
+            return deferred.promise;
+          }
+        });
+
         $provide.value('horizon.app.core.openstack-service-api.cinder', {
           getVolumes: function() {
             var volumes = [ { id: 'vol-1' }, { id: 'vol-2' } ];
