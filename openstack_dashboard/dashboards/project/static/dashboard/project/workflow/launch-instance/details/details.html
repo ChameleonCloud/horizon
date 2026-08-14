@@ -49,7 +49,8 @@
         </select>
       </div>
 
-      <div class="form-group">
+      <!-- A virtual instance carries its reservation in the flavor, not a scheduler hint. -->
+      <div class="form-group" ng-if="model.isBaremetal">
         <label class="control-label" for="reservation">
           <translate>Reservation</translate>
           <span class="hz-icon-required fa fa-asterisk"></span>

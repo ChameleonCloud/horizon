@@ -543,7 +543,9 @@
      *
      * @param {Object} params (optional)
      * Parameters that should be passed to the API call. Currently those can
-     * be "is_public" and "get_extras", both of them boolean.
+     * be "is_public" and "get_extras", both of them boolean, and
+     * "is_blazar_reserved", which is "true", "false", or omitted to filter
+     * neither way.
      * @returns {Object} The result of the API call
      */
     function getFlavors(params) {

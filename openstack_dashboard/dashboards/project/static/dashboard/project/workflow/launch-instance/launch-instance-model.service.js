@@ -258,14 +258,15 @@
             model.newInstanceSpec.default_user_data = response;
           });
 
-        promise = $q.all([
+        var initTasks = [
           launchInstanceDefaults.then(setDefaultValues, noop),
-          blazarAPI.reservations().then(onGetReservations),
           novaAPI.getAvailabilityZones().then(onGetAvailabilityZones)
             .finally(onGetAvailabilityZonesComplete),
           novaAPI.getFlavors({
             is_public: true,
-            get_extras: true
+            get_extras: true,
+            // Dropped from the query when undefined, i.e. unfiltered for baremetal.
+            is_blazar_reserved: model.isVirtual ? 'true' : undefined
           }).then(onGetFlavors, noop),
           novaAPI.getKeypairs().then(onGetKeypairs, noop),
           novaAPI.getLimits(true).then(onGetNovaLimits, noop),
@@ -273,7 +274,14 @@
           serviceCatalog.ifTypeEnabled('network').then(getNetworks, noop),
           launchInstanceDefaults.then(addImageSourcesIfEnabled, noop),
           launchInstanceDefaults.then(addVolumeSourcesIfEnabled, noop)
-        ]);
+        ];
+
+        // Require reservation fetch only for baremetal
+        if (model.isBaremetal) {
+          initTasks.push(blazarAPI.reservations().then(onGetReservations));
+        }
+
+        promise = $q.all(initTasks);
 
         promise.then(onInitSuccess, onInitFail);
       }
@@ -442,8 +450,13 @@
     // django form handler doesn't look at scheduler hints, but the api handler
     // (openstack_dashboard/api/rest/nova.py#Servers.post) does
     function setFinalSpecReservation(finalSpec) {
-      finalSpec.scheduler_hints['reservation'] = finalSpec['reservation'];
-      delete finalSpec['reservation'];
+      // Do not require selected reservation hint if not baremetal
+      if (!model.isBaremetal) {
+        delete finalSpec.reservation;
+        return;
+      }
+      finalSpec.scheduler_hints.reservation = finalSpec.reservation;
+      delete finalSpec.reservation;
     }
 
     // Flavors

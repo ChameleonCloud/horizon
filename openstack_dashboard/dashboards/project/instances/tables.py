@@ -424,6 +424,9 @@ class LaunchLinkNG(tables.LinkAction):
     icon = "cloud-upload"
     policy_rules = (("compute", "os_compute_api:servers:create"),)
 
+    # CHI: which wizard this button opens. Subclasses override it.
+    instance_type = "baremetal"
+
     def __init__(self, attrs=None, **kwargs):
         kwargs['preempt'] = True
         super().__init__(attrs, **kwargs)
@@ -447,7 +450,8 @@ class LaunchLinkNG(tables.LinkAction):
                         verbose_name=self.verbose_name,
                         quota_exceeded=_("(Quota exceeded)"))
             else:
-                self.verbose_name = _("Launch Instance")
+                # Read off the class so subclasses keep their own name.
+                self.verbose_name = type(self).verbose_name
                 classes = [c for c in self.classes if c != "disabled"]
                 self.classes = classes
         except Exception:
@@ -462,8 +466,11 @@ class LaunchLinkNG(tables.LinkAction):
 
     def get_default_attrs(self):
         url = urls.reverse(self.url)
-        ngclick = "modal.openLaunchInstanceWizard(" \
-            "{ successUrl: '%s' })" % url
+        ngclick = (
+            "modal.openLaunchInstanceWizard("
+            "{ successUrl: '%s', instanceType: '%s' })"
+            % (url, self.instance_type)
+        )
         self.attrs.update({
             'ng-controller': 'LaunchInstanceModalController as modal',
             'ng-click': ngclick
@@ -472,6 +479,19 @@ class LaunchLinkNG(tables.LinkAction):
 
     def get_link_url(self, datum=None):
         return "javascript:void(0);"
+
+
+class LaunchVirtualInstanceLinkNG(LaunchLinkNG):
+    """Launch button for virtual instances."""
+
+    name = "launch-virtual-ng"
+    verbose_name = _("Launch Virtual Instance")
+    instance_type = "virtual"
+
+    def allowed(self, request, datum):
+        if not settings.CHAMELEON_ENABLE_VMS:
+            return False
+        return super().allowed(request, datum)
 
 
 class EditInstance(policy.PolicyTargetMixin, tables.LinkAction):
@@ -1342,7 +1362,7 @@ class InstancesTable(tables.DataTable):
         status_columns = ["status", "task"]
         row_class = UpdateRow
         table_actions_menu = (StartInstance, StopInstance, SoftRebootInstance)
-        launch_actions = (LaunchLinkNG,)
+        launch_actions = (LaunchLinkNG, LaunchVirtualInstanceLinkNG)
         table_actions = launch_actions + (DeleteInstance,
                                           InstancesFilterAction)
         row_actions = (StartInstance, ConfirmResize, RevertResize,

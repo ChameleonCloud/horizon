@@ -17,7 +17,7 @@
   'use strict';
 
   describe('horizon.dashboard.project.workflow.launch-instance.workflow tests', function () {
-    var launchInstanceWorkflow, stepPolicy;
+    var createWorkflow, launchInstanceWorkflow, stepPolicy;
 
     beforeEach(module('horizon.app.core'));
     beforeEach(module('horizon.framework.util'));
@@ -26,10 +26,11 @@
     beforeEach(module('horizon.dashboard.project'));
 
     beforeEach(inject(function ($injector) {
-      launchInstanceWorkflow = $injector.get(
+      createWorkflow = $injector.get(
         'horizon.dashboard.project.workflow.launch-instance.workflow'
       );
       stepPolicy = $injector.get('horizon.dashboard.project.workflow.launch-instance.step-policy');
+      launchInstanceWorkflow = createWorkflow('baremetal');
     }));
 
     it('should be defined', function () {
@@ -77,6 +78,34 @@
 
     it('has a policy rule for the scheduler hints step', function() {
       expect(launchInstanceWorkflow.steps[9].policy).toEqual(stepPolicy.schedulerHints);
+    });
+
+    it('CHI: collapses all but four steps behind the advanced toggle for baremetal', function() {
+      expect(launchInstanceWorkflow.advanced).toEqual({showButton: true, showTabs: false});
+      expect(launchInstanceWorkflow.steps
+        .filter(function(step) { return !step.isAdvanced; })
+        .map(function(step) { return step.id; }))
+        .toEqual(['details', 'source', 'networks', 'keypair']);
+    });
+
+    it('CHI: gives virtual every tab and no advanced toggle', function() {
+      var virtual = createWorkflow('virtual');
+
+      expect(virtual.advanced).toEqual({showButton: false, showTabs: true});
+      expect(virtual.steps.some(function(step) { return step.isAdvanced; })).toBe(false);
+      expect(virtual.steps.length).toBe(launchInstanceWorkflow.steps.length);
+    });
+
+    it('CHI: does not let one instance type leak into the next', function() {
+      createWorkflow('virtual');
+
+      expect(createWorkflow('baremetal').advanced)
+        .toEqual({showButton: true, showTabs: false});
+    });
+
+    it('CHI: treats any non-baremetal type as the flat upstream layout', function() {
+      expect(createWorkflow('upstream').advanced)
+        .toEqual({showButton: false, showTabs: true});
     });
 
   });
