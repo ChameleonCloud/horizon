@@ -271,7 +271,7 @@
           novaAPI.getKeypairs().then(onGetKeypairs, noop),
           novaAPI.getLimits(true).then(onGetNovaLimits, noop),
           securityGroup.query().then(onGetSecurityGroups, noop),
-          serviceCatalog.ifTypeEnabled('network').then(getNetworks, noop),
+          serviceCatalog.ifTypeEnabled('network').then(getNetworks, clearNetworks),
           launchInstanceDefaults.then(addImageSourcesIfEnabled, noop),
           launchInstanceDefaults.then(addVolumeSourcesIfEnabled, noop)
         ];
@@ -557,6 +557,14 @@
 
     function getNetworks() {
       return neutronAPI.getNetworks().then(onGetNetworks, noop).then(getPorts, noop);
+    }
+
+    // Neutron being disabled skips getNetworks entirely, so nothing else undoes
+    // what a previous launch set here.
+    function clearNetworks() {
+      model.neutronEnabled = false;
+      model.networks.length = 0;
+      model.ports.length = 0;
     }
 
     function onGetNetworks(data) {
