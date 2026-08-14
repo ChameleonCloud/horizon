@@ -271,7 +271,7 @@
           novaAPI.getKeypairs().then(onGetKeypairs, noop),
           novaAPI.getLimits(true).then(onGetNovaLimits, noop),
           securityGroup.query().then(onGetSecurityGroups, noop),
-          serviceCatalog.ifTypeEnabled('network').then(getNetworks, noop),
+          serviceCatalog.ifTypeEnabled('network').then(getNetworks, clearNetworks),
           launchInstanceDefaults.then(addImageSourcesIfEnabled, noop),
           launchInstanceDefaults.then(addVolumeSourcesIfEnabled, noop)
         ];
@@ -279,6 +279,10 @@
         // Require reservation fetch only for baremetal
         if (model.isBaremetal) {
           initTasks.push(blazarAPI.reservations().then(onGetReservations));
+        } else {
+          // Nothing fetches reservations for a virtual launch, so onGetReservations
+          // will not run to clear the previous one's leases.
+          model.reservations.length = 0;
         }
 
         promise = $q.all(initTasks);
@@ -479,6 +483,9 @@
     // Keypairs
 
     function onGetKeypairs(data) {
+      // angular.extend merges by index, so without this a shorter keypair list
+      // than the previous launch's would leave the extra entries behind.
+      model.keypairs.length = 0;
       angular.extend(
         model.keypairs,
         data.data.items.map(function (e) {
@@ -554,6 +561,14 @@
 
     function getNetworks() {
       return neutronAPI.getNetworks().then(onGetNetworks, noop).then(getPorts, noop);
+    }
+
+    // Neutron being disabled skips getNetworks entirely, so nothing else undoes
+    // what a previous launch set here.
+    function clearNetworks() {
+      model.neutronEnabled = false;
+      model.networks.length = 0;
+      model.ports.length = 0;
     }
 
     function onGetNetworks(data) {

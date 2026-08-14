@@ -19,7 +19,8 @@
   describe('Launch Instance Model', function() {
 
     describe('launchInstanceModel Factory', function() {
-      var model, scope, settings, $q, glance, IMAGE, VOLUME, VOLUME_SNAPSHOT, INSTANCE_SNAPSHOT;
+      var model, scope, settings, $q, glance, blazarApi,
+        IMAGE, VOLUME, VOLUME_SNAPSHOT, INSTANCE_SNAPSHOT;
       var cinderEnabled = false;
       var neutronEnabled = false;
       var ifAllowedResolve = true;
@@ -312,10 +313,15 @@
       }));
 
       beforeEach(inject(function($injector) {
+        // Reset the flags read by the fake serviceCatalog.
+        cinderEnabled = false;
+        neutronEnabled = false;
+
         model = $injector.get('launchInstanceModel');
         $q = $injector.get('$q');
         scope = $injector.get('$rootScope').$new();
         glance = $injector.get('horizon.app.core.openstack-service-api.glance');
+        blazarApi = $injector.get('horizon.app.core.openstack-service-api.blazar');
         spyOn(glance, 'getNamespaces').and.callThrough();
         spyOn(novaApi, 'getServerGroups').and.callThrough();
       }));
@@ -478,6 +484,74 @@
           expect(model.volumeSnapshots.length).toBe(2);
         });
 
+        it('should not keep networks and ports from a previous initialize', function() {
+          neutronEnabled = true;
+          model.initialize(true);
+          scope.$apply();
+
+          expect(model.neutronEnabled).toBe(true);
+          expect(model.networks.length).toBe(2);
+          expect(model.ports.length).toBe(1);
+
+          neutronEnabled = false;
+          model.initialize(true);
+          scope.$apply();
+
+          expect(model.neutronEnabled).toBe(false);
+          expect(model.networks.length).toBe(0);
+          expect(model.ports.length).toBe(0);
+        });
+
+        it('should not keep flavors from a previous initialize', function() {
+          model.initialize(true);
+          scope.$apply();
+          expect(model.flavors.length).toBe(2);
+
+          spyOn(novaApi, 'getFlavors').and.callFake(function() {
+            var deferred = $q.defer();
+            deferred.resolve({ data: { items: [ 'flavor-1' ] } });
+            return deferred.promise;
+          });
+          model.initialize(true);
+          scope.$apply();
+          expect(model.flavors.length).toBe(1);
+        });
+
+        it('should not keep keypairs from a previous initialize', function() {
+          model.initialize(true);
+          scope.$apply();
+          expect(model.keypairs.length).toBe(2);
+
+          // onGetKeypairs merges by index, so a shorter list must not leave the
+          // previous launch's extra entries behind.
+          spyOn(novaApi, 'getKeypairs').and.callFake(function() {
+            var deferred = $q.defer();
+            deferred.resolve({ data: { items: [ { keypair: { name: 'key-1' } } ] } });
+            return deferred.promise;
+          });
+          model.initialize(true);
+          scope.$apply();
+          expect(model.keypairs.length).toBe(1);
+        });
+
+        it('should not keep reservations from a previous initialize', function() {
+          spyOn(blazarApi, 'reservations').and.callFake(function() {
+            var deferred = $q.defer();
+            deferred.resolve({data: {reservations: [{id: 'r-1', lease_name: 'lease-1'}]}});
+            return deferred.promise;
+          });
+
+          model.isBaremetal = true;
+          model.initialize(true);
+          scope.$apply();
+          expect(model.reservations.length).toBe(1);
+
+          model.isBaremetal = false;
+          model.initialize(true);
+          scope.$apply();
+          expect(model.reservations.length).toBe(0);
+        });
+
         it('should default config_drive to false', function() {
           model.initialize(true);
           scope.$apply();
@@ -584,6 +658,7 @@
         });
 
         it('sets the ports properly based on device_owner', function () {
+          neutronEnabled = true;
           model.initialize(true);
           scope.$apply();
           expect(model.ports.length).toBe(1);
@@ -632,6 +707,7 @@
         );
 
         it('should set a network by default if only one network is available', function () {
+          neutronEnabled = true;
           var networks = [ { id: 'net-1', subnets: [ { id: 'subnet1' } ] } ];
           spyOn(neutronApi, 'getNetworks').and.callFake(function () {
             var deferred = $q.defer();
@@ -668,6 +744,7 @@
         });
 
         it('should have the proper entries in allowedBootSources', function() {
+          cinderEnabled = true;
           model.initialize(true);
           scope.$apply();
 
@@ -696,6 +773,7 @@
         });
 
         it('should have proper allowedBootSources if settings are missing', function() {
+          cinderEnabled = true;
           delete settings.LAUNCH_INSTANCE_DEFAULTS;
           model.initialize(true);
           scope.$apply();
@@ -709,6 +787,7 @@
         });
 
         it('should have proper allowedBootSources if specific settings missing', function() {
+          cinderEnabled = true;
           delete settings.LAUNCH_INSTANCE_DEFAULTS.create_volume;
           delete settings.LAUNCH_INSTANCE_DEFAULTS.disable_image;
           delete settings.LAUNCH_INSTANCE_DEFAULTS.disable_instance_snapshot;
@@ -726,6 +805,7 @@
         });
 
         it('should have no images if disable_image is set to true', function() {
+          cinderEnabled = true;
           settings.LAUNCH_INSTANCE_DEFAULTS.disable_image = true;
           model.initialize(true);
           scope.$apply();
@@ -741,6 +821,7 @@
         });
 
         it('should have images if disable_image is missing', function() {
+          cinderEnabled = true;
           delete settings.LAUNCH_INSTANCE_DEFAULTS.disable_image;
           model.initialize(true);
           scope.$apply();
@@ -754,6 +835,7 @@
         });
 
         it('should have no volumes if disable_volume is set to true', function() {
+          cinderEnabled = true;
           settings.LAUNCH_INSTANCE_DEFAULTS.disable_volume = true;
           model.initialize(true);
           scope.$apply();
@@ -772,6 +854,7 @@
         });
 
         it('should have volumes if disable_volume is missing', function() {
+          cinderEnabled = true;
           delete settings.LAUNCH_INSTANCE_DEFAULTS.disable_volume;
           model.initialize(true);
           scope.$apply();
@@ -785,6 +868,7 @@
         });
 
         it('should have volume snapshots if disable_volume_snapshot is missing', function() {
+          cinderEnabled = true;
           delete settings.LAUNCH_INSTANCE_DEFAULTS.disable_volume_snapshot;
           model.initialize(true);
           scope.$apply();
@@ -799,6 +883,7 @@
 
         it('should not have volume snapshots if disable_volume_snapshot is set to true',
         function() {
+          cinderEnabled = true;
           settings.LAUNCH_INSTANCE_DEFAULTS.disable_volume_snapshot = true;
           model.initialize(true);
           scope.$apply();
@@ -812,6 +897,7 @@
         });
 
         it('should have no snapshot if disable_instance_snapshot is set to true', function() {
+          cinderEnabled = true;
           settings.LAUNCH_INSTANCE_DEFAULTS.disable_instance_snapshot = true;
           model.initialize(true);
           scope.$apply();
@@ -825,6 +911,7 @@
         });
 
         it('should have snapshot if disable_instance_snapshot is missing', function() {
+          cinderEnabled = true;
           delete settings.LAUNCH_INSTANCE_DEFAULTS.disable_instance_snapshot;
           model.initialize(true);
           scope.$apply();
@@ -838,6 +925,7 @@
         });
 
         it('should have no snapshot and no image if both are disabled', function() {
+          cinderEnabled = true;
           settings.LAUNCH_INSTANCE_DEFAULTS.disable_image = true;
           settings.LAUNCH_INSTANCE_DEFAULTS.disable_instance_snapshot = true;
 
@@ -853,6 +941,7 @@
         });
 
         it('should have snapshot and image if both are missing', function() {
+          cinderEnabled = true;
           delete settings.LAUNCH_INSTANCE_DEFAULTS.disable_image;
           delete settings.LAUNCH_INSTANCE_DEFAULTS.disable_instance_snapshot;
 
