@@ -486,6 +486,24 @@
           expect(model.volumeSnapshots.length).toBe(2);
         });
 
+        it('should not keep networks and ports from a previous initialize', function() {
+          neutronEnabled = true;
+          model.initialize(true);
+          scope.$apply();
+
+          expect(model.neutronEnabled).toBe(true);
+          expect(model.networks.length).toBe(2);
+          expect(model.ports.length).toBe(1);
+
+          neutronEnabled = false;
+          model.initialize(true);
+          scope.$apply();
+
+          expect(model.neutronEnabled).toBe(false);
+          expect(model.networks.length).toBe(0);
+          expect(model.ports.length).toBe(0);
+        });
+
         it('should not keep flavors from a previous initialize', function() {
           model.initialize(true);
           scope.$apply();
