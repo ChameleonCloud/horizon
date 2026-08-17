@@ -3684,6 +3684,34 @@ class LaunchLinkNGInstanceTypeTests(helpers.TestCase):
 
         self.assertIn("successUrl: '%s'" % INDEX_URL, ngclick)
 
+    def test_falling_back_on_a_hybrid_site_is_logged(self):
+        """A hybrid site reaching the fallback is a misconfiguration.
+
+        CHAMELEON_ENABLE_VMS on means the panel should have registered, so an
+        unresolvable URL means its enabled/ file never arrived. The fallback
+        then sends launches to a list that filters the new VM out -- the very
+        bug this class avoids -- so it must not happen quietly.
+
+        Panel registration is fixed at URLconf load, so overriding the setting
+        here cannot register the panel. That is what makes this state reachable
+        under test at all.
+        """
+        with django.test.utils.override_settings(CHAMELEON_ENABLE_VMS=True):
+            with self.assertLogs(
+                    "openstack_dashboard.dashboards.project.instances.tables",
+                    level="WARNING") as logged:
+                self._ngclick(tables.LaunchVirtualInstanceLinkNG)
+
+        self.assertIn("not registered", "\n".join(logged.output))
+
+    def test_falling_back_on_a_baremetal_site_is_not_logged(self):
+        """A baremetal-only site reaches the fallback by design."""
+        with self.assertRaises(AssertionError):
+            with self.assertLogs(
+                    "openstack_dashboard.dashboards.project.instances.tables",
+                    level="WARNING"):
+                self._ngclick(tables.LaunchVirtualInstanceLinkNG)
+
 
 class LaunchVirtualInstanceLinkNGTests(helpers.TestCase):
     """Visibility of the virtual launch button."""

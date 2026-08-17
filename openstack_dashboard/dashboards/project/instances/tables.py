@@ -498,6 +498,14 @@ class LaunchVirtualInstanceLinkNG(LaunchLinkNG):
         try:
             return super().get_success_url()
         except urls.NoReverseMatch:
+            if settings.CHAMELEON_ENABLE_VMS:
+                # Registration did not happen despite the setting, so the
+                # fallback sends the user to a list that filters out their new
+                # VM. Log rather than fail silently.
+                LOG.warning(
+                    "CHAMELEON_ENABLE_VMS is set but %s does not resolve; the "
+                    "virtual instances panel is not registered. Sending "
+                    "launches to the baremetal index instead.", self.url)
             return urls.reverse(LaunchLinkNG.url)
 
     def allowed(self, request, datum):
