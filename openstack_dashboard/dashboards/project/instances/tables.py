@@ -464,12 +464,14 @@ class LaunchLinkNG(tables.LinkAction):
         self.allowed(request, None)
         return HttpResponse(self.render(is_table_action=True))
 
+    def get_success_url(self):
+        return urls.reverse(self.url)
+
     def get_default_attrs(self):
-        url = urls.reverse(self.url)
         ngclick = (
             "modal.openLaunchInstanceWizard("
             "{ successUrl: '%s', instanceType: '%s' })"
-            % (url, self.instance_type)
+            % (self.get_success_url(), self.instance_type)
         )
         self.attrs.update({
             'ng-controller': 'LaunchInstanceModalController as modal',
@@ -487,6 +489,16 @@ class LaunchVirtualInstanceLinkNG(LaunchLinkNG):
     name = "launch-virtual-ng"
     verbose_name = _("Launch Virtual Instance")
     instance_type = "virtual"
+    # Must land on the virtual panel: the baremetal index filters the new
+    # instance straight back out, so the default would send the user to a list
+    # that cannot contain what they just launched.
+    url = "horizon:project:instances_virtual:index"
+
+    def get_success_url(self):
+        try:
+            return super().get_success_url()
+        except urls.NoReverseMatch:
+            return urls.reverse(LaunchLinkNG.url)
 
     def allowed(self, request, datum):
         if not settings.CHAMELEON_ENABLE_VMS:

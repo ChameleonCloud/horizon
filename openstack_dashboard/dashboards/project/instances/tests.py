@@ -3609,6 +3609,18 @@ class LaunchLinkNGInstanceTypeTests(helpers.TestCase):
             self._ngclick(tables.LaunchVirtualInstanceLinkNG),
         )
 
+    def test_virtual_launch_link_falls_back_when_its_panel_is_absent(self):
+        """Rendering must not raise where instances_virtual is unregistered.
+
+        The panel registers only on a hybrid site, and registration happens
+        once at URLconf load, so under these settings its URL does not resolve.
+        get_default_attrs() runs at render time, where a NoReverseMatch would
+        500 the page rather than merely hide a button.
+        """
+        ngclick = self._ngclick(tables.LaunchVirtualInstanceLinkNG)
+
+        self.assertIn("successUrl: '%s'" % INDEX_URL, ngclick)
+
 
 class LaunchVirtualInstanceLinkNGTests(helpers.TestCase):
     """Visibility of the virtual launch button."""
