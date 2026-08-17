@@ -35,10 +35,13 @@ from horizon import forms
 from horizon.workflows import views
 from openstack_dashboard import api
 from openstack_dashboard.dashboards.project.instances import console
+from openstack_dashboard.dashboards.project.instances import panel
 from openstack_dashboard.dashboards.project.instances import tables
 from openstack_dashboard.dashboards.project.instances import tabs
 from openstack_dashboard.dashboards.project.instances \
     import utils as instance_utils
+from openstack_dashboard.dashboards.project.instances \
+    import views as instance_views
 from openstack_dashboard.dashboards.project.instances import workflows
 from openstack_dashboard.test import helpers
 from openstack_dashboard.views import get_url_with_pagination
@@ -3647,3 +3650,68 @@ class LaunchVirtualInstanceLinkNGTests(helpers.TestCase):
 
         self.assertEqual("Launch Instance", str(baremetal.verbose_name))
         self.assertEqual("Launch Virtual Instance", str(virtual.verbose_name))
+
+
+class VirtualInstancesPanelTests(django.test.SimpleTestCase):
+    """Chameleon Feature: the virtual instances panel on a hybrid site.
+
+    can_register() is consulted once, from Site._urls(), so it cannot be
+    re-evaluated per test. These call it directly; the registered-sidebar
+    direction is a deployment check, not a unit test.
+    """
+
+    @django.test.utils.override_settings(CHAMELEON_ENABLE_VMS=False)
+    def test_not_registered_on_a_baremetal_only_site(self):
+        self.assertFalse(panel.VirtualInstances.can_register())
+
+    @django.test.utils.override_settings(CHAMELEON_ENABLE_VMS=True)
+    def test_registered_on_a_hybrid_site(self):
+        self.assertTrue(panel.VirtualInstances.can_register())
+
+    def test_registers_its_own_slug(self):
+        """One Panel class cannot sit in two groups.
+
+        Dashboard.get_panel_groups() does registered.pop(panel.__class__), so
+        sharing the Instances class would raise KeyError and 500 the sidebar.
+        """
+        self.assertNotEqual(panel.Instances.slug,
+                            panel.VirtualInstances.slug)
+
+
+class FilterByInstanceTypeTests(django.test.SimpleTestCase):
+    """Chameleon Feature: the two compute panels show disjoint lists."""
+
+    def _instances(self):
+        """One baremetal instance, one whose flavor did not resolve."""
+        return [
+            types.SimpleNamespace(
+                name='bm',
+                full_flavor=types.SimpleNamespace(name='baremetal')),
+            types.SimpleNamespace(name='vm'),
+        ]
+
+    def _names(self, view_class):
+        view = view_class()
+        return [i.name for i in view._filter_by_instance_type(
+            self._instances())]
+
+    @django.test.utils.override_settings(CHAMELEON_ENABLE_VMS=False)
+    def test_baremetal_only_site_is_not_filtered(self):
+        # The upstream list, unchanged: no VMs exist to split out.
+        self.assertEqual(['bm', 'vm'],
+                         self._names(instance_views.IndexView))
+
+    @django.test.utils.override_settings(
+        CHAMELEON_ENABLE_BAREMETAL=True,
+        CHAMELEON_ENABLE_VMS=True,
+        CHAMELEON_BAREMETAL_FLAVOR_NAME='baremetal')
+    def test_hybrid_site_baremetal_panel_hides_vms(self):
+        self.assertEqual(['bm'], self._names(instance_views.IndexView))
+
+    @django.test.utils.override_settings(
+        CHAMELEON_ENABLE_BAREMETAL=True,
+        CHAMELEON_ENABLE_VMS=True,
+        CHAMELEON_BAREMETAL_FLAVOR_NAME='baremetal')
+    def test_hybrid_site_virtual_panel_hides_baremetal(self):
+        self.assertEqual(['vm'],
+                         self._names(instance_views.VirtualIndexView))
