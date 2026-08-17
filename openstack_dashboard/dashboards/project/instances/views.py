@@ -249,10 +249,12 @@ class IndexView(tables.PagedTableMixin, tables.DataTableView):
 class VirtualIndexView(IndexView):
     """CHI: the instances list for the "Virtual Compute" panel group.
 
-    Reuses IndexView wholesale, including InstancesTable, whose
-    get_row_actions() already picks the supported action set per instance.
+    Reuses IndexView wholesale. The table differs only to carry the virtual
+    launch button; its get_row_actions() still picks the supported action set
+    per instance.
     """
 
+    table_class = project_tables.VirtualInstancesTable
     page_title = _("Instances")
     instance_type = 'virtual'
 

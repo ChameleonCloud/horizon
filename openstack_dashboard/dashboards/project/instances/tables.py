@@ -1374,7 +1374,7 @@ class InstancesTable(tables.DataTable):
         status_columns = ["status", "task"]
         row_class = UpdateRow
         table_actions_menu = (StartInstance, StopInstance, SoftRebootInstance)
-        launch_actions = (LaunchLinkNG, LaunchVirtualInstanceLinkNG)
+        launch_actions = (LaunchLinkNG,)
         table_actions = launch_actions + (DeleteInstance,
                                           InstancesFilterAction)
         row_actions = (StartInstance, ConfirmResize, RevertResize,
@@ -1401,3 +1401,21 @@ class InstancesTable(tables.DataTable):
                 if action.name not in BAREMETAL_UNSUPPORTED_ACTIONS
             ]
         return row_actions
+
+
+class VirtualInstancesTable(InstancesTable):
+    """CHI: the instances table for the "Virtual Compute" panel group.
+
+    Exists so each panel offers only its own launch button. Row actions are
+    inherited: get_row_actions() already picks the supported set per instance,
+    so a VM row keeps the full action list without an override here.
+    """
+
+    class Meta(InstancesTable.Meta):
+        # A distinct name also gives this panel its own pagination and filter
+        # query params, so paging one list does not move the other.
+        name = "virtual_instances"
+        verbose_name = _("Instances")
+        launch_actions = (LaunchVirtualInstanceLinkNG,)
+        table_actions = launch_actions + (DeleteInstance,
+                                          InstancesFilterAction)
