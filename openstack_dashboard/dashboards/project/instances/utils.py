@@ -308,3 +308,23 @@ def is_baremetal_instance(instance):
         return False
 
     return full_flavor_name == settings.CHAMELEON_BAREMETAL_FLAVOR_NAME
+
+
+def treat_as_baremetal(instance):
+    """Whether to apply CHI's baremetal UI to this instance.
+
+    Two separate questions, and callers almost always want this one:
+
+    - ``is_baremetal_instance()`` -- is this instance on baremetal?
+    - ``treat_as_baremetal()`` -- that, *and* has the site opted in?
+
+    They differ when CHAMELEON_ENABLE_BAREMETAL is off: the classifier's
+    short-circuit does not fire, so it falls through to the flavor-name
+    comparison and still answers True for a matching name. A site that has not
+    opted in must get stock Horizon regardless.
+
+    This is not a second classifier. It composes the only one there is; do not
+    add another.
+    """
+    return (settings.CHAMELEON_ENABLE_BAREMETAL and
+            is_baremetal_instance(instance))

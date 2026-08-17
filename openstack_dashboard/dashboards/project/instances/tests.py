@@ -3565,22 +3565,85 @@ class BaremetalRowActionTests(helpers.TestCase):
 
 
 class FlavorPopoverTests(helpers.TestCase):
-    """CHI Baremetal nodes don't set resource information in flavors. In this
-    case we link to hardware catalog instead.
+    """What the flavor popover shows, per instance.
 
-    TODO(Mike): what should CHI VM flavors show.
+    A baremetal node sets no resource information on its flavor, so the popover
+    links to the hardware catalog instead. A VM flavor is the opposite: vcpus,
+    RAM and disk are the only fields that tell one from another, so on a hybrid
+    site the same popover must show them.
     """
 
-    @django.test.utils.override_settings(CHAMELEON_ENABLE_BAREMETAL=True)
-    def test_chi_baremetal_links_to_the_hardware_catalog(self):
+    def _popover(self):
         server = self.servers.first()
         server.full_flavor = self.flavors.first()
         self.addCleanup(delattr, server, 'full_flavor')
+        return tables.get_flavor(server)
 
-        popover = tables.get_flavor(server)
+    @django.test.utils.override_settings(CHAMELEON_ENABLE_BAREMETAL=True)
+    def test_chi_baremetal_links_to_the_hardware_catalog(self):
+        popover = self._popover()
 
         self.assertIn('resource discovery interface', popover)
         self.assertNotIn('VCPUs', popover)
+
+    # Fixture flavor is m1.tiny; the baremetal flavor name defaults to
+    # 'baremetal', so this instance is a VM on a hybrid site.
+    @django.test.utils.override_settings(
+        CHAMELEON_ENABLE_BAREMETAL=True,
+        CHAMELEON_ENABLE_VMS=True)
+    def test_vm_on_a_hybrid_site_still_shows_its_sizing(self):
+        popover = self._popover()
+
+        self.assertIn('VCPUs', popover)
+        self.assertNotIn('resource discovery interface', popover)
+
+    @django.test.utils.override_settings(
+        CHAMELEON_ENABLE_BAREMETAL=True,
+        CHAMELEON_ENABLE_VMS=True,
+        CHAMELEON_BAREMETAL_FLAVOR_NAME='m1.tiny')
+    def test_baremetal_on_a_hybrid_site_still_hides_it(self):
+        popover = self._popover()
+
+        self.assertIn('resource discovery interface', popover)
+        self.assertNotIn('VCPUs', popover)
+
+
+class TreatAsBaremetalTests(helpers.TestCase):
+    """The site opt-in is not redundant with the classifier."""
+
+    def _instance(self, flavor_name):
+        # A stub, not self.servers.first(): that returns one shared object, so
+        # setting full_flavor on it twice in a test leaks into the fixture.
+        flavor = mock.Mock(id='1')
+        # Assigned, not passed to the constructor -- name= there names the mock
+        # rather than setting the attribute the classifier reads.
+        flavor.name = flavor_name
+        return mock.Mock(id='stub', full_flavor=flavor)
+
+    @django.test.utils.override_settings(
+        CHAMELEON_ENABLE_BAREMETAL=False,
+        CHAMELEON_BAREMETAL_FLAVOR_NAME='m1.tiny')
+    def test_a_site_that_did_not_opt_in_gets_stock_horizon(self):
+        """Even when the flavor name matches.
+
+        With the opt-in off the classifier's short-circuit never fires, so it
+        falls through to the name comparison and answers True. Callers must not
+        act on that alone.
+        """
+        instance = self._instance('m1.tiny')
+
+        self.assertTrue(instance_utils.is_baremetal_instance(instance))
+        self.assertFalse(instance_utils.treat_as_baremetal(instance))
+
+    @django.test.utils.override_settings(
+        CHAMELEON_ENABLE_BAREMETAL=True,
+        CHAMELEON_ENABLE_VMS=True,
+        CHAMELEON_BAREMETAL_FLAVOR_NAME='m1.tiny')
+    def test_opted_in_site_follows_the_classifier(self):
+        self.assertTrue(
+            instance_utils.treat_as_baremetal(self._instance('m1.tiny')))
+        self.assertFalse(
+            instance_utils.treat_as_baremetal(self._instance('m1.large')))
 
 
 class LaunchLinkNGInstanceTypeTests(helpers.TestCase):

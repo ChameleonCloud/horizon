@@ -1069,7 +1069,10 @@ def get_flavor(instance):
             "size_ram": size_ram,
             "vcpus": instance.full_flavor.vcpus,
             "flavor_id": getattr(instance.full_flavor, 'id', None),
-            "chameleon_enable_baremetal": settings.CHAMELEON_ENABLE_BAREMETAL,
+            # Per instance, not per site: on a hybrid site a VM's popover must
+            # still show vcpus/ram/disk, which are the only fields that tell
+            # one VM flavor from another.
+            "treat_as_baremetal": instance_utils.treat_as_baremetal(instance),
         }
         return template.loader.render_to_string(template_name, context)
     return _("Not available")
@@ -1393,8 +1396,7 @@ class InstancesTable(tables.DataTable):
 
     def get_row_actions(self, datum):
         row_actions = super().get_row_actions(datum)
-        if (settings.CHAMELEON_ENABLE_BAREMETAL and
-                instance_utils.is_baremetal_instance(datum)):
+        if instance_utils.treat_as_baremetal(datum):
             return [
                 action
                 for action in row_actions

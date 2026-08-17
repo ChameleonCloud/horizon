@@ -26,6 +26,8 @@ from openstack_dashboard.dashboards.project.instances \
 from openstack_dashboard import api
 from openstack_dashboard.dashboards.project.instances import console
 from openstack_dashboard.dashboards.project.instances import interfaces_tables
+from openstack_dashboard.dashboards.project.instances import utils as \
+    instance_utils
 from openstack_dashboard import policy
 from openstack_dashboard.utils import settings as settings_utils
 
@@ -49,12 +51,12 @@ class OverviewTab(tabs.Tab):
             hardware_catalog_url = '/'.join([
                 portal_base, 'hardware/node/sites', site,
                 'clusters/chameleon/nodes'])
-        # TODO(Mike): Set baremetal per-instance instead of site-wide.
+        instance = self.tab_group.kwargs["instance"]
         return {
-            "instance": self.tab_group.kwargs["instance"],
+            "instance": instance,
             "is_superuser": request.user.is_superuser,
             "hardware_catalog_url": hardware_catalog_url,
-            "chameleon_enable_baremetal": settings.CHAMELEON_ENABLE_BAREMETAL,
+            "treat_as_baremetal": instance_utils.treat_as_baremetal(instance),
         }
 
 

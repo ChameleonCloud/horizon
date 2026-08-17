@@ -73,7 +73,7 @@
       <dd class="word-wrap">{{ instance.full_flavor.name }}</dd>
       <dt>{% trans "Flavor ID" %}</dt>
       <dd>{{ instance.full_flavor.id }}</dd>
-      {% if not chameleon_enable_baremetal %}
+      {% if not treat_as_baremetal %}
         <dt>{% trans "RAM" %}</dt>
         <dd>{{ instance.full_flavor.ram|mb_float_format }}</dd>
         <dt>{% trans "VCPUs" %}</dt>
