@@ -1358,11 +1358,13 @@ class InstancesTable(tables.DataTable):
 
     class Meta(object):
         name = "instances"
-        verbose_name = _("Instances")
+        # CHI: this is the baremetal half of the virtual/baremetal panel
+        # split; VirtualInstancesTable below is the other half.
+        verbose_name = _("Baremetal Instances")
         status_columns = ["status", "task"]
         row_class = UpdateRow
         table_actions_menu = (StartInstance, StopInstance, SoftRebootInstance)
-        launch_actions = (LaunchLinkNG, LaunchVirtualInstanceLinkNG)
+        launch_actions = (LaunchLinkNG,)
         table_actions = launch_actions + (DeleteInstance,
                                           InstancesFilterAction)
         row_actions = (StartInstance, ConfirmResize, RevertResize,
@@ -1389,3 +1391,20 @@ class InstancesTable(tables.DataTable):
                 if action.name not in BAREMETAL_UNSUPPORTED_ACTIONS
             ]
         return row_actions
+
+
+class VirtualInstancesTable(InstancesTable):
+    """The instances table as shown under the "Virtual Compute" group.
+
+    Columns, row actions and the per-row baremetal filtering in
+    get_row_actions() are all inherited; only the table name (so the two
+    tables' form actions and pagination params do not collide) and the
+    launch button differ.
+    """
+
+    class Meta(InstancesTable.Meta):
+        name = "virtual_instances"
+        verbose_name = _("Virtual Instances")
+        launch_actions = (LaunchVirtualInstanceLinkNG,)
+        table_actions = launch_actions + (DeleteInstance,
+                                          InstancesFilterAction)

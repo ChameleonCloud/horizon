@@ -3612,8 +3612,8 @@ class LaunchLinkNGInstanceTypeTests(helpers.TestCase):
 class LaunchVirtualInstanceLinkNGTests(helpers.TestCase):
     """Visibility of the virtual launch button."""
 
-    def _table_action_names(self):
-        table = tables.InstancesTable(self.request)
+    def _table_action_names(self, table_class=tables.InstancesTable):
+        table = table_class(self.request)
         return [action.name for action in table.get_table_actions()]
 
     @django.test.utils.override_settings(CHAMELEON_ENABLE_VMS=False)
@@ -3628,13 +3628,24 @@ class LaunchVirtualInstanceLinkNGTests(helpers.TestCase):
 
     @django.test.utils.override_settings(CHAMELEON_ENABLE_VMS=True)
     @helpers.create_mocks({api.nova: ["tenant_absolute_limits"]})
-    def test_hybrid_site_shows_both_launch_buttons(self):
+    def test_baremetal_table_keeps_only_the_baremetal_button(self):
+        """Each half of the panel split offers only its own launch button."""
         self.mock_tenant_absolute_limits.return_value = self.limits["absolute"]
 
-        names = self._table_action_names()
+        names = self._table_action_names(tables.InstancesTable)
 
         self.assertIn("launch-ng", names)
+        self.assertNotIn("launch-virtual-ng", names)
+
+    @django.test.utils.override_settings(CHAMELEON_ENABLE_VMS=True)
+    @helpers.create_mocks({api.nova: ["tenant_absolute_limits"]})
+    def test_virtual_table_keeps_only_the_virtual_button(self):
+        self.mock_tenant_absolute_limits.return_value = self.limits["absolute"]
+
+        names = self._table_action_names(tables.VirtualInstancesTable)
+
         self.assertIn("launch-virtual-ng", names)
+        self.assertNotIn("launch-ng", names)
 
     @django.test.utils.override_settings(CHAMELEON_ENABLE_VMS=True)
     @helpers.create_mocks({api.nova: ["tenant_absolute_limits"]})
