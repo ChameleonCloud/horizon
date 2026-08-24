@@ -18,6 +18,6 @@ import horizon
 
 
 class Instances(horizon.Panel):
-    name = _("Instances")
+    name = _("Baremetal Instances")
     slug = 'instances'
     permissions = ('openstack.services.compute',)
