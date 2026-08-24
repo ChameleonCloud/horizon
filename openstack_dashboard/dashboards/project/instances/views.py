@@ -65,6 +65,10 @@ class IndexView(tables.PagedTableMixin, tables.DataTableView):
     table_class = project_tables.InstancesTable
     page_title = _("Instances")
 
+    # CHI: which half of the virtual/baremetal panel split this view
+    # renders. See VirtualIndexView for the other half.
+    instance_type = 'baremetal'
+
     def has_prev_data(self, table):
         return getattr(self, "_prev", False)
 
@@ -175,7 +179,24 @@ class IndexView(tables.PagedTableMixin, tables.DataTableView):
                                                                  instance,
                                                                  flavor_dict)
 
-        return instances
+        return self._filter_by_instance_type(instances)
+
+    def _filter_by_instance_type(self, instances):
+        """Keep only the instances belonging to this panel's half of the split.
+
+        Nova cannot express "flavor is not the baremetal flavor" as a
+        server-list filter, so the split has to happen client-side, after
+        the page has been fetched. On a site that does not run VMs there
+        is nothing to split, so skip the work entirely; that also keeps
+        the single-panel behaviour byte-for-byte unchanged.
+        """
+        if not settings.CHAMELEON_ENABLE_VMS:
+            return instances
+        want_baremetal = self.instance_type == 'baremetal'
+        return [
+            instance for instance in instances
+            if instance_utils.is_baremetal_instance(instance) == want_baremetal
+        ]
 
     def _populate_image_info(self, instance, image_dict, volume_dict):
         if not hasattr(instance, 'image'):
@@ -219,6 +240,18 @@ class IndexView(tables.PagedTableMixin, tables.DataTableView):
                     # KeyError occurs when volume was created from image and
                     # then this image is deleted.
                     pass
+
+
+class VirtualIndexView(IndexView):
+    """Instances index for the "Virtual Compute" panel group.
+
+    Same data source and same table machinery; only the half of the
+    split and the table's launch button differ.
+    """
+
+    table_class = project_tables.VirtualInstancesTable
+    instance_type = 'virtual'
+    page_title = _("Virtual Instances")
 
 
 def process_non_api_filters(search_opts, non_api_filter_info):

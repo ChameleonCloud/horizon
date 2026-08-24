@@ -39,6 +39,8 @@ from openstack_dashboard.dashboards.project.instances import tables
 from openstack_dashboard.dashboards.project.instances import tabs
 from openstack_dashboard.dashboards.project.instances \
     import utils as instance_utils
+from openstack_dashboard.dashboards.project.instances \
+    import views as instance_views
 from openstack_dashboard.dashboards.project.instances import workflows
 from openstack_dashboard.test import helpers
 from openstack_dashboard.views import get_url_with_pagination
@@ -3473,6 +3475,46 @@ class IsBaremetalInstanceTests(django.test.SimpleTestCase):
         # Callers may still opt in to using the result.
         self.assertTrue(instance_utils.is_baremetal_instance(
             self._instance('ironic-node')))
+
+
+class InstanceTypeSplitTests(django.test.SimpleTestCase):
+    """The two instance panels split one server list by flavor."""
+
+    def _instance(self, flavor_name):
+        return types.SimpleNamespace(
+            full_flavor=types.SimpleNamespace(name=flavor_name))
+
+    @django.test.utils.override_settings(
+        CHAMELEON_ENABLE_VMS=True,
+        CHAMELEON_BAREMETAL_FLAVOR_NAME='baremetal')
+    def test_baremetal_panel_drops_virtual_instances(self):
+        baremetal = self._instance('baremetal')
+        virtual = self._instance('m1.small')
+
+        kept = instance_views.IndexView()._filter_by_instance_type(
+            [baremetal, virtual])
+
+        self.assertEqual([baremetal], kept)
+
+    @django.test.utils.override_settings(
+        CHAMELEON_ENABLE_VMS=True,
+        CHAMELEON_BAREMETAL_FLAVOR_NAME='baremetal')
+    def test_virtual_panel_drops_baremetal_instances(self):
+        baremetal = self._instance('baremetal')
+        virtual = self._instance('m1.small')
+
+        kept = instance_views.VirtualIndexView()._filter_by_instance_type(
+            [baremetal, virtual])
+
+        self.assertEqual([virtual], kept)
+
+    @django.test.utils.override_settings(CHAMELEON_ENABLE_VMS=False)
+    def test_baremetal_only_site_does_not_split(self):
+        instances = [self._instance('baremetal'), self._instance('m1.small')]
+
+        self.assertEqual(
+            instances,
+            instance_views.IndexView()._filter_by_instance_type(instances))
 
 
 # Rendering a row calls allowed() on every action; without these, unmocked
