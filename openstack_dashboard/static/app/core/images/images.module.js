@@ -354,6 +354,17 @@
       templateUrl: path + 'panel.html'
     });
 
+    // CHI: the "Virtual Compute" images panel. The path has to match the
+    // VirtualImages panel slug, because AngularIndexView only bootstraps
+    // ngRoute and it is this route that picks the template.
+    $routeProvider.when('/project/images_virtual/:id', {
+      redirectTo: goToAngularDetails
+    });
+
+    $routeProvider.when('/project/images_virtual', {
+      templateUrl: path + 'panel.html'
+    });
+
     $routeProvider.when('/admin/images', {
       templateUrl: path + 'admin-panel.html'
     });

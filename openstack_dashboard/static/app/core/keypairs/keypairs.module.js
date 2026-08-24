@@ -114,6 +114,14 @@
     })
     .when('/project/key_pairs/:id', {
       redirectTo: goToAngularDetails
+    })
+    // CHI: the "Virtual Compute" key pairs panel. The paths have to match
+    // the VirtualKeyPairs panel slug.
+    .when('/project/key_pairs_virtual', {
+      templateUrl: path + 'panel.html'
+    })
+    .when('/project/key_pairs_virtual/:id', {
+      redirectTo: goToAngularDetails
     });
 
     function goToAngularDetails(params) {
