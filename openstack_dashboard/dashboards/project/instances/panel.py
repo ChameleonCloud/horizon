@@ -12,6 +12,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
 import horizon
@@ -21,3 +22,21 @@ class Instances(horizon.Panel):
     name = _("Baremetal Instances")
     slug = 'instances'
     permissions = ('openstack.services.compute',)
+
+
+class VirtualInstances(Instances):
+    """The instances panel, listed under "Virtual Compute".
+
+    Subclassing Instances is what keeps the split cheap: no
+    instance-management code is duplicated. Only the slug (and therefore
+    the URL prefix horizon mounts the panel at) and the URLconf differ,
+    and the URLconf differs only in its index view.
+    """
+
+    name = _("Instances")
+    slug = 'instances_virtual'
+    urls = 'openstack_dashboard.dashboards.project.instances.vm_urls'
+
+    @staticmethod
+    def can_register():
+        return settings.CHAMELEON_ENABLE_VMS

@@ -13,6 +13,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
 import horizon
@@ -23,3 +24,15 @@ class Images(horizon.Panel):
     slug = 'images'
     permissions = ('openstack.services.image',)
     policy_rules = (('image', 'get_images'),)
+
+
+class VirtualImages(Images):
+    """The images panel, listed under "Virtual Compute"."""
+
+    name = _("Images")
+    slug = 'images_virtual'
+    urls = 'openstack_dashboard.dashboards.project.images.vm_urls'
+
+    @staticmethod
+    def can_register():
+        return settings.CHAMELEON_ENABLE_VMS
