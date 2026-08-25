@@ -1358,7 +1358,7 @@ class InstancesTable(tables.DataTable):
 
     class Meta(object):
         name = "instances"
-        verbose_name = _("Instances")
+        verbose_name = _("Baremetal Instances")
         status_columns = ["status", "task"]
         row_class = UpdateRow
         table_actions_menu = (StartInstance, StopInstance, SoftRebootInstance)
