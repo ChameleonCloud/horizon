@@ -64,6 +64,7 @@ LOG = logging.getLogger(__name__)
 class IndexView(tables.PagedTableMixin, tables.DataTableView):
     table_class = project_tables.InstancesTable
     page_title = _("Instances")
+    instance_type = 'baremetal'
 
     def has_prev_data(self, table):
         return getattr(self, "_prev", False)
@@ -180,7 +181,17 @@ class IndexView(tables.PagedTableMixin, tables.DataTableView):
                 LOG.info('Unable to retrieve flavor "%s" for instance "%s".',
                          flavor_id, instance.id)
 
-        return instances
+        return self._filter_by_instance_type(instances)
+
+    def _filter_by_instance_type(self, instances):
+        # only filter if the VM instances list will be displayed too.
+        if not settings.CHAMELEON_ENABLE_VMS:
+            return instances
+        if self.instance_type == 'baremetal':
+            return [instance for instance in instances
+                    if instance_utils.is_baremetal_instance(instance)]
+        return [instance for instance in instances
+                if not instance_utils.is_baremetal_instance(instance)]
 
     def _populate_image_info(self, instance, image_dict, volume_dict):
         if not hasattr(instance, 'image'):
@@ -231,12 +242,7 @@ class VirtualIndexView(IndexView):
 
     table_class = project_tables.VirtualInstancesTable
     page_title = _("Virtual Instances")
-
-    def get_data(self):
-        return [
-            instance for instance in super().get_data()
-            if not instance_utils.is_baremetal_instance(instance)
-        ]
+    instance_type = 'virtual'
 
 
 def process_non_api_filters(search_opts, non_api_filter_info):

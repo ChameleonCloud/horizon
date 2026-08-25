@@ -487,6 +487,7 @@ class LaunchVirtualInstanceLinkNG(LaunchLinkNG):
     name = "launch-virtual-ng"
     verbose_name = _("Launch Virtual Instance")
     instance_type = "virtual"
+    url = "horizon:project:instances_virtual:index"
 
     def allowed(self, request, datum):
         if not settings.CHAMELEON_ENABLE_VMS:
@@ -1362,7 +1363,7 @@ class InstancesTable(tables.DataTable):
         status_columns = ["status", "task"]
         row_class = UpdateRow
         table_actions_menu = (StartInstance, StopInstance, SoftRebootInstance)
-        launch_actions = (LaunchLinkNG, LaunchVirtualInstanceLinkNG)
+        launch_actions = (LaunchLinkNG,)
         table_actions = launch_actions + (DeleteInstance,
                                           InstancesFilterAction)
         row_actions = (StartInstance, ConfirmResize, RevertResize,

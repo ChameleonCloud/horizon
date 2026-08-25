@@ -3601,10 +3601,8 @@ class LaunchLinkNGInstanceTypeTests(helpers.TestCase):
         self.assertIn("successUrl: '%s'" % INDEX_URL, ngclick)
 
     def test_virtual_launch_link_declares_virtual(self):
-        self.assertIn(
-            "instanceType: 'virtual'",
-            self._ngclick(tables.LaunchVirtualInstanceLinkNG),
-        )
+        self.assertEqual(
+            'virtual', tables.LaunchVirtualInstanceLinkNG.instance_type)
 
 
 class LaunchVirtualInstanceLinkNGTests(helpers.TestCase):
@@ -3626,13 +3624,24 @@ class LaunchVirtualInstanceLinkNGTests(helpers.TestCase):
 
     @django.test.utils.override_settings(CHAMELEON_ENABLE_VMS=True)
     @helpers.create_mocks({api.nova: ["tenant_absolute_limits"]})
-    def test_hybrid_site_shows_both_launch_buttons(self):
+    def test_baremetal_table_keeps_only_its_own_button(self):
         self.mock_tenant_absolute_limits.return_value = self.limits["absolute"]
 
         names = self._table_action_names()
 
         self.assertIn("launch-ng", names)
+        self.assertNotIn("launch-virtual-ng", names)
+
+    @django.test.utils.override_settings(CHAMELEON_ENABLE_VMS=True)
+    @helpers.create_mocks({api.nova: ["tenant_absolute_limits"]})
+    def test_virtual_table_keeps_only_its_own_button(self):
+        self.mock_tenant_absolute_limits.return_value = self.limits["absolute"]
+        table = tables.VirtualInstancesTable(self.request)
+
+        names = [action.name for action in table.get_table_actions()]
+
         self.assertIn("launch-virtual-ng", names)
+        self.assertNotIn("launch-ng", names)
 
     @django.test.utils.override_settings(CHAMELEON_ENABLE_VMS=True)
     @helpers.create_mocks({api.nova: ["tenant_absolute_limits"]})
