@@ -226,6 +226,19 @@ class IndexView(tables.PagedTableMixin, tables.DataTableView):
                     pass
 
 
+class VirtualIndexView(IndexView):
+    """Instances index for the "Virtual Compute" panel group."""
+
+    table_class = project_tables.VirtualInstancesTable
+    page_title = _("Virtual Instances")
+
+    def get_data(self):
+        return [
+            instance for instance in super().get_data()
+            if not instance_utils.is_baremetal_instance(instance)
+        ]
+
+
 def process_non_api_filters(search_opts, non_api_filter_info):
     """Process filters by non-API fields
 

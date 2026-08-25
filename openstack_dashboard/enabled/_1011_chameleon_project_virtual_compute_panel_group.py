@@ -1,5 +1,3 @@
-# Copyright 2012 Nebula, Inc.
-#
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
 #    not use this file except in compliance with the License. You may obtain
 #    a copy of the License at
@@ -12,25 +10,11 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
-import horizon
-
-
-class Instances(horizon.Panel):
-    name = _("Baremetal Instances")
-    slug = 'instances'
-    permissions = ('openstack.services.compute',)
-
-
-class VirtualInstances(Instances):
-    """The instances panel, listed under "Virtual Compute"."""
-
-    name = _("Instances")
-    slug = 'instances_virtual'
-    urls = 'openstack_dashboard.dashboards.project.instances.vm_urls'
-
-    @staticmethod
-    def can_register():
-        return settings.CHAMELEON_ENABLE_VMS
+# The slug of the panel group to be added to HORIZON_CONFIG. Required.
+PANEL_GROUP = 'virtual_compute'
+# The display name of the PANEL_GROUP. Required.
+PANEL_GROUP_NAME = _('Virtual Compute')
+# The slug of the dashboard the PANEL_GROUP associated with. Required.
+PANEL_GROUP_DASHBOARD = 'project'

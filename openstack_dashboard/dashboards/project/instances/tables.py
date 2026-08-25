@@ -1389,3 +1389,14 @@ class InstancesTable(tables.DataTable):
                 if action.name not in BAREMETAL_UNSUPPORTED_ACTIONS
             ]
         return row_actions
+
+
+class VirtualInstancesTable(InstancesTable):
+    """The instances table as shown under "Virtual Compute"."""
+
+    class Meta(InstancesTable.Meta):
+        name = "virtual_instances"
+        verbose_name = _("Virtual Instances")
+        launch_actions = (LaunchVirtualInstanceLinkNG,)
+        table_actions = launch_actions + (DeleteInstance,
+                                          InstancesFilterAction)
