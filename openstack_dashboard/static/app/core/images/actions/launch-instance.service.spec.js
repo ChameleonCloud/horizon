@@ -32,6 +32,10 @@
       }
     };
 
+    var windowMock = {
+      location: { pathname: '/project/images/' }
+    };
+
     var service, $scope;
 
     ///////////////////////
@@ -42,9 +46,11 @@
         'horizon.dashboard.project.workflow.launch-instance.modal.service', launchInstanceModalMock
       );
       $provide.value('horizon.app.core.openstack-service-api.policy', policyAPI);
+      $provide.value('$window', windowMock);
     }));
 
     beforeEach(inject(function($injector, _$rootScope_) {
+      windowMock.location.pathname = '/project/images/';
       service = $injector.get('horizon.app.core.images.actions.launch-instance.service');
       $scope = _$rootScope_.$new();
     }));
@@ -56,7 +62,20 @@
 
       expect(launchInstanceModalMock.open).toHaveBeenCalled();
       expect(launchInstanceModalMock.open.calls.argsFor(0)).toEqual([{
-        imageId: '1'
+        imageId: '1',
+        instanceType: 'baremetal'
+      }]);
+    });
+
+    it('should launch a virtual instance from the virtual images panel', function() {
+      windowMock.location.pathname = '/project/images_virtual/';
+      spyOn(launchInstanceModalMock, 'open').and.callThrough();
+
+      service.perform({id: '1', name: 'image1'});
+
+      expect(launchInstanceModalMock.open.calls.argsFor(0)).toEqual([{
+        imageId: '1',
+        instanceType: 'virtual'
       }]);
     });
 

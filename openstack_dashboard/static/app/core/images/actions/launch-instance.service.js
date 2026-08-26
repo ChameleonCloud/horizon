@@ -22,6 +22,7 @@
 
   launchInstanceService.$inject = [
     '$q',
+    '$window',
     'horizon.app.core.images.non_bootable_image_types',
     'horizon.app.core.openstack-service-api.policy',
     'horizon.dashboard.project.workflow.launch-instance.modal.service',
@@ -32,6 +33,7 @@
    * @ngDoc factory
    * @name horizon.app.core.images.actions.launchInstanceService
    * @param {Object} $q
+   * @param {Object} $window
    * @param {Object} nonBootableImageTypes
    * @param {Object} launchInstanceModal
    * @param {Object} $qExtensions
@@ -44,6 +46,7 @@
    */
   function launchInstanceService(
     $q,
+    $window,
     nonBootableImageTypes,
     policy,
     launchInstanceModal,
@@ -63,8 +66,22 @@
       // in this case we leave the post-action behavior up to the result
       // handler.
       return launchInstanceModal.open({
-        'imageId': image.id
+        'imageId': image.id,
+        'instanceType': currentInstanceType()
       });
+    }
+
+    // CHI: the Launch action is registered once against OS::Glance::Image, so
+    // it cannot be told apart per panel the way the Instances tables can. Both
+    // the baremetal and the virtual Images panel render the same
+    // hz-resource-table, and launch-instance-wizard.controller.js defaults an
+    // absent instanceType to 'baremetal' -- which meant Virtual Compute >
+    // Images > Launch opened the baremetal wizard. The panel slug is in the
+    // path, so read it from there until the registry can carry the type.
+    function currentInstanceType() {
+      return (/\/images_virtual(\/|$)/).test($window.location.pathname)
+        ? 'virtual'
+        : 'baremetal';
     }
 
     function allowed(image) {
