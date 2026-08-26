@@ -3650,6 +3650,23 @@ class LaunchLinkNGInstanceTypeTests(helpers.TestCase):
             self._ngclick(tables.LaunchVirtualInstanceLinkNG),
         )
 
+    def test_virtual_launch_link_returns_to_the_virtual_panel(self):
+        """The successUrl is where the wizard sends the browser on success.
+
+        Inheriting LaunchLinkNG.url would send a virtual launch to the
+        baremetal list, which filters the new instance straight back out.
+        Asserted on the class because instances_virtual is not registered
+        under the test settings, where CHAMELEON_ENABLE_VMS is off.
+        """
+        self.assertEqual(
+            "horizon:project:instances_virtual:index",
+            tables.LaunchVirtualInstanceLinkNG.url,
+        )
+        self.assertNotEqual(
+            tables.LaunchLinkNG.url,
+            tables.LaunchVirtualInstanceLinkNG.url,
+        )
+
 
 class LaunchVirtualInstanceLinkNGTests(helpers.TestCase):
     """Visibility of the virtual launch button."""

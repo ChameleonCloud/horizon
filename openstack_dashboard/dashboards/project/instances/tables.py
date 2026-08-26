@@ -465,7 +465,15 @@ class LaunchLinkNG(tables.LinkAction):
         return HttpResponse(self.render(is_table_action=True))
 
     def get_default_attrs(self):
-        url = urls.reverse(self.url)
+        try:
+            url = urls.reverse(self.url)
+        except urls.NoReverseMatch:
+            # The virtual subclass points at the instances_virtual panel,
+            # which is only registered when CHAMELEON_ENABLE_VMS is on. On a
+            # baremetal-only site allowed() already hides that button, so this
+            # successUrl is never used; reverse() is just eager. Fall back so
+            # building the table does not raise.
+            url = urls.reverse("horizon:project:instances:index")
         ngclick = (
             "modal.openLaunchInstanceWizard("
             "{ successUrl: '%s', instanceType: '%s' })"
@@ -487,6 +495,10 @@ class LaunchVirtualInstanceLinkNG(LaunchLinkNG):
     name = "launch-virtual-ng"
     verbose_name = _("Launch Virtual Instance")
     instance_type = "virtual"
+    # get_default_attrs() reverses this into the wizard's successUrl,
+    # so without the override a successful virtual launch lands on the
+    # baremetal list, which filters the new instance straight out.
+    url = "horizon:project:instances_virtual:index"
 
     def allowed(self, request, datum):
         if not settings.CHAMELEON_ENABLE_VMS:
