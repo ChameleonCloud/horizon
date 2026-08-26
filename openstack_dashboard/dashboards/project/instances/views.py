@@ -63,7 +63,7 @@ LOG = logging.getLogger(__name__)
 
 class IndexView(tables.PagedTableMixin, tables.DataTableView):
     table_class = project_tables.InstancesTable
-    page_title = _("Instances")
+    page_title = _("Baremetal Instances")
 
     # CHI: which half of the virtual/baremetal panel split this view
     # renders. See VirtualIndexView for the other half.

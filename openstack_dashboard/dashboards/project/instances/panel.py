@@ -33,7 +33,7 @@ class VirtualInstances(Instances):
     and the URLconf differs only in its index view.
     """
 
-    name = _("Instances")
+    name = _("Virtual Instances")
     slug = 'instances_virtual'
     urls = 'openstack_dashboard.dashboards.project.instances.vm_urls'
 
