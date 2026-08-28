@@ -532,6 +532,8 @@ class Flavors(generic.View):
         :param get_extras: Also retrieve the extra specs.
         :param is_blazar_reserved: Set to true for only the blazar reservation
             flavors, false to exclude them. Omit it to include both.
+        :param is_baremetal: Set to true for only the flavors that launch onto
+            baremetal.
 
         Example GET:
         http://localhost/api/nova/flavors?is_public=true
@@ -546,6 +548,8 @@ class Flavors(generic.View):
         if is_blazar_reserved is not None:
             # is_blazar_reserved_flavor() reads extra specs.
             get_extras = True
+        is_baremetal = request.GET.get('is_baremetal')
+        is_baremetal = (is_baremetal and is_baremetal.lower() == 'true')
 
         flavors = api.nova.flavor_list(request, is_public=is_public,
                                        get_extras=get_extras)
@@ -561,6 +565,11 @@ class Flavors(generic.View):
         if is_blazar_reserved is not None:
             items = [d for d in items
                      if is_blazar_reserved_flavor(d) == is_blazar_reserved]
+
+        if is_baremetal:
+            items = [
+                d for d in items
+                if instances_utils.is_baremetal_flavor_name(d.get('name'))]
         return {'items': items}
 
     @rest_utils.ajax(data_required=True)

@@ -278,6 +278,11 @@ def resolve_flavor(request, instance, flavors=None, **kwargs):
         return flavor_from_dict(instance.flavor)
 
 
+def is_baremetal_flavor_name(name):
+    """Returns true if flavor name matches configured baremetal flavor name."""
+    return name == settings.CHAMELEON_BAREMETAL_FLAVOR_NAME
+
+
 def is_baremetal_instance(instance):
     """Does this instance run on baremetal or a hypervisor.
 
@@ -307,4 +312,4 @@ def is_baremetal_instance(instance):
                     getattr(full_flavor, 'id', full_flavor))
         return False
 
-    return full_flavor_name == settings.CHAMELEON_BAREMETAL_FLAVOR_NAME
+    return is_baremetal_flavor_name(full_flavor_name)
