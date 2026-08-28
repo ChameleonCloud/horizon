@@ -265,7 +265,9 @@
           novaAPI.getFlavors({
             is_public: true,
             get_extras: true,
-            // Dropped from the query when undefined, i.e. unfiltered for baremetal.
+            // Dropped from the query when undefined. Allows each launch wizard
+            //to request appropriate flavors.
+            is_baremetal: model.isBaremetal ? 'true' : undefined,
             is_blazar_reserved: model.isVirtual ? 'true' : undefined
           }).then(onGetFlavors, noop),
           novaAPI.getKeypairs().then(onGetKeypairs, noop),
