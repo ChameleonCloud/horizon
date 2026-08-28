@@ -288,6 +288,7 @@
       var facade, flavor;
 
       ctrl.availableFlavorFacades.length = 0;
+      ctrl.allocatedFlavorFacades.length = 0;
 
       for (var i = 0; i < ctrl.flavors.length; i++) {
         flavor = ctrl.flavors[i];

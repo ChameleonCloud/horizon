@@ -334,6 +334,12 @@
             ctrl.buildFlavorFacades();
             expect(ctrl.availableFlavorFacades.length).toBe(1);
           });
+
+          it("drops an allocated facade left behind by a previous dialog", function () {
+            ctrl.allocatedFlavorFacades.push({name: "stale"});
+            ctrl.buildFlavorFacades();
+            expect(ctrl.allocatedFlavorFacades).not.toContain({name: "stale"});
+          });
         });
       });
 
