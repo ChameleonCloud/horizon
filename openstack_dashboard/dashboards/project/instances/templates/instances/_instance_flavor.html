@@ -2,7 +2,7 @@
 <a href="#" id="flavor_details_{{ id }}" class="link-popover" rel="popover" tabindex="0" data-trigger="focus" data-content="
 <table class=&quot;table table-bordered&quot;>
   <tr><th>{% trans 'ID' %}</th><td>{{ flavor_id }}</td></tr>
-{% if chameleon_enable_baremetal %}
+{% if is_baremetal %}
   <tr><td>Hardware details for your instance can be found in our <a target='blank' href='https://www.chameleoncloud.org/hardware/'>resource discovery interface.</a></td></tr>
 {% else %}
   <tr><th>{% trans 'VCPUs' %}</th><td>{{ vcpus }}</td></tr>
