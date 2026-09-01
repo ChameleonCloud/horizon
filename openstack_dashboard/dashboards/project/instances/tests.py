@@ -3419,24 +3419,17 @@ class ConsoleManagerTests(helpers.ResetImageAPIVersionMixin, helpers.TestCase):
             helpers.IsHttpRequest(), server.id, port.id)
 
 
+def _instance_with_flavor(flavor_name=None):
+    """Stub server for full_flavor attribute presence/absence."""
+    if flavor_name is None:
+        return types.SimpleNamespace()
+    return types.SimpleNamespace(
+        full_flavor=types.SimpleNamespace(name=flavor_name)
+    )
+
+
 class IsBaremetalInstanceTests(django.test.SimpleTestCase):
-    """Answers from the site config first, the instance's flavor second."""
-
-    def _instance(self, flavor_name=None):
-        """An instance whose flavor resolved to flavor_name, or did not."""
-        if flavor_name is None:
-            return types.SimpleNamespace()
-        return types.SimpleNamespace(
-            full_flavor=types.SimpleNamespace(name=flavor_name))
-
-    @django.test.utils.override_settings(
-        CHAMELEON_ENABLE_BAREMETAL=True,
-        CHAMELEON_ENABLE_VMS=False,
-        CHAMELEON_BAREMETAL_FLAVOR_NAME='baremetal')
-    def test_baremetal_only_site_does_not_consult_the_flavor(self):
-        # Backwards compat: baremetal-only site treat everything as baremetal.
-        self.assertTrue(
-            instance_utils.is_baremetal_instance(self._instance('m1.small')))
+    """What type an instance is based on flavor name."""
 
     @django.test.utils.override_settings(
         CHAMELEON_ENABLE_BAREMETAL=True,
@@ -3445,15 +3438,15 @@ class IsBaremetalInstanceTests(django.test.SimpleTestCase):
     def test_hybrid_site_matches_the_configured_flavor_name(self):
         # Check that non-default flavor name can work
         self.assertTrue(instance_utils.is_baremetal_instance(
-            self._instance('ironic-node')))
+            _instance_with_flavor('ironic-node')))
 
     @django.test.utils.override_settings(
         CHAMELEON_ENABLE_BAREMETAL=True,
         CHAMELEON_ENABLE_VMS=True,
         CHAMELEON_BAREMETAL_FLAVOR_NAME='ironic-node')
     def test_hybrid_site_rejects_any_other_flavor_name(self):
-        self.assertFalse(
-            instance_utils.is_baremetal_instance(self._instance('m1.small')))
+        self.assertFalse(instance_utils.is_baremetal_instance(
+            _instance_with_flavor('m1.small')))
 
     @django.test.utils.override_settings(
         CHAMELEON_ENABLE_BAREMETAL=True,
@@ -3462,7 +3455,7 @@ class IsBaremetalInstanceTests(django.test.SimpleTestCase):
         # Private and blazar-deleted flavors don't resolve flavor name, treat
         # them as VM flavors.
         self.assertFalse(instance_utils.is_baremetal_instance(
-            self._instance()))
+            _instance_with_flavor()))
 
     @django.test.utils.override_settings(
         CHAMELEON_ENABLE_BAREMETAL=False,
@@ -3472,7 +3465,39 @@ class IsBaremetalInstanceTests(django.test.SimpleTestCase):
         # This reports what the instance is, not whether to customize it;
         # Callers may still opt in to using the result.
         self.assertTrue(instance_utils.is_baremetal_instance(
-            self._instance('ironic-node')))
+            _instance_with_flavor('ironic-node')))
+
+
+class ShowBaremetalUiTests(django.test.SimpleTestCase):
+    """Whether to apply baremetal behavior: site config first, flavor second."""
+
+    @django.test.utils.override_settings(
+        CHAMELEON_ENABLE_BAREMETAL=True,
+        CHAMELEON_ENABLE_VMS=False,
+        CHAMELEON_BAREMETAL_FLAVOR_NAME='baremetal')
+    def test_baremetal_only_site_does_not_consult_the_flavor(self):
+        # Backwards compat: baremetal-only sites treat everything as baremetal.
+        self.assertTrue(
+            instance_utils.show_baremetal_ui(_instance_with_flavor('m1.small')))
+
+    @django.test.utils.override_settings(
+        CHAMELEON_ENABLE_BAREMETAL=False,
+        CHAMELEON_ENABLE_VMS=True,
+        CHAMELEON_BAREMETAL_FLAVOR_NAME='ironic-node')
+    def test_customizations_off_applies_to_no_instance(self):
+        # is_baremetal_instance() still reports True here; this gates on it.
+        self.assertFalse(instance_utils.show_baremetal_ui(
+            _instance_with_flavor('ironic-node')))
+
+    @django.test.utils.override_settings(
+        CHAMELEON_ENABLE_BAREMETAL=True,
+        CHAMELEON_ENABLE_VMS=True,
+        CHAMELEON_BAREMETAL_FLAVOR_NAME='ironic-node')
+    def test_hybrid_site_decides_per_instance(self):
+        self.assertTrue(instance_utils.show_baremetal_ui(
+            _instance_with_flavor('ironic-node')))
+        self.assertFalse(
+            instance_utils.show_baremetal_ui(_instance_with_flavor('m1.small')))
 
 
 # Rendering a row calls allowed() on every action; without these, unmocked
