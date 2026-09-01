@@ -3589,22 +3589,66 @@ class BaremetalRowActionTests(helpers.TestCase):
 
 
 class FlavorPopoverTests(helpers.TestCase):
-    """CHI Baremetal nodes don't set resource information in flavors. In this
-    case we link to hardware catalog instead.
+    """Which flavor details the popover shows.
 
-    TODO(Mike): what should CHI VM flavors show.
+    CHI baremetal nodes don't set resource information in flavors, so we link
+    to the hardware catalog instead. VM flavors do carry the numbers, so on a
+    hybrid site the choice is per instance.
     """
+
+    def _popover(self, flavor_name=None):
+        server = self.servers.first()
+        server.full_flavor = self.flavors.first()
+        if flavor_name is not None:
+            server.full_flavor.name = flavor_name
+        self.addCleanup(delattr, server, 'full_flavor')
+
+        return tables.get_flavor(server)
 
     @django.test.utils.override_settings(CHAMELEON_ENABLE_BAREMETAL=True)
     def test_chi_baremetal_links_to_the_hardware_catalog(self):
-        server = self.servers.first()
-        server.full_flavor = self.flavors.first()
-        self.addCleanup(delattr, server, 'full_flavor')
-
-        popover = tables.get_flavor(server)
+        popover = self._popover()
 
         self.assertIn('resource discovery interface', popover)
         self.assertNotIn('VCPUs', popover)
+
+    @django.test.utils.override_settings(
+        CHAMELEON_ENABLE_BAREMETAL=True,
+        CHAMELEON_ENABLE_VMS=True,
+        CHAMELEON_BAREMETAL_FLAVOR_NAME='ironic-node')
+    def test_hybrid_site_shows_the_specs_for_a_vm(self):
+        popover = self._popover('m1.tiny')
+
+        self.assertIn('VCPUs', popover)
+        self.assertNotIn('resource discovery interface', popover)
+
+
+class FlavorDetailOverviewTests(helpers.TestCase):
+    """The is_baremetal value OverviewTab puts in its context.
+
+    Which details the template then shows is decided by show_baremetal_ui();
+    this only checks that the tab passes its answer through under that key.
+    """
+
+    def _is_baremetal(self, flavor_name):
+        server = self.servers.first()
+        server.full_flavor = self.flavors.first()
+        server.full_flavor.name = flavor_name
+        self.addCleanup(delattr, server, 'full_flavor')
+        # The tab reads both before the flavor; unset, they hit the nova API.
+        server.volumes = []
+        server.image = None
+
+        tab = tabs.OverviewTab(tabs.InstanceDetailTabs, self.request)
+        tab.tab_group.kwargs = {'instance': server}
+        return tab.get_context_data(self.request)['is_baremetal']
+
+    @django.test.utils.override_settings(
+        CHAMELEON_ENABLE_BAREMETAL=True,
+        CHAMELEON_ENABLE_VMS=True,
+        CHAMELEON_BAREMETAL_FLAVOR_NAME='ironic-node')
+    def test_hybrid_site_reports_a_vm_as_not_baremetal(self):
+        self.assertFalse(self._is_baremetal('m1.tiny'))
 
 
 class LaunchLinkNGInstanceTypeTests(helpers.TestCase):
