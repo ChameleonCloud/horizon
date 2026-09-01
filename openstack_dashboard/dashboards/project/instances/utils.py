@@ -292,12 +292,6 @@ def is_baremetal_instance(instance):
     `CHAMELEON_BAREMETAL_FLAVOR_NAME`.
     """
 
-    if (settings.CHAMELEON_ENABLE_BAREMETAL and
-            not settings.CHAMELEON_ENABLE_VMS):
-        # short circuit for baremetal only sites, flavor info may not be
-        # available.
-        return True
-
     # metadata available to horizon differs by context. If missing, default to
     # VM settings which are broader.
     full_flavor = getattr(instance, 'full_flavor', None)
@@ -313,3 +307,18 @@ def is_baremetal_instance(instance):
         return False
 
     return is_baremetal_flavor_name(full_flavor_name)
+
+
+def show_baremetal_ui(instance):
+    """Whether to render Chameleon's baremetal UI for this instance."""
+
+    if not settings.CHAMELEON_ENABLE_BAREMETAL:
+        # Upstream compat, always false.
+        return False
+
+    if not settings.CHAMELEON_ENABLE_VMS:
+        # Backwards compatibility for existing baremetal-only sites. Prevents
+        # any issues with flavor name matching from causing breakage.
+        return True
+
+    return is_baremetal_instance(instance)

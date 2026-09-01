@@ -1381,8 +1381,7 @@ class InstancesTable(tables.DataTable):
 
     def get_row_actions(self, datum):
         row_actions = super().get_row_actions(datum)
-        if (settings.CHAMELEON_ENABLE_BAREMETAL and
-                instance_utils.is_baremetal_instance(datum)):
+        if instance_utils.show_baremetal_ui(datum):
             return [
                 action
                 for action in row_actions
