@@ -1362,7 +1362,7 @@ class InstancesTable(tables.DataTable):
         status_columns = ["status", "task"]
         row_class = UpdateRow
         table_actions_menu = (StartInstance, StopInstance, SoftRebootInstance)
-        launch_actions = (LaunchLinkNG, LaunchVirtualInstanceLinkNG)
+        launch_actions = (LaunchLinkNG,)
         table_actions = launch_actions + (DeleteInstance,
                                           InstancesFilterAction)
         row_actions = (StartInstance, ConfirmResize, RevertResize,
