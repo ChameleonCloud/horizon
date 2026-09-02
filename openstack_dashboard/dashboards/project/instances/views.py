@@ -64,6 +64,8 @@ LOG = logging.getLogger(__name__)
 class IndexView(tables.PagedTableMixin, tables.DataTableView):
     table_class = project_tables.InstancesTable
     page_title = _("Instances")
+    # What type of instance is shown on this panel: baremetal or VMs.
+    baremetal = True
 
     def has_prev_data(self, table):
         return getattr(self, "_prev", False)
@@ -174,6 +176,14 @@ class IndexView(tables.PagedTableMixin, tables.DataTableView):
             instance.full_flavor = instance_utils.resolve_flavor(self.request,
                                                                  instance,
                                                                  flavor_dict)
+
+        if settings.CHAMELEON_ENABLE_VMS:
+            # Filter instances list.
+            # TODO: Breaks pagination if more than 1 page of results from nova.
+            instances = [
+                i for i in instances
+                if instance_utils.is_baremetal_instance(i) == self.baremetal
+            ]
 
         return instances
 
