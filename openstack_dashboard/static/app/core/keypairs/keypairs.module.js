@@ -114,6 +114,13 @@
     })
     .when('/project/key_pairs/:id', {
       redirectTo: goToAngularDetails
+    })
+    // CHI: paths must match the VirtualKeyPairs panel slug.
+    .when('/project/virtual_key_pairs', {
+      templateUrl: path + 'panel.html'
+    })
+    .when('/project/virtual_key_pairs/:id', {
+      redirectTo: goToAngularDetails
     });
 
     function goToAngularDetails(params) {

@@ -358,6 +358,15 @@
       templateUrl: path + 'admin-panel.html'
     });
 
+    // CHI: paths must match the VirtualImages panel slug.
+    $routeProvider.when('/project/virtual_images/:id', {
+      redirectTo: goToAngularDetails
+    });
+
+    $routeProvider.when('/project/virtual_images', {
+      templateUrl: path + 'panel.html'
+    });
+
     function goToAngularDetails(params) {
       return detailRoute + 'OS::Glance::Image/' + params.id;
     }
