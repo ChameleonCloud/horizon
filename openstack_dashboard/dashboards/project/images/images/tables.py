@@ -349,7 +349,9 @@ class ImagesTable(tables.DataTable):
         status_columns = ["status"]
         verbose_name = _("Images")
         table_actions = (OwnerFilter, CreateImage, DeleteImage,)
-        launch_actions = (LaunchImageNG,)
+        # CHI: cannot tell whether baremetal or virtual launch is needed
+        # launch_actions = (LaunchImageNG,)
+        launch_actions = ()
         row_actions = launch_actions + (CreateVolumeFromImage,
                                         EditImage, UpdateMetadata,
                                         DeleteImage,)
