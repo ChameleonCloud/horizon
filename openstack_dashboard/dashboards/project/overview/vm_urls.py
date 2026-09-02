@@ -1,6 +1,3 @@
-# Copyright 2012 Nebula, Inc.
-# Copyright 2012 OpenStack Foundation
-#
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
 #    not use this file except in compliance with the License. You may obtain
 #    a copy of the License at
@@ -13,25 +10,18 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from django.conf import settings
-from django.utils.translation import gettext_lazy as _
+"""URLconf for the "Virtual Compute" overview panel.
 
-import horizon
+Mirrors urls.py. The routes are rebuilt here so this panel owns its own
+URLPattern objects; see images/vm_urls.py for why.
+"""
 
+from django.urls import re_path
 
-class Images(horizon.Panel):
-    name = _("Images")
-    slug = 'images'
-    permissions = ('openstack.services.image',)
-    policy_rules = (('image', 'get_images'),)
+from openstack_dashboard.dashboards.project.overview import views
 
 
-class VirtualImages(Images):
-    """The "Virtual Compute" twin of the images panel."""
-
-    slug = 'virtual_images'
-    urls = 'vm_urls'
-
-    @staticmethod
-    def can_register():
-        return settings.CHAMELEON_ENABLE_VMS
+urlpatterns = [
+    re_path(r'^$', views.ProjectOverview.as_view(), name='index'),
+    re_path(r'^warning$', views.WarningView.as_view(), name='warning'),
+]

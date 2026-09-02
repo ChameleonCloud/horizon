@@ -12,6 +12,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
 import horizon
@@ -23,3 +24,14 @@ class KeyPairs(horizon.Panel):
     permissions = ('openstack.services.compute',)
     policy_rules = (("compute", "os_compute_api:os-keypairs:index"),
                     ("compute", "os_compute_api:os-keypairs:create"),)
+
+
+class VirtualKeyPairs(KeyPairs):
+    """The "Virtual Compute" twin of the key pairs panel."""
+
+    slug = 'virtual_key_pairs'
+    urls = 'vm_urls'
+
+    @staticmethod
+    def can_register():
+        return settings.CHAMELEON_ENABLE_VMS

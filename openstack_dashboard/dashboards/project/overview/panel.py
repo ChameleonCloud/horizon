@@ -16,6 +16,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
 import horizon
@@ -25,3 +26,14 @@ class Overview(horizon.Panel):
     name = _("Overview")
     slug = 'overview'
     permissions = ('openstack.services.compute',)
+
+
+class VirtualOverview(Overview):
+    """The "Virtual Compute" twin of the overview panel."""
+
+    slug = 'virtual_overview'
+    urls = 'vm_urls'
+
+    @staticmethod
+    def can_register():
+        return settings.CHAMELEON_ENABLE_VMS
