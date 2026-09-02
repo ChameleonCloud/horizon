@@ -8,3 +8,11 @@ class IndexView(views.IndexView):
     table_class = tables.VirtualInstancesTable
     page_title = _("Virtual Instances")
     baremetal = False
+
+
+class DetailView(views.DetailView):
+    # List page, user sent here when instance not found.
+    redirect_url = 'horizon:project:virtual_instances:index'
+
+    # This view is for the virtual compute panel.
+    baremetal = False

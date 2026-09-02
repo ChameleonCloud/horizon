@@ -475,6 +475,24 @@ class DetailView(tabs.TabView):
     page_title = "{{ instance.name|default:instance.id }}"
     image_url = 'horizon:project:images:images:detail'
     volume_url = 'horizon:project:volumes:detail'
+    # Instance type served by this detail view
+    baremetal = True
+
+    def get(self, request, *args, **kwargs):
+        BAREMETAL_DETAIL = "horizon:project:instances:detail"
+        VIRTUAL_DETAIL = "horizon:project:virtual_instances:detail"
+        # Redirect users to correct detail view by instance type.
+        # Keeps links and bookmarks working.
+        # TODO(Mike): Fix callers to avoid extra redirect
+        if settings.CHAMELEON_ENABLE_VMS:
+            instance = self.get_data()
+            if instance_utils.is_baremetal_instance(instance) != self.baremetal:
+                # Mismatched, so send it to the other panel.
+                target = VIRTUAL_DETAIL if self.baremetal else BAREMETAL_DETAIL
+                return shortcuts.redirect(reverse(target, args=[instance.id]))
+
+        # Base case
+        return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
