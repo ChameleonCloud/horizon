@@ -138,6 +138,12 @@
         {id: 'ephemeralDisk', title: gettext('Ephemeral Disk'), filters: ['gb'], priority: 2}
       ];
 
+    // CHI: The baremetal wizard drops these columns along with the rest of the
+    // resource columns above. Our separate VM wizard hides them.
+    var hiddenColumnIds = launchInstanceModel.isVirtual
+      ? ['ephemeralDisk', 'isPublic']
+      : [];
+
     ctrl.availableTableConfig = {
       selectAll: false,
       trackId: 'id',
@@ -147,7 +153,9 @@
         {id: 'description', title: gettext('Description'), priority: 1}
       ].concat(resourceColumns, [
         {id: 'isPublic', title: gettext('Public'), filters: ['yesno'], priority: 1}
-      ])
+      ]).filter(function (column) {
+        return hiddenColumnIds.indexOf(column.id) < 0;
+      })
     };
 
     ctrl.allocatedTableConfig = angular.copy(ctrl.availableTableConfig);

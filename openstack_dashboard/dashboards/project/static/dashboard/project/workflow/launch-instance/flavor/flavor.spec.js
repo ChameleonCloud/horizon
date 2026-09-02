@@ -84,6 +84,38 @@
         expect(data.unit).toBe('MB');
       });
 
+      describe("flavor table columns", function () {
+        // Rebuild the controller against a model for one kind of wizard.
+        function columnIds(wizard) {
+          var built;
+          inject(function ($controller) {
+            built = $controller('LaunchInstanceFlavorController as ctrl', {
+              $scope: scope,
+              'horizon.framework.widgets.charts.quotaChartDefaults': defaults,
+              launchInstanceModel: angular.extend({}, model, wizard)
+            });
+          });
+          return built.availableTableConfig.columns.map(function (col) {
+            return col.id;
+          });
+        }
+
+        it("shows what upstream does when neither CHI type is set", function () {
+          expect(columnIds({})).toEqual(['name', 'description', 'vcpus', 'ram',
+            'totalDisk', 'rootDisk', 'ephemeralDisk', 'isPublic']);
+        });
+
+        it("hides ephemeral disk and public on the CHI virtual wizard", function () {
+          expect(columnIds({isVirtual: true})).toEqual(['name', 'description',
+            'vcpus', 'ram', 'totalDisk', 'rootDisk']);
+        });
+
+        it("hides every resource column on the baremetal wizard", function () {
+          expect(columnIds({isBaremetal: true}))
+            .toEqual(['name', 'description', 'isPublic']);
+        });
+      });
+
       describe("watches", function () {
 
         beforeEach(function() {
