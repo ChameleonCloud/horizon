@@ -1,0 +1,3 @@
+{% extends "project/instances/_disassociate.html" %}
+
+{% block form_action %}{% url "horizon:project:virtual_instances:disassociate" instance_id %}{% endblock %}

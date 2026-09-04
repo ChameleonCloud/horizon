@@ -1,0 +1,3 @@
+{% extends "project/instances/_rebuild.html" %}
+
+{% block form_action %}{% url "horizon:project:virtual_instances:rebuild" instance_id %}{% endblock %}
