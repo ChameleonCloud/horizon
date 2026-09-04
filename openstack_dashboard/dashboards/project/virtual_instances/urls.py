@@ -15,7 +15,7 @@ urlpatterns = [
     ),
     re_path(
         INSTANCES % "update",
-        instance_views.UpdateView.as_view(),
+        views.UpdateView.as_view(),
         name="update",
     ),
     re_path(
@@ -39,7 +39,7 @@ urlpatterns = [
     re_path(INSTANCES % "rdp", instance_views.rdp, name="rdp"),
     re_path(
         INSTANCES % "resize",
-        instance_views.ResizeView.as_view(),
+        views.ResizeView.as_view(),
         name="resize",
     ),
     re_path(

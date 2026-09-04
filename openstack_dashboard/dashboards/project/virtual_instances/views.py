@@ -4,6 +4,7 @@ from django.utils.translation import gettext_lazy as _
 
 from openstack_dashboard.dashboards.project.instances import views
 from openstack_dashboard.dashboards.project.virtual_instances import tables
+from openstack_dashboard.dashboards.project.virtual_instances import workflows
 
 
 class IndexView(views.IndexView):
@@ -26,6 +27,14 @@ INDEX_URL = reverse_lazy("horizon:project:virtual_instances:index")
 class RescueView(views.RescueView):
     submit_url = "horizon:project:virtual_instances:rescue"
     success_url = INDEX_URL
+
+
+class UpdateView(views.UpdateView):
+    workflow_class = workflows.UpdateInstance
+
+
+class ResizeView(views.ResizeView):
+    workflow_class = workflows.ResizeInstance
 
 
 class RebuildView(views.RebuildView):
