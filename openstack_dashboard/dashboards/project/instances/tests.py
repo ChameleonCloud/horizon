@@ -3658,7 +3658,6 @@ class LaunchLinkNGInstanceTypeTests(helpers.TestCase):
     LaunchInstanceWizardController, which is how the wizard learns which
     launch button was pressed.
     """
-
     def _ngclick(self, action_class):
         action = action_class()
         action.table = tables.InstancesTable(self.request)
@@ -3670,12 +3669,6 @@ class LaunchLinkNGInstanceTypeTests(helpers.TestCase):
 
         self.assertIn("instanceType: 'baremetal'", ngclick)
         self.assertIn("successUrl: '%s'" % INDEX_URL, ngclick)
-
-    def test_virtual_launch_link_declares_virtual(self):
-        self.assertIn(
-            "instanceType: 'virtual'",
-            self._ngclick(tables.LaunchVirtualInstanceLinkNG),
-        )
 
 
 class LaunchVirtualInstanceLinkNGTests(helpers.TestCase):

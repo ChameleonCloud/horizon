@@ -33,7 +33,7 @@ function run_test {
   local report_args
   local ignore
 
-  tag="not selenium and not integration and not plugin_test"
+  tag="not selenium and not integration and not plugin_test and not hybrid_site"
 
   case "$project" in
     horizon)
@@ -44,6 +44,14 @@ function run_test {
       ;;
     openstack_auth)
       settings_module="openstack_auth.tests.settings"
+      ;;
+    hybrid|hybrid-site|hybrid_site)
+      project="hybrid"
+      tag="hybrid_site"
+      # Whole tree is selected on purpose so that this can run tests
+      # declared next to the code.
+      target="$root/openstack_dashboard"
+      settings_module="openstack_dashboard.test.settings_hybrid"
       ;;
     plugin|plugin-test|plugin_test)
       project="plugin"
@@ -86,7 +94,7 @@ if [ -n "$subset" ]; then
   exit $?
 else
   results=()
-  for project in horizon openstack_dashboard openstack_auth plugin; do
+  for project in horizon openstack_dashboard openstack_auth plugin hybrid; do
     run_test $project
     results+=($?)
   done
