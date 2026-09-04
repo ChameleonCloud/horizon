@@ -487,6 +487,7 @@ class LaunchVirtualInstanceLinkNG(LaunchLinkNG):
     name = "launch-virtual-ng"
     verbose_name = _("Launch Virtual Instance")
     instance_type = "virtual"
+    url = "horizon:project:virtual_instances:index"
 
     def allowed(self, request, datum):
         if not settings.CHAMELEON_ENABLE_VMS:
