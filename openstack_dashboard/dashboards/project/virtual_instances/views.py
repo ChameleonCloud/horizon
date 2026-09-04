@@ -1,3 +1,4 @@
+from django.urls import reverse
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 
@@ -35,17 +36,34 @@ class DisassociateView(views.DisassociateView):
     success_url = INDEX_URL
 
 
-class AttachInterfaceView(views.AttachInterfaceView):
+class _RepointedSubmitUrl:
+    """HACK: override get_context_data so we can change the submit url used."""
+
+    submit_url_name = None
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["submit_url"] = reverse(
+            self.submit_url_name,
+            kwargs={"instance_id": self.kwargs["instance_id"]})
+        return context
+
+
+class AttachInterfaceView(_RepointedSubmitUrl, views.AttachInterfaceView):
+    submit_url_name = "horizon:project:virtual_instances:attach_interface"
     success_url = INDEX_URL
 
 
-class DetachInterfaceView(views.DetachInterfaceView):
+class DetachInterfaceView(_RepointedSubmitUrl, views.DetachInterfaceView):
+    submit_url_name = "horizon:project:virtual_instances:detach_interface"
     success_url = INDEX_URL
 
 
-class AttachVolumeView(views.AttachVolumeView):
+class AttachVolumeView(_RepointedSubmitUrl, views.AttachVolumeView):
+    submit_url_name = "horizon:project:virtual_instances:attach_volume"
     success_url = INDEX_URL
 
 
-class DetachVolumeView(views.DetachVolumeView):
+class DetachVolumeView(_RepointedSubmitUrl, views.DetachVolumeView):
+    submit_url_name = "horizon:project:virtual_instances:detach_volume"
     success_url = INDEX_URL
