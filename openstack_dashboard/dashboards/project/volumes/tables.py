@@ -585,7 +585,10 @@ class VolumesTable(VolumesTableBase):
         table_actions = (CreateVolume, AcceptTransfer, DeleteVolume,
                          VolumesFilterAction)
 
-        launch_actions = (LaunchVolumeNG,)
+
+        # CHI: cannot tell whether baremetal or virtual launch is needed
+        #launch_actions = (LaunchVolumeNG,)
+        launch_actions = ()
 
         row_actions = ((EditVolume, ExtendVolume,) +
                        launch_actions +

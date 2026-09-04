@@ -64,6 +64,8 @@ LOG = logging.getLogger(__name__)
 class IndexView(tables.PagedTableMixin, tables.DataTableView):
     table_class = project_tables.InstancesTable
     page_title = _("Instances")
+    # What type of instance is shown on this panel: baremetal or VMs.
+    baremetal = True
 
     def has_prev_data(self, table):
         return getattr(self, "_prev", False)
@@ -174,6 +176,14 @@ class IndexView(tables.PagedTableMixin, tables.DataTableView):
             instance.full_flavor = instance_utils.resolve_flavor(self.request,
                                                                  instance,
                                                                  flavor_dict)
+
+        if settings.CHAMELEON_ENABLE_VMS:
+            # Filter instances list.
+            # TODO: Breaks pagination if more than 1 page of results from nova.
+            instances = [
+                i for i in instances
+                if instance_utils.is_baremetal_instance(i) == self.baremetal
+            ]
 
         return instances
 
@@ -465,6 +475,24 @@ class DetailView(tabs.TabView):
     page_title = "{{ instance.name|default:instance.id }}"
     image_url = 'horizon:project:images:images:detail'
     volume_url = 'horizon:project:volumes:detail'
+    # Instance type served by this detail view
+    baremetal = True
+
+    def get(self, request, *args, **kwargs):
+        BAREMETAL_DETAIL = "horizon:project:instances:detail"
+        VIRTUAL_DETAIL = "horizon:project:virtual_instances:detail"
+        # Redirect users to correct detail view by instance type.
+        # Keeps links and bookmarks working.
+        # TODO(Mike): Fix callers to avoid extra redirect
+        if settings.CHAMELEON_ENABLE_VMS:
+            instance = self.get_data()
+            if instance_utils.is_baremetal_instance(instance) != self.baremetal:
+                # Mismatched, so send it to the other panel.
+                target = VIRTUAL_DETAIL if self.baremetal else BAREMETAL_DETAIL
+                return shortcuts.redirect(reverse(target, args=[instance.id]))
+
+        # Base case
+        return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

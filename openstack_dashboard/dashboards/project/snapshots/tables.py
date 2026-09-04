@@ -242,7 +242,9 @@ class VolumeDetailsSnapshotsTable(volume_tables.VolumesTableBase):
         prev_pagination_param = 'prev_snapshot_marker'
         table_actions = (VolumeSnapshotsFilterAction, DeleteVolumeSnapshot,)
 
-        launch_actions = (LaunchSnapshotNG,)
+        # CHI: cannot tell whether baremetal or virtual launch is needed
+        # launch_actions = (LaunchSnapshotNG,)
+        launch_actions = ()
 
         row_actions = ((CreateVolumeFromSnapshot,) + launch_actions +
                        (EditVolumeSnapshot, DeleteVolumeSnapshot, CreateBackup,
