@@ -1,4 +1,4 @@
-from django.urls import reverse
+from django.urls import reverse_lazy
 from horizon.test import helpers as horizon_helpers
 
 from openstack_dashboard.dashboards.project.instances import tables
@@ -7,8 +7,7 @@ from openstack_dashboard.dashboards.project.virtual_instances import (
 )
 from openstack_dashboard.test import helpers
 
-# INDEX_URL = "/project/virtual_instances/"
-INDEX_URL = reverse("horizon:project:virtual_instances:index")
+INDEX_URL = reverse_lazy("horizon:project:virtual_instances:index")
 
 
 @horizon_helpers.pytest_mark("hybrid_site")
