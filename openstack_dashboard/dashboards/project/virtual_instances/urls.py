@@ -44,7 +44,7 @@ urlpatterns = [
     ),
     re_path(
         INSTANCES_KEYPAIR % "decryptpassword",
-        instance_views.DecryptPasswordView.as_view(),
+        views.DecryptPasswordView.as_view(),
         name="decryptpassword",
     ),
     re_path(

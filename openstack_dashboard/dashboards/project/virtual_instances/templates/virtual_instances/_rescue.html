@@ -1,0 +1,3 @@
+{% extends "project/instances/_rescue.html" %}
+
+{% block form_action %}{% url "horizon:project:virtual_instances:rescue" instance_id %}{% endblock %}

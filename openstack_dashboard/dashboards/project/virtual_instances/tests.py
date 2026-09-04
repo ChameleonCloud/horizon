@@ -1,3 +1,4 @@
+import re
 import types
 
 from django.urls import reverse
@@ -308,7 +309,7 @@ class ModalTemplateUrlTests(VirtualPanelTestCase):
 
         res = self.client.get(url)
 
-        self.assertContains(res, 'action="%s" method="POST"' % url)
+        self._assert_form_posts_to(res, url)
 
     @helpers.create_mocks({api.nova: ("get_password",)})
     def test_decrypt_password_cancel_returns_to_the_virtual_panel(self):
@@ -350,3 +351,46 @@ class ModalTemplateUrlTests(VirtualPanelTestCase):
         res = self.client.get(url)
 
         self._assert_form_posts_to(res, url)
+
+
+class RowActionUrlTests(VirtualPanelTestCase):
+    """Test where the instances table's row actions link.
+
+    project/instances/tables.py defines a LinkAction per action, each
+    with a url naming one panel. The virtual table inherits them, so
+    without an override every row action leaves this panel and the
+    user never reaches this panel's views at all.
+    """
+
+    @helpers.create_mocks({
+        api.nova: ("flavor_list", "server_list_paged",
+                   "tenant_absolute_limits", "is_feature_available"),
+        api.glance: ("image_list_detailed",),
+        api.neutron: ("floating_ip_simple_associate_supported",
+                      "floating_ip_supported"),
+        api.network: ("servers_update_addresses",),
+        api.cinder: ("volume_list",),
+    }, stop_mock=False)
+    # Mocks stay up after this returns so the caller can render the table.
+    def _rendered_table(self):
+        self.mock_is_feature_available.return_value = True
+        self.mock_flavor_list.return_value = self.flavors.list()
+        self.mock_image_list_detailed.return_value = \
+            [self.images.list(), False, False]
+        self.mock_server_list_paged.return_value = \
+            [self.servers.list(), False, False]
+        self.mock_servers_update_addresses.return_value = None
+        self.mock_tenant_absolute_limits.return_value = \
+            self.limits["absolute"]
+        self.mock_floating_ip_supported.return_value = True
+        self.mock_floating_ip_simple_associate_supported.return_value = True
+        res = self.client.get(INDEX_URL)
+        return res.context["virtual_instances_table"].render()
+
+    def test_no_row_action_links_to_the_default_panel(self):
+        self.maxDiff = None
+
+        leaked = sorted(set(re.findall(
+            r"/project/instances/[^\"' ?]*", self._rendered_table())))
+
+        self.assertEqual([], leaked)

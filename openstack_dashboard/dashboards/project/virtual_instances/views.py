@@ -27,6 +27,7 @@ INDEX_URL = reverse_lazy("horizon:project:virtual_instances:index")
 class RescueView(views.RescueView):
     submit_url = "horizon:project:virtual_instances:rescue"
     success_url = INDEX_URL
+    template_name = "project/virtual_instances/rescue.html"
 
 
 class UpdateView(views.UpdateView):
@@ -39,10 +40,17 @@ class ResizeView(views.ResizeView):
 
 class RebuildView(views.RebuildView):
     success_url = INDEX_URL
+    template_name = "project/virtual_instances/rebuild.html"
 
 
 class DisassociateView(views.DisassociateView):
     success_url = INDEX_URL
+    template_name = "project/virtual_instances/disassociate.html"
+
+
+class DecryptPasswordView(views.DecryptPasswordView):
+    success_url = INDEX_URL
+    template_name = "project/virtual_instances/decryptpassword.html"
 
 
 class _RepointedSubmitUrl:
