@@ -1,3 +1,4 @@
+from django import urls as django_urls
 from django.urls import reverse_lazy
 from horizon.test import helpers as horizon_helpers
 
@@ -23,3 +24,12 @@ class VirtualLaunchWizardTests(helpers.TestCase):
 
         self.assertIn("instanceType: 'virtual'", ngclick)
         self.assertIn("successUrl: '%s'" % INDEX_URL, ngclick)
+
+
+@horizon_helpers.pytest_mark("hybrid_site")
+class VirtualPanelRouteTests(helpers.TestCase):
+    def test_a_default_panel_route_reverses_under_this_panel(self):
+        self.assertEqual(
+            "/project/virtual_instances/i1/rebuild",
+            django_urls.reverse(
+                "horizon:project:virtual_instances:rebuild", args=["i1"]))
