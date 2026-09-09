@@ -260,6 +260,24 @@ class HorizonTests(BaseHorizonTests):
         tigers.index_url_name = "index"
         self.assertEqual("/cats/tigers/", tigers.get_absolute_url())
 
+    def test_app_namespace_defaults_to_the_slug(self):
+        tigers = horizon.get_dashboard("cats").get_panel("tigers")
+
+        _urls, app_namespace, instance_namespace = tigers._decorated_urls
+
+        self.assertEqual(("tigers", "tigers"),
+                         (app_namespace, instance_namespace))
+
+    def test_app_namespace_replaces_the_slug_for_the_application(self):
+        tigers = horizon.get_dashboard("cats").get_panel("tigers")
+        tigers.app_namespace = "lions"
+        self.addCleanup(setattr, tigers, "app_namespace", None)
+
+        _urls, app_namespace, instance_namespace = tigers._decorated_urls
+
+        self.assertEqual(("lions", "tigers"),
+                         (app_namespace, instance_namespace))
+
     def test_lazy_urls(self):
         urlpatterns = horizon.urls[0]
         self.assertIsInstance(urlpatterns, base.LazyURLPattern)

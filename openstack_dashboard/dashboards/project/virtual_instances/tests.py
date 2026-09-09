@@ -1,35 +1,153 @@
+import html
+import re
+
 from django import urls as django_urls
-from django.urls import reverse_lazy
 from horizon.test import helpers as horizon_helpers
 
+from openstack_dashboard import api
+from openstack_dashboard.dashboards.admin.instances import tables \
+    as admin_tables
 from openstack_dashboard.dashboards.project.instances import tables
-from openstack_dashboard.dashboards.project.virtual_instances import (
-    tables as virtual_tables,
-)
 from openstack_dashboard.test import helpers
 
-INDEX_URL = reverse_lazy("horizon:project:virtual_instances:index")
+VIRTUAL_PANEL = "/project/virtual_instances/"
+DEFAULT_PANEL = "/project/instances/"
+ADMIN_PANEL = "/admin/instances/"
 
-
-@horizon_helpers.pytest_mark("hybrid_site")
-class VirtualLaunchWizardTests(helpers.TestCase):
-    def _ngclick(self, action_class):
-        action = action_class()
-        action.table = virtual_tables.VirtualInstancesTable(self.request)
-        action.get_default_attrs()
-        return action.attrs["ng-click"]
-
-    def test_virtual_launch_link_declares_virtual(self):
-        ngclick = self._ngclick(tables.LaunchVirtualInstanceLinkNG)
-
-        self.assertIn("instanceType: 'virtual'", ngclick)
-        self.assertIn("successUrl: '%s'" % INDEX_URL, ngclick)
+INDEX_MOCKS = {
+    api.nova: ("flavor_list", "server_list_paged",
+               "tenant_absolute_limits", "is_feature_available"),
+    api.glance: ("image_list_detailed",),
+    api.neutron: ("floating_ip_simple_associate_supported",
+                  "floating_ip_supported"),
+    api.network: ("servers_update_addresses",),
+    api.cinder: ("volume_list",),
+}
 
 
 @horizon_helpers.pytest_mark("hybrid_site")
 class VirtualPanelRouteTests(helpers.TestCase):
     def test_a_default_panel_route_reverses_under_this_panel(self):
         self.assertEqual(
-            "/project/virtual_instances/i1/rebuild",
+            VIRTUAL_PANEL + "i1/rebuild",
             django_urls.reverse(
                 "horizon:project:virtual_instances:rebuild", args=["i1"]))
+
+    def test_reverse_picks_this_panel_when_given_current_app(self):
+        self.assertEqual(
+            VIRTUAL_PANEL + "i1/rebuild",
+            django_urls.reverse(
+                "horizon:project:instances:rebuild", args=["i1"],
+                current_app="horizon:project:virtual_instances"))
+
+    def test_reverse_picks_the_default_panel_without_current_app(self):
+        self.assertEqual(
+            DEFAULT_PANEL + "i1/rebuild",
+            django_urls.reverse(
+                "horizon:project:instances:rebuild", args=["i1"]))
+
+
+@horizon_helpers.pytest_mark("hybrid_site")
+class VirtualPanelNavigationTests(helpers.TestCase):
+    """A user acting on a VM must not land in the default compute panel."""
+
+    def _get_index(self):
+        self.mock_is_feature_available.return_value = True
+        self.mock_flavor_list.return_value = self.flavors.list()
+        self.mock_image_list_detailed.return_value = (
+            self.images.list(), False, False)
+        self.mock_server_list_paged.return_value = [
+            self.servers.list(), False, False]
+        self.mock_servers_update_addresses.return_value = None
+        self.mock_tenant_absolute_limits.return_value = self.limits["absolute"]
+        self.mock_floating_ip_supported.return_value = True
+        self.mock_floating_ip_simple_associate_supported.return_value = True
+        self.mock_volume_list.return_value = []
+        page = self.client.get(VIRTUAL_PANEL)
+        self.assertEqual(200, page.status_code)
+        return page
+
+    @helpers.create_mocks(INDEX_MOCKS)
+    def test_the_launch_button_returns_the_user_to_this_panel(self):
+        page = html.unescape(self._get_index().content.decode("utf-8"))
+
+        self.assertIn("launch-virtual-ng", page)
+        self.assertIn("instanceType: 'virtual'", page)
+        self.assertIn("successUrl: '%s'" % VIRTUAL_PANEL, page)
+
+    def _assert_form_posts_to_the_panel(self, res, tail):
+        self.assertEqual(200, res.status_code)
+        found = re.search(r'<form [^>]*action="([^"]*)"',
+                          res.content.decode("utf-8"))
+        self.assertEqual(VIRTUAL_PANEL + tail,
+                         found.group(1) if found else "rendered no form")
+
+    @helpers.create_mocks({api.glance: ("image_list_detailed",)})
+    def test_the_rescue_form_posts_to_the_panel(self):
+        self.mock_image_list_detailed.return_value = (
+            self.images.list(), False, False)
+        tail = "%s/rescue" % self.servers.first().id
+
+        self._assert_form_posts_to_the_panel(
+            self.client.get(VIRTUAL_PANEL + tail), tail)
+
+    @helpers.create_mocks({api.glance: ("image_list_detailed",),
+                           api.nova: ("server_get", "is_feature_available")})
+    def test_the_rebuild_form_posts_to_the_panel(self):
+        server = self.servers.first()
+        self.mock_image_list_detailed.return_value = (
+            self.images.list(), False, False)
+        self.mock_server_get.return_value = server
+        self.mock_is_feature_available.return_value = False
+        tail = "%s/rebuild" % server.id
+
+        self._assert_form_posts_to_the_panel(
+            self.client.get(VIRTUAL_PANEL + tail), tail)
+
+    @helpers.create_mocks({api.neutron: (
+        "floating_ip_target_list_by_instance", "tenant_floating_ip_list")})
+    def test_the_disassociate_form_posts_to_the_panel(self):
+        server = self.servers.first()
+        port = [p for p in self.ports.list() if p.device_id == server.id][0]
+        fip = self.floating_ips.first()
+        fip.port_id = port.id
+        self.mock_floating_ip_target_list_by_instance.return_value = [
+            api.neutron.FloatingIpTarget(
+                port, port["fixed_ips"][0]["ip_address"], server.name)]
+        self.mock_tenant_floating_ip_list.return_value = [fip]
+        tail = "%s/disassociate" % server.id
+
+        self._assert_form_posts_to_the_panel(
+            self.client.get(VIRTUAL_PANEL + tail), tail)
+
+    @helpers.create_mocks({api.nova: ("get_password",)})
+    def test_the_retrieve_password_page_keeps_the_user_here(self):
+        self.mock_get_password.return_value = "encrypted"
+        server = self.servers.first()
+        tail = "%s/%s/decryptpassword" % (server.id, server.key_name)
+
+        res = self.client.get(VIRTUAL_PANEL + tail)
+
+        self._assert_form_posts_to_the_panel(res, tail)
+        # base.html carries a modal skeleton whose cancel has no href.
+        cancels_to = [href for href in re.findall(
+            r'<a href="([^"]*)" class="btn btn-default cancel"',
+            res.content.decode("utf-8")) if href.startswith("/")]
+        self.assertEqual([VIRTUAL_PANEL], cancels_to)
+
+
+@horizon_helpers.pytest_mark("hybrid_site")
+class ReusedActionTests(helpers.TestCase):
+    """Panels beyond these two reuse the same LinkAction classes."""
+
+    def test_the_admin_rebuild_button_points_at_the_default_panel(self):
+        request = self.factory.get(ADMIN_PANEL)
+        request.resolver_match = django_urls.resolve(ADMIN_PANEL)
+        request.user = self.request.user
+        request.session = self.request.session
+        server = self.servers.first()
+        action = tables.RebuildInstance()
+        action.table = admin_tables.AdminInstancesTable(request)
+
+        self.assertEqual(DEFAULT_PANEL + "%s/rebuild" % server.id,
+                         action.get_link_url(server))

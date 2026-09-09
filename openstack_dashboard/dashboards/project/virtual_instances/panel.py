@@ -7,6 +7,7 @@ import horizon
 class VirtualInstances(horizon.Panel):
     name = _("Instances")
     slug = 'virtual_instances'
+    app_namespace = 'instances'
     permissions = ('openstack.services.compute',)
 
     @staticmethod
