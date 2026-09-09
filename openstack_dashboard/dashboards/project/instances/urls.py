@@ -24,36 +24,51 @@ from openstack_dashboard.dashboards.project.instances import views
 INSTANCES = r'^(?P<instance_id>[^/]+)/%s$'
 INSTANCES_KEYPAIR = r'^(?P<instance_id>[^/]+)/(?P<keypair_name>[^/]+)/%s$'
 
-urlpatterns = [
-    re_path(r'^$', views.IndexView.as_view(), name='index'),
-    re_path(r'^(?P<instance_id>[^/]+)/$',
-            views.DetailView.as_view(), name='detail'),
-    re_path(INSTANCES % 'update', views.UpdateView.as_view(), name='update'),
-    re_path(INSTANCES % 'rebuild', views.RebuildView.as_view(), name='rebuild'),
-    re_path(INSTANCES % 'serial', views.SerialConsoleView.as_view(),
-            name='serial'),
-    re_path(INSTANCES % 'console', views.console, name='console'),
-    re_path(INSTANCES % 'auto_console',
-            views.auto_console, name='auto_console'),
-    re_path(INSTANCES % 'vnc', views.vnc, name='vnc'),
-    re_path(INSTANCES % 'spice', views.spice, name='spice'),
-    re_path(INSTANCES % 'rdp', views.rdp, name='rdp'),
-    re_path(INSTANCES % 'resize', views.ResizeView.as_view(), name='resize'),
-    re_path(INSTANCES_KEYPAIR % 'decryptpassword',
-            views.DecryptPasswordView.as_view(), name='decryptpassword'),
-    re_path(INSTANCES % 'disassociate',
-            views.DisassociateView.as_view(), name='disassociate'),
-    re_path(INSTANCES % 'attach_interface',
-            views.AttachInterfaceView.as_view(), name='attach_interface'),
-    re_path(INSTANCES % 'detach_interface',
-            views.DetachInterfaceView.as_view(), name='detach_interface'),
-    re_path(r'^(?P<instance_id>[^/]+)/attach_volume/$',
-            views.AttachVolumeView.as_view(),
-            name='attach_volume'),
-    re_path(r'^(?P<instance_id>[^/]+)/detach_volume/$',
-            views.DetachVolumeView.as_view(),
-            name='detach_volume'),
-    re_path(r'^(?P<instance_id>[^/]+)/ports/(?P<port_id>[^/]+)/update$',
-            views.UpdatePortView.as_view(), name='update_port'),
-    re_path(INSTANCES % 'rescue', views.RescueView.as_view(), name='rescue'),
-]
+
+def new_instance_urlpatterns(views):
+    """Build the instance routes against a given panel's views module.
+
+    Returns new objects on every call. Horizon records which panel owns a
+    route by overwriting pattern.callback, so two panels serving these
+    routes cannot share one list.
+    """
+    return [
+        re_path(r'^$', views.IndexView.as_view(), name='index'),
+        re_path(r'^(?P<instance_id>[^/]+)/$',
+                views.DetailView.as_view(), name='detail'),
+        re_path(INSTANCES % 'update',
+                views.UpdateView.as_view(), name='update'),
+        re_path(INSTANCES % 'rebuild',
+                views.RebuildView.as_view(), name='rebuild'),
+        re_path(INSTANCES % 'serial', views.SerialConsoleView.as_view(),
+                name='serial'),
+        re_path(INSTANCES % 'console', views.console, name='console'),
+        re_path(INSTANCES % 'auto_console',
+                views.auto_console, name='auto_console'),
+        re_path(INSTANCES % 'vnc', views.vnc, name='vnc'),
+        re_path(INSTANCES % 'spice', views.spice, name='spice'),
+        re_path(INSTANCES % 'rdp', views.rdp, name='rdp'),
+        re_path(INSTANCES % 'resize',
+                views.ResizeView.as_view(), name='resize'),
+        re_path(INSTANCES_KEYPAIR % 'decryptpassword',
+                views.DecryptPasswordView.as_view(), name='decryptpassword'),
+        re_path(INSTANCES % 'disassociate',
+                views.DisassociateView.as_view(), name='disassociate'),
+        re_path(INSTANCES % 'attach_interface',
+                views.AttachInterfaceView.as_view(), name='attach_interface'),
+        re_path(INSTANCES % 'detach_interface',
+                views.DetachInterfaceView.as_view(), name='detach_interface'),
+        re_path(r'^(?P<instance_id>[^/]+)/attach_volume/$',
+                views.AttachVolumeView.as_view(),
+                name='attach_volume'),
+        re_path(r'^(?P<instance_id>[^/]+)/detach_volume/$',
+                views.DetachVolumeView.as_view(),
+                name='detach_volume'),
+        re_path(r'^(?P<instance_id>[^/]+)/ports/(?P<port_id>[^/]+)/update$',
+                views.UpdatePortView.as_view(), name='update_port'),
+        re_path(INSTANCES % 'rescue',
+                views.RescueView.as_view(), name='rescue'),
+    ]
+
+
+urlpatterns = new_instance_urlpatterns(views)
