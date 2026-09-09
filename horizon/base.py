@@ -285,6 +285,12 @@ class Panel(HorizonComponent):
         the index view for this ``Panel``. This is the view that
         :meth:`.Panel.get_absolute_url` will attempt to reverse.
 
+    .. attribute:: app_namespace
+
+        The Django application namespace for this panel's URLconf. Panels
+        sharing a value serve one application, and ``reverse()`` tells
+        them apart by ``current_app``. Defaults to the ``slug``.
+
     .. staticmethod:: can_register
 
         This optional static method can be used to specify conditions that
@@ -302,6 +308,7 @@ class Panel(HorizonComponent):
     urls = None
     nav = True
     index_url_name = "index"
+    app_namespace = None
 
     def __repr__(self):
         return "<Panel: %s>" % self.slug
@@ -335,7 +342,7 @@ class Panel(HorizonComponent):
         _decorate_urlconf(urlpatterns, _current_component, panel=self)
 
         # Return the three arguments to django.conf.urls.include
-        return urlpatterns, self.slug, self.slug
+        return urlpatterns, self.app_namespace or self.slug, self.slug
 
 
 class PanelGroup(object):

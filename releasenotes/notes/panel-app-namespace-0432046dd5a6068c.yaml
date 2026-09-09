@@ -1,0 +1,8 @@
+---
+features:
+  - |
+    ``horizon.Panel`` gained an ``app_namespace`` attribute, naming the
+    Django application namespace for that panel's URLconf. Panels sharing a
+    value are served from one application, so ``reverse()`` tells them apart
+    by ``current_app``. It defaults to the panel's ``slug``, which is the
+    existing behaviour.
