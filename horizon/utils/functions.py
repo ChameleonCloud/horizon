@@ -118,6 +118,20 @@ def get_language(request):
                             request.LANGUAGE_CODE, search_in_settings=False)
 
 
+def get_current_app(request):
+    """Generate `current_app` to pass to `reverse()` from request context."""
+
+    # override to current_app if set explicitly
+    current_app = getattr(request, 'current_app', None)
+    if current_app is not None:
+        return current_app
+
+    # request.resolver_match is set when a request is resolved to a view
+    # resolver_match.namespace defaults to the view's slug, unless overridden
+    resolver_match = getattr(request, 'resolver_match', None)
+    return getattr(resolver_match, 'namespace', None)
+
+
 def natural_sort(attr):
     return lambda x: [int(s) if s.isdigit() else s for s in
                       re.split(r'(\d+)', getattr(x, attr, x))]

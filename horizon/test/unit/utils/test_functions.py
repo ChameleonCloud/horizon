@@ -10,6 +10,8 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from django import urls
+
 from horizon.test import helpers as test
 from horizon.utils import functions
 
@@ -95,3 +97,31 @@ class GetConfigValueTests(test.TestCase):
         res = functions.get_config_value(request, key, self.str_default,
                                          search_in_settings=False)
         self.assertEqual(res, self.str_default)
+
+
+class GetCurrentAppTests(test.TestCase):
+    requested_url = '/project/instances/'
+
+    def _resolver_match(self, *namespaces):
+        return urls.ResolverMatch(lambda request: None, (), {},
+                                  namespaces=list(namespaces))
+
+    def test_found_in_current_app(self):
+        request = self.factory.get(self.requested_url)
+        request.resolver_match = self._resolver_match(
+            'horizon', 'project', 'instances')
+        request.current_app = 'horizon:project:virtual_instances'
+        res = functions.get_current_app(request)
+        self.assertEqual(res, 'horizon:project:virtual_instances')
+
+    def test_found_in_resolver_match(self):
+        request = self.factory.get(self.requested_url)
+        request.resolver_match = self._resolver_match(
+            'horizon', 'project', 'instances')
+        res = functions.get_current_app(request)
+        self.assertEqual(res, 'horizon:project:instances')
+
+    def test_return_none(self):
+        request = self.factory.get(self.requested_url)
+        res = functions.get_current_app(request)
+        self.assertIsNone(res)
