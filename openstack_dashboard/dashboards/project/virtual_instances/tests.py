@@ -260,6 +260,41 @@ class VirtualPanelNavigationTests(helpers.TestCase):
             re.findall(r'<iframe id="console_embed" src="([^"]*)"',
                        res.content.decode("utf-8")))
 
+    @helpers.create_mocks({api.nova: ("server_get", "server_rebuild",
+                                      "is_feature_available"),
+                           api.glance: ("image_list_detailed",)})
+    def test_a_failed_rebuild_returns_the_user_to_the_panel(self):
+        server = self.servers.first()
+        self.mock_server_get.return_value = server
+        self.mock_image_list_detailed.return_value = (
+            self.images.list(), False, False)
+        self.mock_is_feature_available.return_value = False
+        self.mock_server_rebuild.side_effect = self.exceptions.nova
+
+        res = self.client.post(VIRTUAL_PANEL + "%s/rebuild" % server.id,
+                               {"instance_id": server.id,
+                                "image": self.images.first().id})
+
+        self.assertRedirectsNoFollow(res, VIRTUAL_PANEL)
+
+    @helpers.create_mocks({api.nova: ("server_get",)})
+    def test_a_missing_instance_returns_the_user_to_the_panel(self):
+        self.mock_server_get.side_effect = self.exceptions.nova
+
+        res = self.client.get(
+            VIRTUAL_PANEL + "%s/" % self.servers.first().id)
+
+        self.assertRedirectsNoFollow(res, VIRTUAL_PANEL)
+
+    @helpers.create_mocks({api.nova: ("server_get",)})
+    def test_a_failed_resize_page_returns_the_user_to_the_panel(self):
+        self.mock_server_get.side_effect = self.exceptions.nova
+
+        res = self.client.get(
+            VIRTUAL_PANEL + "%s/resize" % self.servers.first().id)
+
+        self.assertRedirectsNoFollow(res, VIRTUAL_PANEL)
+
     @helpers.create_mocks({api.nova: ("get_password",)})
     def test_the_retrieve_password_page_keeps_the_user_here(self):
         self.mock_get_password.return_value = "encrypted"
