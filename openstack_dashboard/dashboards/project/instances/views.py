@@ -409,7 +409,7 @@ class UpdateView(workflows.WorkflowView):
 class RebuildView(forms.ModalFormView):
     form_class = project_forms.RebuildInstanceForm
     template_name = 'project/instances/rebuild.html'
-    success_url = reverse_lazy('horizon:project:instances:index')
+    success_url = 'horizon:project:instances:index'
     page_title = _("Rebuild Instance")
     submit_label = page_title
 
@@ -439,7 +439,7 @@ class RebuildView(forms.ModalFormView):
 class DecryptPasswordView(forms.ModalFormView):
     form_class = project_forms.DecryptPasswordInstanceForm
     template_name = 'project/instances/decryptpassword.html'
-    success_url = reverse_lazy('horizon:project:instances:index')
+    success_url = 'horizon:project:instances:index'
     page_title = _("Retrieve Instance Password")
 
     def get_context_data(self, **kwargs):
@@ -456,7 +456,7 @@ class DecryptPasswordView(forms.ModalFormView):
 class DisassociateView(forms.ModalFormView):
     form_class = project_forms.Disassociate
     template_name = 'project/instances/disassociate.html'
-    success_url = reverse_lazy('horizon:project:instances:index')
+    success_url = 'horizon:project:instances:index'
     page_title = _("Disassociate floating IP")
     submit_label = _("Disassociate")
 
@@ -656,7 +656,7 @@ class AttachInterfaceView(forms.ModalFormView):
     page_title = _("Attach Interface")
     form_id = "attach_interface_form"
     submit_label = _("Attach Interface")
-    success_url = reverse_lazy('horizon:project:instances:index')
+    success_url = 'horizon:project:instances:index'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -678,7 +678,7 @@ class AttachVolumeView(forms.ModalFormView):
     page_title = _("Attach Volume")
     modal_id = "attach_volume_modal"
     submit_label = _("Attach Volume")
-    success_url = reverse_lazy('horizon:project:instances:index')
+    success_url = 'horizon:project:instances:index'
 
     def get_initial(self):
         args = {'instance_id': self.kwargs['instance_id']}
@@ -707,7 +707,7 @@ class DetachVolumeView(forms.ModalFormView):
     page_title = _("Detach Volume")
     modal_id = "detach_volume_modal"
     submit_label = _("Detach Volume")
-    success_url = reverse_lazy('horizon:project:instances:index')
+    success_url = 'horizon:project:instances:index'
 
     def get_initial(self):
         args = {'instance_id': self.kwargs['instance_id']}
@@ -729,7 +729,7 @@ class DetachInterfaceView(forms.ModalFormView):
     page_title = _("Detach Interface")
     form_id = "detach_interface_form"
     submit_label = _("Detach Interface")
-    success_url = reverse_lazy('horizon:project:instances:index')
+    success_url = 'horizon:project:instances:index'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -771,7 +771,7 @@ class RescueView(forms.ModalFormView):
     template_name = 'project/instances/rescue.html'
     submit_label = _("Confirm")
     submit_url = "horizon:project:instances:rescue"
-    success_url = reverse_lazy('horizon:project:instances:index')
+    success_url = 'horizon:project:instances:index'
     page_title = _("Rescue Instance")
 
     def get_context_data(self, **kwargs):
