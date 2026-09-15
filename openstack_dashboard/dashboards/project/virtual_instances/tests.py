@@ -170,6 +170,17 @@ class VirtualPanelNavigationTests(helpers.TestCase):
         self._assert_form_posts_to_the_panel(
             self.client.get(VIRTUAL_PANEL + tail), tail)
 
+    @helpers.create_mocks({api.neutron: ("network_list_for_tenant",
+                                         "port_list_with_trunk_types")})
+    def test_the_attach_interface_cancel_returns_to_the_panel(self):
+        self.mock_network_list_for_tenant.return_value = self.networks.list()
+        self.mock_port_list_with_trunk_types.return_value = self.ports.list()
+        tail = "%s/attach_interface" % self.servers.first().id
+
+        res = self.client.get(VIRTUAL_PANEL + tail)
+
+        self.assertEqual(VIRTUAL_PANEL, res.context_data["cancel_url"])
+
     @helpers.create_mocks({api.neutron: (
         "floating_ip_target_list_by_instance", "tenant_floating_ip_list")})
     def test_the_disassociate_form_posts_to_the_panel(self):
