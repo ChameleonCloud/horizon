@@ -1,12 +1,14 @@
 import html
 import re
 
+from django.test.utils import override_settings
 from django import urls as django_urls
 from horizon.test import helpers as horizon_helpers
 
 from openstack_dashboard import api
 from openstack_dashboard.dashboards.admin.instances import tables \
     as admin_tables
+from openstack_dashboard.dashboards.project.instances import interfaces_tables
 from openstack_dashboard.dashboards.project.instances import tables
 from openstack_dashboard.test import helpers
 
@@ -74,6 +76,51 @@ class VirtualPanelNavigationTests(helpers.TestCase):
         self.assertIn("launch-virtual-ng", page)
         self.assertIn("instanceType: 'virtual'", page)
         self.assertIn("successUrl: '%s'" % VIRTUAL_PANEL, page)
+
+    @override_settings(OPENSTACK_ENABLE_PASSWORD_RETRIEVE=True)
+    @helpers.create_mocks(INDEX_MOCKS)
+    def test_the_row_action_links_stay_out_of_the_default_panel(self):
+        table = self._get_index().context["virtual_instances_table"]
+        server = self.servers.first()
+
+        strays = {action.name: action.bound_url
+                  for action in table.get_row_actions(server)
+                  if getattr(action, "bound_url", "").startswith(DEFAULT_PANEL)}
+
+        self.assertEqual({}, strays)
+
+    def _interface_action_link(self, action, server, port):
+        detail = VIRTUAL_PANEL + "%s/" % server.id
+        request = self.factory.get(detail)
+        request.resolver_match = django_urls.resolve(detail)
+        action.table = interfaces_tables.InterfacesTable(
+            request, [port], instance_id=server.id)
+        return action.get_link_url(port)
+
+    @helpers.create_mocks({api.neutron: ("is_extension_supported",)})
+    def test_the_interface_edit_port_button_stays_in_the_panel(self):
+        self.mock_is_extension_supported.return_value = True
+        server = self.servers.first()
+        port = [p for p in self.ports.list() if p.device_id == server.id][0]
+        tail = "%s/ports/%s/update?step=update_info" % (server.id, port.id)
+
+        link = self._interface_action_link(
+            interfaces_tables.UpdatePort(), server, port)
+
+        self.assertEqual(VIRTUAL_PANEL + tail, link)
+
+    @helpers.create_mocks({api.neutron: ("is_extension_supported",)})
+    def test_the_interface_security_groups_button_stays_in_the_panel(self):
+        self.mock_is_extension_supported.return_value = True
+        server = self.servers.first()
+        port = [p for p in self.ports.list() if p.device_id == server.id][0]
+        tail = ("%s/ports/%s/update?step=update_security_groups"
+                % (server.id, port.id))
+
+        link = self._interface_action_link(
+            interfaces_tables.UpdateSecurityGroups(), server, port)
+
+        self.assertEqual(VIRTUAL_PANEL + tail, link)
 
     def _assert_form_posts_to_the_panel(self, res, tail):
         self.assertEqual(200, res.status_code)
