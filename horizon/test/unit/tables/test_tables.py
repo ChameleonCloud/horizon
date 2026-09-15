@@ -24,6 +24,7 @@ from django import http
 from django import shortcuts
 from django.template import defaultfilters
 from django.test.utils import override_settings
+from django.urls import resolve
 from django.urls import reverse
 from django.utils.translation import ngettext_lazy
 
@@ -406,6 +407,22 @@ class DisabledActionsTable(tables.DataTable):
         table_actions = (MyDisabledAction,)
         row_actions = ()
         multi_select = True
+
+
+class SharedPanelLink(tables.LinkAction):
+    name = "shared_panel_link"
+    verbose_name = "Shared Panel Link"
+    url = "shared_panel:detail"
+
+
+class SharedPanelTable(tables.DataTable):
+    id = tables.Column('id', link='shared_panel:detail')
+
+    class Meta(object):
+        name = "shared_panel_table"
+        verbose_name = "Shared Panel Table"
+        table_actions = ()
+        row_actions = (SharedPanelLink,)
 
 
 class DataTableTests(test.TestCase):
@@ -1321,6 +1338,28 @@ class MultiTableView(tables.MultiTableView):
 
     def get_my_table_data(self):
         return TEST_DATA
+
+
+class LinkNamespaceTests(test.TestCase):
+    """Links reverse in the namespace that served the request."""
+
+    def _table_served_from(self, path):
+        self.request.resolver_match = resolve(path)
+        return SharedPanelTable(self.request, TEST_DATA)
+
+    def test_row_action_link_namespace(self):
+        table = self._table_served_from('/panel_a/1/')
+        self.assertEqual('/panel_a/1/',
+                         table.get_row_actions(TEST_DATA[0])[0].bound_url)
+        table = self._table_served_from('/panel_b/1/')
+        self.assertEqual('/panel_b/1/',
+                         table.get_row_actions(TEST_DATA[0])[0].bound_url)
+
+    def test_column_link_namespace(self):
+        table = self._table_served_from('/panel_a/1/')
+        self.assertEqual('/panel_a/1/', table.get_rows()[0].cells['id'].url)
+        table = self._table_served_from('/panel_b/1/')
+        self.assertEqual('/panel_b/1/', table.get_rows()[0].cells['id'].url)
 
 
 class DataTableViewTests(test.TestCase):

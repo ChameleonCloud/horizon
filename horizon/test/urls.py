@@ -31,8 +31,20 @@ import horizon.base
 from horizon.test.jasmine import jasmine
 
 
+def reverse_only(request, obj_id):
+    """Target for test routes that are reversed but never requested."""
+    raise NotImplementedError
+
+
+# Takes an argument because LinkAction and Column reverse with the object id.
+detail_route = [re_path(r'^(?P<obj_id>[^/]+)/$', reverse_only, name='detail')]
+
 urlpatterns = [
     re_path(r'', horizon.base._wrapped_include(horizon.urls)),
+    re_path(r'^panel_a/', include((detail_route, 'shared_panel'),
+                                  namespace='panel_a')),
+    re_path(r'^panel_b/', include((detail_route, 'shared_panel'),
+                                  namespace='panel_b')),
     re_path(r"auth/login/",
             views.LoginView.as_view(template_name="auth/login.html"),
             name='login'),
