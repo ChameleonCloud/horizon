@@ -18,6 +18,7 @@ from django.utils.translation import gettext_lazy as _
 
 from horizon import exceptions
 from horizon import tabs
+from horizon.utils import functions
 from horizon.utils import sites
 
 from openstack_dashboard.dashboards.project.instances \
@@ -152,8 +153,9 @@ class ConsoleTab(policy.PolicyTargetMixin, tabs.Tab):
             # For serial console, the url is different from VNC, etc.
             # because it does not include params for title and token
             if console_type == "SERIAL":
-                console_url = reverse('horizon:project:instances:serial',
-                                      args=[instance.id])
+                console_url = reverse(
+                    'horizon:project:instances:serial', args=[instance.id],
+                    current_app=functions.get_current_app(request))
         except exceptions.NotAvailable:
             exceptions.handle(request, ignore=True, force_log=True)
 
