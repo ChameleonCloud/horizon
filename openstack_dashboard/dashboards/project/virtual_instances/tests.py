@@ -8,6 +8,7 @@ from horizon.test import helpers as horizon_helpers
 from openstack_dashboard import api
 from openstack_dashboard.dashboards.admin.instances import tables \
     as admin_tables
+from openstack_dashboard.dashboards.project.instances import console
 from openstack_dashboard.dashboards.project.instances import interfaces_tables
 from openstack_dashboard.dashboards.project.instances import tables
 from openstack_dashboard.test import helpers
@@ -230,6 +231,34 @@ class VirtualPanelNavigationTests(helpers.TestCase):
 
         self.assertNoFormErrors(res)
         self.assertRedirectsNoFollow(res, VIRTUAL_PANEL + "%s/" % server.id)
+
+    @override_settings(CONSOLE_TYPE="SERIAL")
+    @helpers.create_mocks({api.nova: ("server_get", "flavor_get",
+                                      "instance_volumes_list",
+                                      "is_feature_available"),
+                           api.network: ("servers_update_addresses",),
+                           api.neutron: ("is_extension_supported",
+                                         "server_security_groups"),
+                           console: ("get_console",)})
+    def test_the_serial_console_stays_in_the_panel(self):
+        server = self.servers.first()
+        self.mock_server_get.return_value = server
+        self.mock_flavor_get.return_value = self.flavors.first()
+        self.mock_servers_update_addresses.return_value = None
+        self.mock_server_security_groups.return_value = []
+        self.mock_is_feature_available.return_value = True
+        self.mock_is_extension_supported.return_value = True
+        self.mock_instance_volumes_list.return_value = []
+        self.mock_get_console.return_value = ("SERIAL", "ws://host/?token=t")
+        tail = "%s/?tab=instance_details__console" % server.id
+
+        res = self.client.get(VIRTUAL_PANEL + tail,
+                              HTTP_X_REQUESTED_WITH="XMLHttpRequest")
+
+        self.assertEqual(
+            [VIRTUAL_PANEL + "%s/serial" % server.id],
+            re.findall(r'<iframe id="console_embed" src="([^"]*)"',
+                       res.content.decode("utf-8")))
 
     @helpers.create_mocks({api.nova: ("get_password",)})
     def test_the_retrieve_password_page_keeps_the_user_here(self):
