@@ -16,13 +16,13 @@
 from django.conf import settings
 from django.template.defaultfilters import filesizeformat
 from django.urls import reverse
-from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.debug import sensitive_variables
 
 from horizon import exceptions
 from horizon import forms
 from horizon import messages
+from horizon.utils import functions
 from horizon.utils import validators
 
 from openstack_dashboard import api
@@ -118,7 +118,8 @@ class RebuildInstanceForm(forms.SelfHandlingForm):
                                     disk_config, description=description)
             messages.info(request, _('Rebuilding instance %s.') % instance)
         except Exception:
-            redirect = reverse('horizon:project:instances:index')
+            redirect = reverse('horizon:project:instances:index',
+                               current_app=functions.get_current_app(request))
             exceptions.handle(request, _("Unable to rebuild instance."),
                               redirect=redirect)
         return True
@@ -168,7 +169,8 @@ class DecryptPasswordInstanceForm(forms.SelfHandlingForm):
                     label=_("Password"),
                     required=False)
         except Exception:
-            redirect = reverse('horizon:project:instances:index')
+            redirect = reverse('horizon:project:instances:index',
+                               current_app=functions.get_current_app(request))
             _error = _("Unable to retrieve instance password.")
             exceptions.handle(request, _error, redirect=redirect)
 
@@ -232,7 +234,8 @@ class AttachVolume(forms.SelfHandlingForm):
                                                    "dev": attach.device}
             messages.info(request, message)
         except Exception:
-            redirect = reverse('horizon:project:instances:index')
+            redirect = reverse('horizon:project:instances:index',
+                               current_app=functions.get_current_app(request))
             msg = _('Unable to attach volume.')
             exceptions.handle(request, msg, redirect=redirect)
         return True
@@ -266,7 +269,9 @@ class DetachVolume(forms.SelfHandlingForm):
 
             self.fields['volume'].choices = volumes
         except Exception:
-            redirect = reverse('horizon:project:instances:index')
+            redirect = reverse(
+                'horizon:project:instances:index',
+                current_app=functions.get_current_app(self.request))
             exceptions.handle(self.request, _("Unable to detach volume."),
                               redirect=redirect)
 
@@ -287,7 +292,8 @@ class DetachVolume(forms.SelfHandlingForm):
                                         "inst": instance_id}
             messages.info(request, message)
         except Exception:
-            redirect = reverse('horizon:project:instances:index')
+            redirect = reverse('horizon:project:instances:index',
+                               current_app=functions.get_current_app(request))
             exceptions.handle(
                 request, _("Unable to detach volume."),
                 redirect=redirect)
@@ -373,7 +379,8 @@ class AttachInterface(forms.SelfHandlingForm):
             msg = _('Attaching interface for instance %s.') % instance_id
             messages.success(request, msg)
         except Exception:
-            redirect = reverse('horizon:project:instances:index')
+            redirect = reverse('horizon:project:instances:index',
+                               current_app=functions.get_current_app(request))
             exceptions.handle(request, _("Unable to attach interface."),
                               redirect=redirect)
         return True
@@ -414,7 +421,8 @@ class DetachInterface(forms.SelfHandlingForm):
                     '%(instance)s.') % {'port': port, 'instance': instance_id}
             messages.success(request, msg)
         except Exception:
-            redirect = reverse('horizon:project:instances:index')
+            redirect = reverse('horizon:project:instances:index',
+                               current_app=functions.get_current_app(request))
             exceptions.handle(request, _("Unable to detach interface."),
                               redirect=redirect)
         return True
@@ -443,7 +451,8 @@ class Disassociate(forms.SelfHandlingForm):
         self.fields['fip'].initial = self.fips[0].id
 
     def handle(self, request, data):
-        redirect = reverse_lazy('horizon:project:instances:index')
+        redirect = reverse('horizon:project:instances:index',
+                           current_app=functions.get_current_app(request))
         fip_id = data['fip']
         fips = [fip for fip in self.fips if fip.id == fip_id]
         if not fips:
@@ -502,7 +511,8 @@ class RescueInstanceForm(forms.SelfHandlingForm):
                              _('Successfully rescued instance'))
             return True
         except Exception:
-            redirect = reverse(self.failure_url)
+            redirect = reverse(self.failure_url,
+                               current_app=functions.get_current_app(request))
             exceptions.handle(request,
                               _('Unable to rescue instance'),
                               redirect=redirect)
