@@ -17,9 +17,11 @@ import os
 
 from django.conf import settings
 from django import http
+from django import urls
 from django.utils.translation import gettext_lazy as _
 
 from horizon import exceptions
+from horizon.utils import functions
 from horizon.utils import http as http_utils
 from horizon import views
 
@@ -151,8 +153,23 @@ class ModalFormView(ModalFormMixin, views.HorizonFormView):
         context['cancel_url'] = self.get_cancel_url()
         return context
 
+    def _to_url(self, target):
+        try:
+            return urls.reverse(
+                target,
+                current_app=functions.get_current_app(self.request),
+            )
+        except urls.NoReverseMatch:
+            return str(target)
+
+    def get_success_url(self):
+        return self._to_url(super().get_success_url())
+
     def get_cancel_url(self):
-        return self.cancel_url or self.success_url
+        target = self.cancel_url or self.success_url
+        if target:
+            return self._to_url(target)
+        return None
 
     def get_object_id(self, obj):
         """Returns the ID of the created object.
