@@ -197,6 +197,40 @@ class VirtualPanelNavigationTests(helpers.TestCase):
         self._assert_form_posts_to_the_panel(
             self.client.get(VIRTUAL_PANEL + tail), tail)
 
+    @helpers.create_mocks({api.nova: ("server_get", "server_resize",
+                                      "flavor_list", "flavor_get",
+                                      "is_feature_available")})
+    def test_the_resize_workflow_returns_to_the_panel(self):
+        server = self.servers.first()
+        new_flavor = [f for f in self.flavors.list()
+                      if f.id != server.flavor["id"]][0]
+        self.mock_server_get.return_value = server
+        self.mock_flavor_list.return_value = self.flavors.list()
+
+        res = self.client.post(VIRTUAL_PANEL + "%s/resize" % server.id,
+                               {"flavor": new_flavor.id})
+
+        self.assertNoFormErrors(res)
+        self.assertRedirectsNoFollow(res, VIRTUAL_PANEL)
+
+    @helpers.create_mocks({api.neutron: ("port_get", "port_update",
+                                         "is_extension_supported",
+                                         "security_group_list")})
+    def test_the_port_update_workflow_returns_to_the_panel(self):
+        server = self.servers.first()
+        port = [p for p in self.ports.list() if p.device_id == server.id][0]
+        self.mock_port_get.return_value = port
+        self.mock_port_update.return_value = port
+        self.mock_is_extension_supported.return_value = False
+        self.mock_security_group_list.return_value = self.security_groups.list()
+
+        res = self.client.post(
+            VIRTUAL_PANEL + "%s/ports/%s/update" % (server.id, port.id),
+            {"name": port.name, "admin_state": port.is_admin_state_up})
+
+        self.assertNoFormErrors(res)
+        self.assertRedirectsNoFollow(res, VIRTUAL_PANEL + "%s/" % server.id)
+
     @helpers.create_mocks({api.nova: ("get_password",)})
     def test_the_retrieve_password_page_keeps_the_user_here(self):
         self.mock_get_password.return_value = "encrypted"
