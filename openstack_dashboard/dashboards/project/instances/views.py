@@ -35,6 +35,7 @@ from horizon import forms
 from horizon import messages
 from horizon import tables
 from horizon import tabs
+from horizon.utils import functions
 from horizon.utils import memoized
 from horizon import workflows
 
@@ -665,7 +666,9 @@ class AttachInterfaceView(forms.ModalFormView):
     def get_initial(self):
         args = {'instance_id': self.kwargs['instance_id']}
         submit_url = "horizon:project:instances:attach_interface"
-        self.submit_url = reverse(submit_url, kwargs=args)
+        self.submit_url = reverse(
+            submit_url, kwargs=args,
+            current_app=functions.get_current_app(self.request))
         return args
 
 
@@ -680,7 +683,9 @@ class AttachVolumeView(forms.ModalFormView):
     def get_initial(self):
         args = {'instance_id': self.kwargs['instance_id']}
         submit_url = "horizon:project:instances:attach_volume"
-        self.submit_url = reverse(submit_url, kwargs=args)
+        self.submit_url = reverse(
+            submit_url, kwargs=args,
+            current_app=functions.get_current_app(self.request))
         try:
             volume_list = api.cinder.volume_list(self.request)
         except Exception:
@@ -707,7 +712,9 @@ class DetachVolumeView(forms.ModalFormView):
     def get_initial(self):
         args = {'instance_id': self.kwargs['instance_id']}
         submit_url = "horizon:project:instances:detach_volume"
-        self.submit_url = reverse(submit_url, kwargs=args)
+        self.submit_url = reverse(
+            submit_url, kwargs=args,
+            current_app=functions.get_current_app(self.request))
         return {"instance_id": self.kwargs["instance_id"]}
 
     def get_context_data(self, **kwargs):
@@ -732,7 +739,9 @@ class DetachInterfaceView(forms.ModalFormView):
     def get_initial(self):
         args = {"instance_id": self.kwargs["instance_id"]}
         submit_url = "horizon:project:instances:detach_interface"
-        self.submit_url = reverse(submit_url, kwargs=args)
+        self.submit_url = reverse(
+            submit_url, kwargs=args,
+            current_app=functions.get_current_app(self.request))
         return args
 
 
