@@ -17,6 +17,7 @@ from unittest import mock
 from django import forms
 from django import http
 from django.test.utils import override_settings
+from django import urls
 
 from horizon import base
 from horizon import exceptions
@@ -430,3 +431,16 @@ class WorkflowsTests(test.TestCase):
         view.request = request
         context = view.get_context_data()
         self.assertIsNone(context['REDIRECT_URL'])
+
+    def _prepare_workflow(self, path, success_url):
+        request = self.factory.get(path)
+        request.resolver_match = urls.resolve(path)
+        flow = WorkflowForTesting(request)
+        flow.success_url = success_url
+        return flow
+
+    def test_success_url_uses_the_request_namespace(self):
+        flow = self._prepare_workflow("/panel_a/", "shared_panel:index")
+        self.assertEqual("/panel_a/", flow.get_success_url())
+        flow = self._prepare_workflow("/panel_b/", "shared_panel:index")
+        self.assertEqual("/panel_b/", flow.get_success_url())

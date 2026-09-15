@@ -12,6 +12,8 @@
 
 from django.urls import reverse
 
+from horizon.utils import functions
+
 from openstack_dashboard.dashboards.project.networks.ports import workflows
 
 
@@ -28,4 +30,5 @@ class UpdatePort(workflows.UpdatePort):
 
     def get_success_url(self):
         return reverse("horizon:project:instances:detail",
-                       args=(self.context['instance_id'],))
+                       args=(self.context['instance_id'],),
+                       current_app=functions.get_current_app(self.request))

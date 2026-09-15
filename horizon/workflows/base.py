@@ -34,6 +34,7 @@ from openstack_auth import policy
 from horizon import base
 from horizon import exceptions
 from horizon.templatetags.horizon import has_permissions
+from horizon.utils import functions
 from horizon.utils import html
 from horizon.utils import http as http_utils
 
@@ -879,7 +880,10 @@ class Workflow(html.HTMLElement, metaclass=WorkflowMetaclass):
         or a standard HTTP URL.
         """
         try:
-            return urls.reverse(self.success_url)
+            return urls.reverse(
+                self.success_url,
+                current_app=functions.get_current_app(self.request),
+            )
         except urls.NoReverseMatch:
             return self.success_url
 
