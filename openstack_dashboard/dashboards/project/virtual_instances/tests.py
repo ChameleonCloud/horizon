@@ -89,6 +89,15 @@ class VirtualPanelNavigationTests(helpers.TestCase):
 
         self.assertEqual({}, strays)
 
+    @helpers.create_mocks(INDEX_MOCKS)
+    def test_the_instance_name_links_into_the_panel(self):
+        table = self._get_index().context["virtual_instances_table"]
+        tail = "%s/" % self.servers.first().id
+
+        link = table.get_rows()[0].cells["name"].url
+
+        self.assertEqual(VIRTUAL_PANEL + tail, link)
+
     def _interface_action_link(self, action, server, port):
         detail = VIRTUAL_PANEL + "%s/" % server.id
         request = self.factory.get(detail)
