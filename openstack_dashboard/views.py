@@ -27,6 +27,7 @@ from django.views.generic import TemplateView
 import horizon
 from horizon import exceptions
 from horizon import notifications
+from horizon.utils import functions
 
 LOG = logging.getLogger(__name__)
 
@@ -59,10 +60,12 @@ def splash(request):
 
 def get_url_with_pagination(request, marker_name, prev_marker_name, url_string,
                             object_id=None):
+    current_app = functions.get_current_app(request)
     if object_id:
-        url = urls.reverse(url_string, args=(object_id,))
+        url = urls.reverse(url_string, args=(object_id,),
+                           current_app=current_app)
     else:
-        url = urls.reverse(url_string)
+        url = urls.reverse(url_string, current_app=current_app)
     marker = request.GET.get(marker_name, None)
     if marker:
         return "{}?{}".format(url,
