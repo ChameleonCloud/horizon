@@ -45,6 +45,7 @@ from horizon import messages
 from horizon.tables.actions import BatchAction
 from horizon.tables.actions import FilterAction
 from horizon.tables.actions import LinkAction
+from horizon.utils import functions
 from horizon.utils import html
 from horizon.utils import http as http_utils
 from horizon.utils import settings as utils_settings
@@ -479,8 +480,11 @@ class Column(html.HTMLElement):
             if 'request' in inspect.getfullargspec(self.link).args:
                 return self.link(datum, request=self.table.request)
             return self.link(datum)
+        request = getattr(self.table, 'request', None)
+        current_app = functions.get_current_app(request)
         try:
-            return urls.reverse(self.link, args=(obj_id,))
+            return urls.reverse(self.link, args=(obj_id,),
+                                current_app=current_app)
         except urls.NoReverseMatch:
             return self.link
 

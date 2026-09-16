@@ -35,6 +35,7 @@ from horizon import messages
 from horizon import tables
 from horizon.templatetags import sizeformat
 from horizon.utils import filters
+from horizon.utils import functions
 
 from openstack_dashboard import api
 from openstack_dashboard.dashboards.project.floating_ips import workflows
@@ -183,10 +184,6 @@ class RescueInstance(policy.PolicyTargetMixin, tables.LinkAction):
     policy_rules = (("compute", "os_compute_api:os-rescue"),)
     classes = ("btn-rescue", "ajax-modal")
     url = "horizon:project:instances:rescue"
-
-    def get_link_url(self, datum):
-        instance_id = self.table.get_object_id(datum)
-        return urls.reverse(self.url, args=[instance_id])
 
     def allowed(self, request, instance):
         return instance.status in ACTIVE_STATES
@@ -507,7 +504,9 @@ class EditInstance(policy.PolicyTargetMixin, tables.LinkAction):
         return self._get_link_url(project, 'instance_info')
 
     def _get_link_url(self, project, step_slug):
-        base_url = urls.reverse(self.url, args=[project.id])
+        base_url = urls.reverse(
+            self.url, args=[project.id],
+            current_app=functions.get_current_app(self.table.request))
         next_url = self.table.get_full_url()
         params = {"step": step_slug,
                   update_instance.UpdateInstance.redirect_param_name: next_url}
@@ -541,7 +540,9 @@ class EditPortSecurityGroups(tables.LinkAction):
     icon = "pencil"
 
     def get_link_url(self, instance):
-        base_url = urls.reverse(self.url, args=[instance.id])
+        base_url = urls.reverse(
+            self.url, args=[instance.id],
+            current_app=functions.get_current_app(self.table.request))
         return '%s?tab=%s__%s' % (base_url, 'instance_details', 'interfaces')
 
 
@@ -608,7 +609,9 @@ class ResizeLink(policy.PolicyTargetMixin, tables.LinkAction):
         return self._get_link_url(project, 'flavor_choice')
 
     def _get_link_url(self, project, step_slug):
-        base_url = urls.reverse(self.url, args=[project.id])
+        base_url = urls.reverse(
+            self.url, args=[project.id],
+            current_app=functions.get_current_app(self.table.request))
         next_url = self.table.get_full_url()
         params = {"step": step_slug,
                   resize_instance.ResizeInstance.redirect_param_name: next_url}
@@ -673,10 +676,6 @@ class RebuildInstance(policy.PolicyTargetMixin, tables.LinkAction):
                  instance.status == 'SHUTOFF') and
                 not is_deleting(instance))
 
-    def get_link_url(self, datum):
-        instance_id = self.table.get_object_id(datum)
-        return urls.reverse(self.url, args=[instance_id])
-
 
 class DecryptInstancePassword(tables.LinkAction):
     name = "decryptpassword"
@@ -694,8 +693,9 @@ class DecryptInstancePassword(tables.LinkAction):
     def get_link_url(self, datum):
         instance_id = self.table.get_object_id(datum)
         keypair_name = get_keyname(datum)
-        return urls.reverse(self.url, args=[instance_id,
-                                            keypair_name])
+        return urls.reverse(
+            self.url, args=[instance_id, keypair_name],
+            current_app=functions.get_current_app(self.table.request))
 
 
 class AssociateIP(policy.PolicyTargetMixin, tables.LinkAction):
@@ -997,10 +997,6 @@ class AttachInterface(policy.PolicyTargetMixin, tables.LinkAction):
                 not is_deleting(instance) and
                 api.base.is_service_enabled(request, 'network'))
 
-    def get_link_url(self, datum):
-        instance_id = self.table.get_object_id(datum)
-        return urls.reverse(self.url, args=[instance_id])
-
 
 class DetachInterface(policy.PolicyTargetMixin, tables.LinkAction):
     name = "detach_interface"
@@ -1022,10 +1018,6 @@ class DetachInterface(policy.PolicyTargetMixin, tables.LinkAction):
                 if address.get('OS-EXT-IPS:type') == "fixed":
                     return True
         return False
-
-    def get_link_url(self, datum):
-        instance_id = self.table.get_object_id(datum)
-        return urls.reverse(self.url, args=[instance_id])
 
 
 def get_ips(instance):

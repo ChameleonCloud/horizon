@@ -15,6 +15,7 @@ from django.utils.http import urlencode
 from django.utils.translation import gettext_lazy as _
 
 from horizon import tables
+from horizon.utils import functions
 
 from openstack_dashboard.dashboards.project.networks.ports \
     import tables as port_tables
@@ -25,7 +26,9 @@ class UpdatePort(port_tables.UpdatePort):
 
     def get_link_url(self, port):
         instance_id = self.table.kwargs['instance_id']
-        base_url = reverse(self.url, args=(instance_id, port.id))
+        base_url = reverse(
+            self.url, args=(instance_id, port.id),
+            current_app=functions.get_current_app(self.table.request))
         params = {'step': 'update_info'}
         param = urlencode(params)
         return '?'.join([base_url, param])
@@ -41,7 +44,9 @@ class UpdateSecurityGroups(port_tables.UpdatePort):
 
     def get_link_url(self, port):
         instance_id = self.table.kwargs['instance_id']
-        base_url = reverse(self.url, args=(instance_id, port.id))
+        base_url = reverse(
+            self.url, args=(instance_id, port.id),
+            current_app=functions.get_current_app(self.table.request))
         params = {'step': 'update_security_groups'}
         param = urlencode(params)
         return '?'.join([base_url, param])

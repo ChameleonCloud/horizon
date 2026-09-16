@@ -399,11 +399,14 @@ class LinkAction(BaseAction):
                                       'get_link_url method.')
         if callable(self.url):
             return self.url(datum, **self.kwargs)
+        request = getattr(self.table, 'request', None)
+        current_app = functions.get_current_app(request)
         try:
             if datum:
                 obj_id = self.table.get_object_id(datum)
-                return urls.reverse(self.url, args=(obj_id,))
-            return urls.reverse(self.url)
+                return urls.reverse(self.url, args=(obj_id,),
+                                    current_app=current_app)
+            return urls.reverse(self.url, current_app=current_app)
         except urls.NoReverseMatch as ex:
             LOG.info('No reverse found for "%(url)s": %(exception)s',
                      {'url': self.url, 'exception': ex})
