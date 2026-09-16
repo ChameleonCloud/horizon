@@ -326,3 +326,31 @@ class ReusedActionTests(helpers.TestCase):
 
         self.assertEqual(DEFAULT_PANEL + "%s/rebuild" % server.id,
                          action.get_link_url(server))
+
+
+@horizon_helpers.pytest_mark("hybrid_site")
+class AdminPanelTests(helpers.BaseAdminViewTests):
+    """The admin compute panel is not split by instance type."""
+
+    @helpers.create_mocks({
+        api.nova: ("server_get", "instance_volumes_list", "flavor_get",
+                   "is_feature_available"),
+        api.neutron: ("server_security_groups",
+                      "floating_ip_simple_associate_supported",
+                      "floating_ip_supported"),
+        api.network: ("servers_update_addresses",),
+    })
+    def test_the_detail_page_stays_in_the_admin_panel(self):
+        server = self.servers.first()
+        self.mock_server_get.return_value = server
+        self.mock_servers_update_addresses.return_value = None
+        self.mock_instance_volumes_list.return_value = []
+        self.mock_flavor_get.return_value = self.flavors.first()
+        self.mock_server_security_groups.return_value = []
+        self.mock_floating_ip_simple_associate_supported.return_value = True
+        self.mock_floating_ip_supported.return_value = True
+        self.mock_is_feature_available.return_value = True
+
+        res = self.client.get(ADMIN_PANEL + "%s/detail" % server.id)
+
+        self.assertEqual(200, res.status_code)

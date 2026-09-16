@@ -315,6 +315,8 @@ class LiveMigrateView(forms.ModalFormView):
 
 class DetailView(views.DetailView):
     tab_group_class = tabs.AdminInstanceDetailTabs
+    # Admin view not filtered by type.
+    baremetal = None
     redirect_url = 'horizon:admin:instances:index'
     image_url = 'horizon:admin:images:detail'
     volume_url = 'horizon:admin:volumes:detail'
