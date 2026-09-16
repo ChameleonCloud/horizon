@@ -26,6 +26,7 @@ from unittest import mock
 from django.urls import reverse
 
 from horizon import exceptions
+from horizon.test import helpers as horizon_helpers
 
 from openstack_dashboard import api
 from openstack_dashboard.dashboards.project.images import utils
@@ -503,3 +504,30 @@ class SeleniumTests(test.SeleniumTestCase):
             mock.call(test.IsHttpRequest(), filters={'disk_format': 'aki'}),
             mock.call(test.IsHttpRequest(), filters={'disk_format': 'ari'}),
         ])
+
+
+@horizon_helpers.pytest_mark("hybrid_site")
+class VirtualImagesPanelTests(test.TestCase):
+    """The two images panels serve one set of routes."""
+
+    def test_reverse_picks_this_panel_when_given_current_app(self):
+        self.assertEqual(
+            '/project/virtual_images/i1/create/',
+            reverse('horizon:project:images:snapshots:create', args=['i1'],
+                    current_app='horizon:project:virtual_images'))
+
+    def test_reverse_picks_the_default_panel_without_current_app(self):
+        self.assertEqual(
+            '/project/images/i1/create/',
+            reverse('horizon:project:images:snapshots:create', args=['i1']))
+
+    @test.create_mocks({api.nova: ('server_get',)})
+    def test_each_panel_serves_its_own_pages(self):
+        self.mock_server_get.return_value = self.servers.first()
+
+        res = self.client.get('/project/images/i1/create/')
+        self.assertEqual('images',
+                         res.context['request'].horizon['panel'].slug)
+        res = self.client.get('/project/virtual_images/i1/create/')
+        self.assertEqual('virtual_images',
+                         res.context['request'].horizon['panel'].slug)

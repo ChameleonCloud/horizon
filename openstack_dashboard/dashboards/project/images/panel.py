@@ -30,6 +30,7 @@ class VirtualImages(Images):
     """The "Virtual Compute" twin of the images panel."""
 
     slug = 'virtual_images'
+    app_namespace = 'images'
     urls = 'vm_urls'
 
     @staticmethod
