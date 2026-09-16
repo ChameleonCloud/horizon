@@ -8,6 +8,7 @@ from horizon.test import helpers as horizon_helpers
 from openstack_dashboard import api
 from openstack_dashboard.dashboards.admin.instances import tables \
     as admin_tables
+from openstack_dashboard.dashboards.project.instances import console
 from openstack_dashboard.dashboards.project.instances import interfaces_tables
 from openstack_dashboard.dashboards.project.instances import tables
 from openstack_dashboard.test import helpers
@@ -160,6 +161,27 @@ class VirtualPanelNavigationTests(helpers.TestCase):
         self._assert_form_posts_to_the_panel(
             self.client.get(VIRTUAL_PANEL + tail), tail)
 
+    @helpers.create_mocks({api.neutron: ("network_list_for_tenant",
+                                         "port_list_with_trunk_types")})
+    def test_the_attach_interface_form_posts_to_the_panel(self):
+        self.mock_network_list_for_tenant.return_value = self.networks.list()
+        self.mock_port_list_with_trunk_types.return_value = self.ports.list()
+        tail = "%s/attach_interface" % self.servers.first().id
+
+        self._assert_form_posts_to_the_panel(
+            self.client.get(VIRTUAL_PANEL + tail), tail)
+
+    @helpers.create_mocks({api.neutron: ("network_list_for_tenant",
+                                         "port_list_with_trunk_types")})
+    def test_the_attach_interface_cancel_returns_to_the_panel(self):
+        self.mock_network_list_for_tenant.return_value = self.networks.list()
+        self.mock_port_list_with_trunk_types.return_value = self.ports.list()
+        tail = "%s/attach_interface" % self.servers.first().id
+
+        res = self.client.get(VIRTUAL_PANEL + tail)
+
+        self.assertEqual(VIRTUAL_PANEL, res.context_data["cancel_url"])
+
     @helpers.create_mocks({api.neutron: (
         "floating_ip_target_list_by_instance", "tenant_floating_ip_list")})
     def test_the_disassociate_form_posts_to_the_panel(self):
@@ -175,6 +197,103 @@ class VirtualPanelNavigationTests(helpers.TestCase):
 
         self._assert_form_posts_to_the_panel(
             self.client.get(VIRTUAL_PANEL + tail), tail)
+
+    @helpers.create_mocks({api.nova: ("server_get", "server_resize",
+                                      "flavor_list", "flavor_get",
+                                      "is_feature_available")})
+    def test_the_resize_workflow_returns_to_the_panel(self):
+        server = self.servers.first()
+        new_flavor = [f for f in self.flavors.list()
+                      if f.id != server.flavor["id"]][0]
+        self.mock_server_get.return_value = server
+        self.mock_flavor_list.return_value = self.flavors.list()
+
+        res = self.client.post(VIRTUAL_PANEL + "%s/resize" % server.id,
+                               {"flavor": new_flavor.id})
+
+        self.assertNoFormErrors(res)
+        self.assertRedirectsNoFollow(res, VIRTUAL_PANEL)
+
+    @helpers.create_mocks({api.neutron: ("port_get", "port_update",
+                                         "is_extension_supported",
+                                         "security_group_list")})
+    def test_the_port_update_workflow_returns_to_the_panel(self):
+        server = self.servers.first()
+        port = [p for p in self.ports.list() if p.device_id == server.id][0]
+        self.mock_port_get.return_value = port
+        self.mock_port_update.return_value = port
+        self.mock_is_extension_supported.return_value = False
+        self.mock_security_group_list.return_value = self.security_groups.list()
+
+        res = self.client.post(
+            VIRTUAL_PANEL + "%s/ports/%s/update" % (server.id, port.id),
+            {"name": port.name, "admin_state": port.is_admin_state_up})
+
+        self.assertNoFormErrors(res)
+        self.assertRedirectsNoFollow(res, VIRTUAL_PANEL + "%s/" % server.id)
+
+    @override_settings(CONSOLE_TYPE="SERIAL")
+    @helpers.create_mocks({api.nova: ("server_get", "flavor_get",
+                                      "instance_volumes_list",
+                                      "is_feature_available"),
+                           api.network: ("servers_update_addresses",),
+                           api.neutron: ("is_extension_supported",
+                                         "server_security_groups"),
+                           console: ("get_console",)})
+    def test_the_serial_console_stays_in_the_panel(self):
+        server = self.servers.first()
+        self.mock_server_get.return_value = server
+        self.mock_flavor_get.return_value = self.flavors.first()
+        self.mock_servers_update_addresses.return_value = None
+        self.mock_server_security_groups.return_value = []
+        self.mock_is_feature_available.return_value = True
+        self.mock_is_extension_supported.return_value = True
+        self.mock_instance_volumes_list.return_value = []
+        self.mock_get_console.return_value = ("SERIAL", "ws://host/?token=t")
+        tail = "%s/?tab=instance_details__console" % server.id
+
+        res = self.client.get(VIRTUAL_PANEL + tail,
+                              HTTP_X_REQUESTED_WITH="XMLHttpRequest")
+
+        self.assertEqual(
+            [VIRTUAL_PANEL + "%s/serial" % server.id],
+            re.findall(r'<iframe id="console_embed" src="([^"]*)"',
+                       res.content.decode("utf-8")))
+
+    @helpers.create_mocks({api.nova: ("server_get", "server_rebuild",
+                                      "is_feature_available"),
+                           api.glance: ("image_list_detailed",)})
+    def test_a_failed_rebuild_returns_the_user_to_the_panel(self):
+        server = self.servers.first()
+        self.mock_server_get.return_value = server
+        self.mock_image_list_detailed.return_value = (
+            self.images.list(), False, False)
+        self.mock_is_feature_available.return_value = False
+        self.mock_server_rebuild.side_effect = self.exceptions.nova
+
+        res = self.client.post(VIRTUAL_PANEL + "%s/rebuild" % server.id,
+                               {"instance_id": server.id,
+                                "image": self.images.first().id})
+
+        self.assertRedirectsNoFollow(res, VIRTUAL_PANEL)
+
+    @helpers.create_mocks({api.nova: ("server_get",)})
+    def test_a_missing_instance_returns_the_user_to_the_panel(self):
+        self.mock_server_get.side_effect = self.exceptions.nova
+
+        res = self.client.get(
+            VIRTUAL_PANEL + "%s/" % self.servers.first().id)
+
+        self.assertRedirectsNoFollow(res, VIRTUAL_PANEL)
+
+    @helpers.create_mocks({api.nova: ("server_get",)})
+    def test_a_failed_resize_page_returns_the_user_to_the_panel(self):
+        self.mock_server_get.side_effect = self.exceptions.nova
+
+        res = self.client.get(
+            VIRTUAL_PANEL + "%s/resize" % self.servers.first().id)
+
+        self.assertRedirectsNoFollow(res, VIRTUAL_PANEL)
 
     @helpers.create_mocks({api.nova: ("get_password",)})
     def test_the_retrieve_password_page_keeps_the_user_here(self):
@@ -207,3 +326,31 @@ class ReusedActionTests(helpers.TestCase):
 
         self.assertEqual(DEFAULT_PANEL + "%s/rebuild" % server.id,
                          action.get_link_url(server))
+
+
+@horizon_helpers.pytest_mark("hybrid_site")
+class AdminPanelTests(helpers.BaseAdminViewTests):
+    """The admin compute panel is not split by instance type."""
+
+    @helpers.create_mocks({
+        api.nova: ("server_get", "instance_volumes_list", "flavor_get",
+                   "is_feature_available"),
+        api.neutron: ("server_security_groups",
+                      "floating_ip_simple_associate_supported",
+                      "floating_ip_supported"),
+        api.network: ("servers_update_addresses",),
+    })
+    def test_the_detail_page_stays_in_the_admin_panel(self):
+        server = self.servers.first()
+        self.mock_server_get.return_value = server
+        self.mock_servers_update_addresses.return_value = None
+        self.mock_instance_volumes_list.return_value = []
+        self.mock_flavor_get.return_value = self.flavors.first()
+        self.mock_server_security_groups.return_value = []
+        self.mock_floating_ip_simple_associate_supported.return_value = True
+        self.mock_floating_ip_supported.return_value = True
+        self.mock_is_feature_available.return_value = True
+
+        res = self.client.get(ADMIN_PANEL + "%s/detail" % server.id)
+
+        self.assertEqual(200, res.status_code)

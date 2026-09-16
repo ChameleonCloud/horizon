@@ -12,6 +12,7 @@
 #    under the License.
 
 from django import shortcuts
+from django import urls
 
 from horizon import forms
 from horizon.test import helpers as test
@@ -66,6 +67,33 @@ class FormMixinTests(test.TestCase):
 
         view = self._prepare_view(forms.views.ModalFormView, {})
         self.assertEqual(view.template_name, view.get_template_names())
+
+
+class ModalFormUrlTests(test.TestCase):
+
+    def _prepare_view(self, path, success_url):
+        req = self.factory.get(path)
+        req.resolver_match = urls.resolve(path)
+        view = forms.views.ModalFormView()
+        view.request = req
+        view.success_url = success_url
+        return view
+
+    def test_success_url_uses_the_request_namespace(self):
+        view = self._prepare_view('/panel_a/', 'shared_panel:index')
+        self.assertEqual('/panel_a/', view.get_success_url())
+        view = self._prepare_view('/panel_b/', 'shared_panel:index')
+        self.assertEqual('/panel_b/', view.get_success_url())
+
+    def test_cancel_url_uses_the_request_namespace(self):
+        view = self._prepare_view('/panel_a/', 'shared_panel:index')
+        self.assertEqual('/panel_a/', view.get_cancel_url())
+        view = self._prepare_view('/panel_b/', 'shared_panel:index')
+        self.assertEqual('/panel_b/', view.get_cancel_url())
+
+    def test_success_url_unchanged_when_not_a_route(self):
+        view = self._prepare_view('/panel_a/', '/somewhere/else/')
+        self.assertEqual('/somewhere/else/', view.get_success_url())
 
 
 class FormForTesting(forms.SelfHandlingForm):

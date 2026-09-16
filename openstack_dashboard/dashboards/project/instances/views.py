@@ -35,6 +35,7 @@ from horizon import forms
 from horizon import messages
 from horizon import tables
 from horizon import tabs
+from horizon.utils import functions
 from horizon.utils import memoized
 from horizon import workflows
 
@@ -293,7 +294,8 @@ def auto_console(request, instance_id):
                                                   instance)[1]
         return shortcuts.redirect(console_url)
     except Exception:
-        redirect = reverse("horizon:project:instances:index")
+        redirect = reverse("horizon:project:instances:index",
+                           current_app=functions.get_current_app(request))
         msg = _('Unable to get console for instance "%s".') % instance_id
         exceptions.handle(request, msg, redirect=redirect)
 
@@ -305,7 +307,8 @@ def vnc(request, instance_id):
         console_url = project_console.get_console(request, 'VNC', instance)[1]
         return shortcuts.redirect(console_url)
     except Exception:
-        redirect = reverse("horizon:project:instances:index")
+        redirect = reverse("horizon:project:instances:index",
+                           current_app=functions.get_current_app(request))
         msg = _('Unable to get VNC console for instance "%s".') % instance_id
         exceptions.handle(request, msg, redirect=redirect)
 
@@ -317,7 +320,8 @@ def mks(request, instance_id):
         console_url = project_console.get_console(request, 'MKS', instance)[1]
         return shortcuts.redirect(console_url)
     except Exception:
-        redirect = reverse("horizon:project:instances:index")
+        redirect = reverse("horizon:project:instances:index",
+                           current_app=functions.get_current_app(request))
         msg = _('Unable to get MKS console for instance "%s".') % instance_id
         exceptions.handle(request, msg, redirect=redirect)
 
@@ -330,7 +334,8 @@ def spice(request, instance_id):
                                                   instance)[1]
         return shortcuts.redirect(console_url)
     except Exception:
-        redirect = reverse("horizon:project:instances:index")
+        redirect = reverse("horizon:project:instances:index",
+                           current_app=functions.get_current_app(request))
         msg = _('Unable to get SPICE console for instance "%s".') % instance_id
         exceptions.handle(request, msg, redirect=redirect)
 
@@ -342,7 +347,8 @@ def rdp(request, instance_id):
         console_url = project_console.get_console(request, 'RDP', instance)[1]
         return shortcuts.redirect(console_url)
     except Exception:
-        redirect = reverse("horizon:project:instances:index")
+        redirect = reverse("horizon:project:instances:index",
+                           current_app=functions.get_current_app(request))
         msg = _('Unable to get RDP console for instance "%s".') % instance_id
         exceptions.handle(request, msg, redirect=redirect)
 
@@ -391,7 +397,9 @@ class UpdateView(workflows.WorkflowView):
         try:
             return api.nova.server_get(self.request, instance_id)
         except Exception:
-            redirect = reverse("horizon:project:instances:index")
+            redirect = reverse(
+                "horizon:project:instances:index",
+                current_app=functions.get_current_app(self.request))
             msg = _('Unable to retrieve instance details.')
             exceptions.handle(self.request, msg, redirect=redirect)
 
@@ -408,7 +416,7 @@ class UpdateView(workflows.WorkflowView):
 class RebuildView(forms.ModalFormView):
     form_class = project_forms.RebuildInstanceForm
     template_name = 'project/instances/rebuild.html'
-    success_url = reverse_lazy('horizon:project:instances:index')
+    success_url = 'horizon:project:instances:index'
     page_title = _("Rebuild Instance")
     submit_label = page_title
 
@@ -424,7 +432,9 @@ class RebuildView(forms.ModalFormView):
         try:
             return api.nova.server_get(self.request, instance_id)
         except Exception:
-            redirect = reverse("horizon:project:instances:index")
+            redirect = reverse(
+                "horizon:project:instances:index",
+                current_app=functions.get_current_app(self.request))
             msg = _('Unable to retrieve instance details.')
             exceptions.handle(self.request, msg, redirect=redirect)
 
@@ -438,7 +448,7 @@ class RebuildView(forms.ModalFormView):
 class DecryptPasswordView(forms.ModalFormView):
     form_class = project_forms.DecryptPasswordInstanceForm
     template_name = 'project/instances/decryptpassword.html'
-    success_url = reverse_lazy('horizon:project:instances:index')
+    success_url = 'horizon:project:instances:index'
     page_title = _("Retrieve Instance Password")
 
     def get_context_data(self, **kwargs):
@@ -455,7 +465,7 @@ class DecryptPasswordView(forms.ModalFormView):
 class DisassociateView(forms.ModalFormView):
     form_class = project_forms.Disassociate
     template_name = 'project/instances/disassociate.html'
-    success_url = reverse_lazy('horizon:project:instances:index')
+    success_url = 'horizon:project:instances:index'
     page_title = _("Disassociate floating IP")
     submit_label = _("Disassociate")
 
@@ -475,7 +485,7 @@ class DetailView(tabs.TabView):
     page_title = "{{ instance.name|default:instance.id }}"
     image_url = 'horizon:project:images:images:detail'
     volume_url = 'horizon:project:volumes:detail'
-    # Instance type served by this detail view
+    # Tristate: True -> Baremetal, False -> VMs, None -> Default
     baremetal = True
 
     def get(self, request, *args, **kwargs):
@@ -484,7 +494,7 @@ class DetailView(tabs.TabView):
         # Redirect users to correct detail view by instance type.
         # Keeps links and bookmarks working.
         # TODO(Mike): Fix callers to avoid extra redirect
-        if settings.CHAMELEON_ENABLE_VMS:
+        if settings.CHAMELEON_ENABLE_VMS and self.baremetal is not None:
             instance = self.get_data()
             if instance_utils.is_baremetal_instance(instance) != self.baremetal:
                 # Mismatched, so send it to the other panel.
@@ -576,7 +586,9 @@ class DetailView(tabs.TabView):
         try:
             instance = api.nova.server_get(self.request, instance_id)
         except Exception:
-            redirect = reverse(self.redirect_url)
+            redirect = reverse(
+                self.redirect_url,
+                current_app=functions.get_current_app(self.request))
             exceptions.handle(self.request,
                               _('Unable to retrieve details for '
                                 'instance "%s".') % instance_id,
@@ -618,7 +630,9 @@ class ResizeView(workflows.WorkflowView):
         try:
             instance = api.nova.server_get(self.request, instance_id)
         except Exception:
-            redirect = reverse("horizon:project:instances:index")
+            redirect = reverse(
+                "horizon:project:instances:index",
+                current_app=functions.get_current_app(self.request))
             msg = _('Unable to retrieve instance details.')
             exceptions.handle(self.request, msg, redirect=redirect)
         flavors = self.get_flavors()
@@ -632,7 +646,9 @@ class ResizeView(workflows.WorkflowView):
             flavors = api.nova.flavor_list(self.request)
             return OrderedDict((str(flavor.id), flavor) for flavor in flavors)
         except Exception:
-            redirect = reverse("horizon:project:instances:index")
+            redirect = reverse(
+                "horizon:project:instances:index",
+                current_app=functions.get_current_app(self.request))
             exceptions.handle(self.request,
                               _('Unable to retrieve flavors.'),
                               redirect=redirect)
@@ -655,7 +671,7 @@ class AttachInterfaceView(forms.ModalFormView):
     page_title = _("Attach Interface")
     form_id = "attach_interface_form"
     submit_label = _("Attach Interface")
-    success_url = reverse_lazy('horizon:project:instances:index')
+    success_url = 'horizon:project:instances:index'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -665,7 +681,9 @@ class AttachInterfaceView(forms.ModalFormView):
     def get_initial(self):
         args = {'instance_id': self.kwargs['instance_id']}
         submit_url = "horizon:project:instances:attach_interface"
-        self.submit_url = reverse(submit_url, kwargs=args)
+        self.submit_url = reverse(
+            submit_url, kwargs=args,
+            current_app=functions.get_current_app(self.request))
         return args
 
 
@@ -675,12 +693,14 @@ class AttachVolumeView(forms.ModalFormView):
     page_title = _("Attach Volume")
     modal_id = "attach_volume_modal"
     submit_label = _("Attach Volume")
-    success_url = reverse_lazy('horizon:project:instances:index')
+    success_url = 'horizon:project:instances:index'
 
     def get_initial(self):
         args = {'instance_id': self.kwargs['instance_id']}
         submit_url = "horizon:project:instances:attach_volume"
-        self.submit_url = reverse(submit_url, kwargs=args)
+        self.submit_url = reverse(
+            submit_url, kwargs=args,
+            current_app=functions.get_current_app(self.request))
         try:
             volume_list = api.cinder.volume_list(self.request)
         except Exception:
@@ -702,12 +722,14 @@ class DetachVolumeView(forms.ModalFormView):
     page_title = _("Detach Volume")
     modal_id = "detach_volume_modal"
     submit_label = _("Detach Volume")
-    success_url = reverse_lazy('horizon:project:instances:index')
+    success_url = 'horizon:project:instances:index'
 
     def get_initial(self):
         args = {'instance_id': self.kwargs['instance_id']}
         submit_url = "horizon:project:instances:detach_volume"
-        self.submit_url = reverse(submit_url, kwargs=args)
+        self.submit_url = reverse(
+            submit_url, kwargs=args,
+            current_app=functions.get_current_app(self.request))
         return {"instance_id": self.kwargs["instance_id"]}
 
     def get_context_data(self, **kwargs):
@@ -722,7 +744,7 @@ class DetachInterfaceView(forms.ModalFormView):
     page_title = _("Detach Interface")
     form_id = "detach_interface_form"
     submit_label = _("Detach Interface")
-    success_url = reverse_lazy('horizon:project:instances:index')
+    success_url = 'horizon:project:instances:index'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -732,7 +754,9 @@ class DetachInterfaceView(forms.ModalFormView):
     def get_initial(self):
         args = {"instance_id": self.kwargs["instance_id"]}
         submit_url = "horizon:project:instances:detach_interface"
-        self.submit_url = reverse(submit_url, kwargs=args)
+        self.submit_url = reverse(
+            submit_url, kwargs=args,
+            current_app=functions.get_current_app(self.request))
         return args
 
 
@@ -746,8 +770,9 @@ class UpdatePortView(port_views.UpdateView):
         try:
             return api.neutron.port_get(self.request, port_id)
         except Exception:
-            redirect = reverse(self.failure_url,
-                               args=(self.kwargs['instance_id'],))
+            redirect = reverse(
+                self.failure_url, args=(self.kwargs['instance_id'],),
+                current_app=functions.get_current_app(self.request))
             msg = _('Unable to retrieve port details')
             exceptions.handle(self.request, msg, redirect=redirect)
 
@@ -762,7 +787,7 @@ class RescueView(forms.ModalFormView):
     template_name = 'project/instances/rescue.html'
     submit_label = _("Confirm")
     submit_url = "horizon:project:instances:rescue"
-    success_url = reverse_lazy('horizon:project:instances:index')
+    success_url = 'horizon:project:instances:index'
     page_title = _("Rescue Instance")
 
     def get_context_data(self, **kwargs):

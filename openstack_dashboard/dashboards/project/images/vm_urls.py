@@ -10,35 +10,8 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-"""URLconf for the "Virtual Compute" images panel.
+"""URLconf for the "Virtual Compute" images panel."""
 
-Mirrors urls.py, including its ANGULAR_FEATURES branch, so the two images
-panels behave identically. The routes are rebuilt here so this panel owns
-its own URLPattern objects: horizon decorates them in place with the panel
-they belong to, so a shared list would send the sidebar to whichever panel
-was decorated first.
-"""
+from openstack_dashboard.dashboards.project.images import urls as panel_urls
 
-from django.conf.urls import include
-from django.urls import re_path
-from django.utils.translation import gettext_lazy as _
-
-from horizon.browsers.views import AngularIndexView
-from openstack_dashboard.dashboards.project.images.images \
-    import urls as image_urls
-from openstack_dashboard.dashboards.project.images.snapshots \
-    import urls as snapshot_urls
-from openstack_dashboard.dashboards.project.images import views
-from openstack_dashboard.utils import settings as setting_utils
-
-
-if setting_utils.get_dict_config('ANGULAR_FEATURES', 'images_panel'):
-    index_view = AngularIndexView.as_view(title=_("Images"))
-else:
-    index_view = views.IndexView.as_view()
-
-urlpatterns = [
-    re_path(r'^$', index_view, name='index'),
-    re_path(r'', include((image_urls, 'images'))),
-    re_path(r'', include((snapshot_urls, 'snapshots'))),
-]
+urlpatterns = panel_urls.new_images_urlpatterns()

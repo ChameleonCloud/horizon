@@ -21,8 +21,13 @@ from django.urls import re_path
 from openstack_dashboard.dashboards.project.images.snapshots import views
 
 
-urlpatterns = [
-    re_path(r'^(?P<instance_id>[^/]+)/create/$',
-            views.CreateView.as_view(),
-            name='create')
-]
+def new_snapshot_urlpatterns():
+    """Build the snapshot routes, returning new objects on every call."""
+    return [
+        re_path(r'^(?P<instance_id>[^/]+)/create/$',
+                views.CreateView.as_view(),
+                name='create')
+    ]
+
+
+urlpatterns = new_snapshot_urlpatterns()

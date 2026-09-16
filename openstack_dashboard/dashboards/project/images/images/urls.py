@@ -24,18 +24,22 @@ from openstack_dashboard.dashboards.project.images.images import views
 from openstack_dashboard.utils import settings as setting_utils
 
 
-if setting_utils.get_dict_config('ANGULAR_FEATURES', 'images_panel'):
-    title = _("Images")
-    urlpatterns = [
-        re_path(r'^(?P<image_id>[^/]+)/$',
-                AngularIndexView.as_view(title=title),
-                name='detail'),
-    ]
-else:
-    urlpatterns = [
+def new_image_urlpatterns():
+    """Build the image routes, returning new objects on every call."""
+    if setting_utils.get_dict_config('ANGULAR_FEATURES', 'images_panel'):
+        title = _("Images")
+        return [
+            re_path(r'^(?P<image_id>[^/]+)/$',
+                    AngularIndexView.as_view(title=title),
+                    name='detail'),
+        ]
+    return [
         re_path(r'^create/$', views.CreateView.as_view(), name='create'),
         re_path(r'^(?P<image_id>[^/]+)/update/$',
                 views.UpdateView.as_view(), name='update'),
         re_path(r'^(?P<image_id>[^/]+)/$', views.DetailView.as_view(),
                 name='detail'),
     ]
+
+
+urlpatterns = new_image_urlpatterns()
