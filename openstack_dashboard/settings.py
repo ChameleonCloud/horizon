@@ -247,6 +247,22 @@ try:
 except ImportError:
     _LOG.warning("No local_settings file found.")
 
+# allow to drop settings snippets into a local_settings_dir
+LOCAL_SETTINGS_DIR_PATH = os.path.join(ROOT_PATH, "local", "local_settings.d")
+if os.path.exists(LOCAL_SETTINGS_DIR_PATH):
+    for (dirpath, dirnames, filenames) in os.walk(LOCAL_SETTINGS_DIR_PATH):
+        for filename in sorted(filenames):
+            if filename.endswith(".py"):
+                try:
+                    with open(
+                        os.path.join(dirpath, filename), encoding="utf-8"
+                    ) as f:
+                        # pylint: disable=exec-used
+                        exec(f.read())
+                except Exception:
+                    _LOG.exception(
+                        "Can not exec settings snippet %s", filename)
+
 # configure templates
 if not TEMPLATES[0]['DIRS']:
     TEMPLATES[0]['DIRS'] = [os.path.join(ROOT_PATH, 'templates')]
@@ -267,21 +283,6 @@ else:
         ADD_TEMPLATE_LOADERS
     )
 
-# allow to drop settings snippets into a local_settings_dir
-LOCAL_SETTINGS_DIR_PATH = os.path.join(ROOT_PATH, "local", "local_settings.d")
-if os.path.exists(LOCAL_SETTINGS_DIR_PATH):
-    for (dirpath, dirnames, filenames) in os.walk(LOCAL_SETTINGS_DIR_PATH):
-        for filename in sorted(filenames):
-            if filename.endswith(".py"):
-                try:
-                    with open(
-                        os.path.join(dirpath, filename), encoding="utf-8"
-                    ) as f:
-                        # pylint: disable=exec-used
-                        exec(f.read())
-                except Exception:
-                    _LOG.exception(
-                        "Can not exec settings snippet %s", filename)
 
 if USER_MENU_LINKS is None:
     USER_MENU_LINKS = []
