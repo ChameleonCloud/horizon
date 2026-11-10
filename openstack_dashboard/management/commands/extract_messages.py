@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# pylint: disable=import-error,deprecated-module
-from distutils.dist import Distribution
 import os
 from subprocess import call
 
 from django.core.management.base import BaseCommand
+from setuptools.dist import Distribution
+
 
 DOMAINS = ['django', 'djangojs']
 MODULES = ['openstack_dashboard', 'horizon', 'openstack_auth']

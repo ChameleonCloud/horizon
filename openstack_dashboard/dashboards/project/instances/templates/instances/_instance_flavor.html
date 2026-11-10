@@ -5,12 +5,12 @@
 {% if is_baremetal %}
   <tr><td>Hardware details for your instance can be found in our <a target='blank' href='https://www.chameleoncloud.org/hardware/'>resource discovery interface.</a></td></tr>
 {% else %}
-  <tr><th>{% trans 'VCPUs' %}</th><td>{{ vcpus }}</td></tr>
+  <tr><th>{% trans 'vCPUs' %}</th><td>{{ vcpus }}</td></tr>
   <tr><th>{% trans 'RAM' %}</th><td>{{ size_ram }}</td></tr>
   <tr><th>{% trans 'Size' %}</th><td>{{ size_disk }}</td></tr>
 {% endif %}
 </table>
-" data-original-title="{% blocktrans %}<span class=&quot;word-wrap&quot;>Flavor Details: {{ name }}</span>">{{ name }}{% endblocktrans %}</a>
+" data-original-title="<span class=&quot;word-wrap&quot;>{% blocktrans %}Flavor Details{% endblocktrans %}: {{ name }}</span>">{{ name }}</a>
 <script type="text/javascript" charset="utf-8">
 $(function () {
   var $flavor = $("#flavor_details_{{ id }}");

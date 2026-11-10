@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: horizon VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
-"POT-Creation-Date: 2025-07-08 23:51+0000\n"
+"POT-Creation-Date: 2026-04-24 08:10+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -63,12 +63,6 @@ msgstr ""
 "\n"
 "雲硬碟備份使用了其中一個 cinder-backup drivers (物件儲存服務， Ceph，NFS等)。"
 "您必須已啟動其中一下服務才能新增備份。"
-
-msgid " - End"
-msgstr "- 結束"
-
-msgid " : Next hop"
-msgstr "：下一跳點"
 
 msgid ""
 " A protocol entry contains information that dictates which mapping rules to "
@@ -231,10 +225,6 @@ msgstr "您只擁有 %(avail)iGiB 配額可用，所以您不能新增 %(req)iGi
 msgid "AKI - Amazon Kernel Image"
 msgstr "AKI - Amazon 核心映像檔"
 
-#, python-format
-msgid "ALLOW %(ethertype)s %(proto_port)s %(direction)s %(remote)s"
-msgstr "允許 %(ethertype)s %(proto_port)s %(direction)s %(remote)s"
-
 msgid "AMI - Amazon Machine Image"
 msgstr "AMI - Amazon 機器映像檔"
 
@@ -246,9 +236,6 @@ msgstr "API 端點"
 
 msgid "ARI - Amazon Ramdisk Image"
 msgstr "ARI - Amazon Ramdisk 映像檔"
-
-msgid "Accept Transfer"
-msgstr "允許轉移"
 
 msgid "Accept Volume Transfer"
 msgstr "允許雲硬碟轉移"
@@ -379,13 +366,6 @@ msgstr[0] "已加入用戶"
 
 msgid "Additional Routes"
 msgstr "其他路由"
-
-msgid ""
-"Additional routes announced to the hosts. Each entry is: destination_cidr,"
-"nexthop (e.g., 192.168.200.0/24,10.56.1.254) and one entry per line."
-msgstr ""
-"額外的路由發佈到主機。每個條目就像：destination_cidr,nexthop（如 "
-"192.168.200.0/24,10.56.1.254）並且一行一個條目。"
 
 msgid ""
 "Additionally, some resource types may require a prefix to be used when "
@@ -761,9 +741,6 @@ msgstr "映像檔的處理器架構。"
 msgid "Cancel"
 msgstr "取消"
 
-msgid "Cancel Transfer"
-msgstr "取消轉移"
-
 #, python-format
 msgid "Cannot find instance %s."
 msgstr "找不到雲實例 %s。"
@@ -984,9 +961,6 @@ msgctxt "Action log of an instance"
 msgid "Create"
 msgstr "新增"
 
-msgid "Create A RBAC Policy"
-msgstr "建立 RBAC 政策"
-
 msgid "Create An Image"
 msgstr "新增映像檔"
 
@@ -1086,9 +1060,6 @@ msgstr "新增子網路"
 
 msgid "Create Subnet (Quota exceeded)"
 msgstr "新增子網路（超過配額）"
-
-msgid "Create Transfer"
-msgstr "新增轉移"
 
 msgid "Create User"
 msgstr "新增用戶"
@@ -1330,6 +1301,9 @@ msgstr "DNS 名稱"
 msgid "DNS Name Servers"
 msgstr "DNS 名稱伺服器"
 
+msgid "DOWN"
+msgstr "離線"
+
 msgctxt "Admin state of a Network"
 msgid "DOWN"
 msgstr "離線"
@@ -1353,11 +1327,11 @@ msgctxt "Default style theme"
 msgid "Default"
 msgstr "預設"
 
+msgid "Default Quotas"
+msgstr "預設配額"
+
 msgid "Default quotas updated."
 msgstr "已更新預設配額。"
-
-msgid "Defaults"
-msgstr "預設值"
 
 msgid "Delete"
 msgid_plural "Delete"
@@ -1937,18 +1911,6 @@ msgstr "下載 openrc 檔案"
 msgid "Download transfer credentials"
 msgstr "下載轉移憑證"
 
-msgid "EC2 Access Key"
-msgstr "EC2 存取鑰"
-
-msgid "EC2 Credentials"
-msgstr "EC2 認證"
-
-msgid "EC2 Secret Key"
-msgstr "EC2 密鑰"
-
-msgid "EC2 URL"
-msgstr "EC2 網址"
-
 msgid ""
 "Each QoS Specs entity will have a \"Consumer\" value which indicates where "
 "the administrator would like the QoS policy to be enforced. This value can "
@@ -2266,10 +2228,6 @@ msgstr "更新命名空間 %s 的資源類型時出錯。"
 msgid "Error when adding or removing hosts."
 msgstr "加入或移除主機時出錯。"
 
-#, python-format
-msgid "Error writing zipfile: %(exc)s"
-msgstr "寫入 Zip 檔錯誤：%(exc)s"
-
 msgid "Ether Type"
 msgstr "網路協定類型"
 
@@ -2356,12 +2314,6 @@ msgstr "FQDN"
 msgctxt "Power state of an Instance"
 msgid "Failed"
 msgstr "已失敗"
-
-#, python-format
-msgid ""
-"Failed to add %(users_to_add)s project members%(group_msg)s and set project "
-"quotas."
-msgstr "加入 %(users_to_add)s 專案成員%(group_msg)s以及設定專案配額時失敗。"
 
 #, python-format
 msgid "Failed to add %s project groups and update project quotas."
@@ -2453,12 +2405,6 @@ msgstr "轉移雲實例時失敗：%s"
 
 msgid "Failed to migrate volume."
 msgstr "轉移雲硬碟時失敗。"
-
-#, python-format
-msgid ""
-"Failed to modify %(users_to_modify)s project members%(group_msg)s and update "
-"project quotas."
-msgstr "更改 %(users_to_modify)s 專案成員%(group_msg)s以及更新專案配額時失敗。"
 
 #, python-format
 msgid "Failed to modify %s domain groups."
@@ -2831,12 +2777,6 @@ msgstr "主機名稱＝"
 msgid "Host Routes"
 msgstr "主機路由"
 
-#, python-format
-msgid ""
-"Host Routes format error: Destination CIDR and nexthop must be specified "
-"(value=%s)"
-msgstr "主機路由格式錯誤：必須指定目標 CIDR 與下一跳點（值為 %s）"
-
 msgid ""
 "Host aggregates divide an availability zone into logical units by grouping "
 "together hosts. Create a host aggregate then select the hosts contained in "
@@ -3138,9 +3078,6 @@ msgstr "雲實例名稱"
 msgid "Instance Name ="
 msgstr "雲實例名稱 ="
 
-msgid "Instance Overview"
-msgstr "雲實例概觀"
-
 msgid "Instance Password is not set or is not yet available"
 msgstr "未設定或無可用的雲實例密碼"
 
@@ -3332,10 +3269,6 @@ msgstr "即時轉移雲實例"
 
 msgid "Live migrate an instance to a specific host."
 msgstr "即時轉移雲實例到指定的主機。"
-
-#, python-format
-msgid "Load Balancer VIP %s"
-msgstr "負載平衡器虛擬 IP %s"
 
 msgid "Local"
 msgstr "本地"
@@ -3563,12 +3496,6 @@ msgstr "轉移雲實例可能導致不可恢復的結果。"
 
 msgid "Migration Policy"
 msgstr "轉移政策"
-
-msgid "Min Disk"
-msgstr "最小硬碟"
-
-msgid "Min RAM"
-msgstr "最小隨機存取記憶體"
 
 msgid "Min. Size (MB) ="
 msgstr "最小容量（MB）＝"
@@ -4013,9 +3940,6 @@ msgstr "雲實例數量"
 msgid "Number of Snapshots"
 msgstr "即時存檔數量"
 
-msgid "Number of VCPUs"
-msgstr "虛擬處理器數量"
-
 msgid "Number of Volumes"
 msgstr "雲硬碟數量"
 
@@ -4356,9 +4280,6 @@ msgstr "公開："
 msgid "QCOW2 - QEMU Emulator"
 msgstr "QCOW2 - QEMU 模擬器"
 
-msgid "QOS Policy ID"
-msgstr "QOS 原則 ID"
-
 msgid "QoS Policy"
 msgstr "QoS 政策"
 
@@ -4436,12 +4357,6 @@ msgstr "RBAC 政策詳細內容"
 msgid "RBAC Policy was successfully created."
 msgstr "已成功新增 RBAC 政策"
 
-msgid "RX/TX Factor"
-msgstr "RX/TX 因數"
-
-msgid "RX/TX factor"
-msgstr "RX/TX 因數"
-
 msgid "Ramdisk"
 msgstr "Ramdisk"
 
@@ -4511,9 +4426,6 @@ msgstr "正在重建"
 #, python-format
 msgid "Rebuilding instance %s."
 msgstr "正在重建雲實例 %s。"
-
-msgid "Recreate EC2 Credentials"
-msgstr "重建 EC2 格式的憑證"
 
 #, python-format
 msgid "Regenerate and download Key Pair &quot;%(keypair_name)s&quot;"
@@ -4819,9 +4731,6 @@ msgstr "正在執行"
 
 msgid "Running Instance Migration Type"
 msgstr "執行中雲實例轉移的類型"
-
-msgid "S3 URL"
-msgstr "S3 網址"
 
 msgid "SLAAC: Address discovered from OpenStack Router"
 msgstr "SLAAC：從 OpenStack 路由器探索位址"
@@ -5487,9 +5396,6 @@ msgstr "已成功匯入公鑰：%s"
 msgid "Successfully modified QoS Spec consumer."
 msgstr "已成功更改 QoS 規格規範用戶。"
 
-msgid "Successfully recreated ec2 credentials."
-msgstr "已順利建立 EC2 格式的憑證。"
-
 msgid "Successfully rescued instance"
 msgstr "成功已救援雲實例"
 
@@ -5589,9 +5495,6 @@ msgstr "目標主機"
 
 msgid "Target Project"
 msgstr "目標專案"
-
-msgid "Target Tenant"
-msgstr "目標租用人"
 
 msgid "Task"
 msgstr "任務"
@@ -6034,13 +5937,6 @@ msgstr "雲硬碟與即時存檔的總容量（GiB）"
 msgid "Total Size of Volumes and Snapshots (GiB) of Type %(type)s"
 msgstr "%(type)s 類型之雲硬碟及即時存檔容量總計 (GiB)"
 
-msgid "Total VCPU Usage (Hours):"
-msgstr "虛擬處理器用量（小時）："
-
-msgid ""
-"Total VCPU usage (Number of VCPU in instance * Hours Used) for the project"
-msgstr "專案的虛擬處理器使用量（雲實例的虛擬處理器數量 * 使用小時）總合"
-
 msgid "Total Volume Storage"
 msgstr "總共的磁區儲存空間"
 
@@ -6066,8 +5962,15 @@ msgstr "中繼"
 msgid "Type"
 msgstr "類型"
 
+msgid "Type ="
+msgstr "類型 ="
+
 msgid "Type of backend device identifier provided"
 msgstr "提供的後端裝置認證者的類型"
+
+#. Translators: Admin state status for router.
+msgid "UP"
+msgstr "上線"
 
 msgctxt "Admin state of a Network"
 msgid "UP"
@@ -6280,9 +6183,6 @@ msgstr "無法編輯雲硬碟類型額外的規格。"
 msgid "Unable to extend volume."
 msgstr "無法擴充雲硬碟。"
 
-msgid "Unable to fetch EC2 credentials."
-msgstr "無法獲得 EC2 格式的憑證"
-
 msgid "Unable to fetch snapshot"
 msgstr "無法獲得快照"
 
@@ -6291,9 +6191,6 @@ msgstr "無法獲得快照"
 
 msgid "Unable to find default role."
 msgstr "找不到預設的角色。"
-
-msgid "Unable to get EC2 credentials"
-msgstr "無法獲得 EC2 格式的憑證"
 
 #, python-format
 msgid "Unable to get MKS console for instance \"%s\"."
@@ -6416,12 +6313,6 @@ msgstr "無法分析 IP 位址 %s。"
 
 msgid "Unable to rebuild instance."
 msgstr "無法重建雲實例。"
-
-msgid "Unable to recreate ec2 credentials. Failed to create ec2 credentials."
-msgstr "無法重建 EC2 格式的憑證。無法建立 EC2 格式的憑證。"
-
-msgid "Unable to recreate ec2 credentials. Failed to delete ec2 credentials."
-msgstr "無法重建 EC2 格式的憑證。無法刪除 EC2 格式的憑證。"
 
 msgid "Unable to register identity provider."
 msgstr "無法註冊身分提供者。"
@@ -6811,9 +6702,6 @@ msgstr "無法獲得子網路詳細資訊"
 msgid "Unable to retrieve subnet details."
 msgstr "無法獲得子網路詳細資訊。"
 
-msgid "Unable to retrieve tenant limits."
-msgstr "無法獲得租用人限制。"
-
 msgid "Unable to retrieve the aggregate to be updated"
 msgstr "無法獲得聚合來更新"
 
@@ -7155,9 +7043,6 @@ msgstr "更新聯結"
 msgid "Update Default Quotas"
 msgstr "更新預設配額"
 
-msgid "Update Defaults"
-msgstr "更新預設值"
-
 msgid "Update Encrypted Volume Type"
 msgstr "更新已加密的雲硬碟類型"
 
@@ -7351,18 +7236,6 @@ msgstr "用來識別對映的使用者定義的唯一 ID。"
 
 msgid "Users"
 msgstr "用戶"
-
-msgid "VCPU"
-msgstr "虛擬處理器"
-
-msgid "VCPU Hours"
-msgstr "虛擬處理器時數"
-
-msgid "VCPU Usage"
-msgstr "虛擬處理器使用量"
-
-msgid "VCPUs"
-msgstr "虛擬處理器數"
 
 msgid "VDI - Virtual Disk Image"
 msgstr "VDI - 虛擬桌面基礎結構"
@@ -7776,9 +7649,6 @@ msgstr "否"
 
 msgid "undefined"
 msgstr "未定義"
-
-msgid "unknown IP address"
-msgstr "未知的 IP 位址"
 
 msgid "up"
 msgstr "上線"

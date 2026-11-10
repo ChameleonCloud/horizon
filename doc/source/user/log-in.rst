@@ -1,3 +1,5 @@
+.. _login-in-dashboard:
+
 =======================
 Log in to the dashboard
 =======================
@@ -112,7 +114,7 @@ Network tab
 * :guilabel:`Routers`: Create and manage routers.
 
 * :guilabel:`Security Groups`: View, create, edit, and delete security
-  groups and security group rules..
+  groups and security group rules.
 
 * :guilabel:`Floating IPs`: Allocate an IP address to or release it
   from a project.
@@ -185,7 +187,7 @@ Network tab
 System tab
 ----------
 
-* :guilabel:`Defaults`: View default quota values. Quotas are hard-coded in
+* :guilabel:`Default Quotas`: View default quota values. Quotas are hard-coded in
   OpenStack Compute and define the maximum allowable size and number of
   resources.
 

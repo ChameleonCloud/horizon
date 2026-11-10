@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: horizon VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
-"POT-Creation-Date: 2025-07-08 23:51+0000\n"
+"POT-Creation-Date: 2026-04-24 08:10+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -15,12 +15,6 @@ msgstr ""
 "Language: kn\n"
 "X-Generator: Zanata 4.3.3\n"
 "Plural-Forms: nplurals=2; plural=(n!=1)\n"
-
-msgid " - End"
-msgstr " - ಅಂತ್ಯ"
-
-msgid " : Next hop"
-msgstr " : ಮುಂದಿನ ಹಾಪ್"
 
 #, python-format
 msgid "%(field_name)s: Invalid IP address (value=%(ip)s)"
@@ -82,10 +76,6 @@ msgstr "ಅಪ್‌ಲೋಡ್ ಮಾಡಬೇಕಿರುವ ಒಂದು ಸ
 
 msgid "AKI - Amazon Kernel Image"
 msgstr "AKI - ಅಮೆಜಾನ್ ಕರ್ನಲ್ ಇಮೇಜ್"
-
-#, python-format
-msgid "ALLOW %(ethertype)s %(proto_port)s %(direction)s %(remote)s"
-msgstr "%(ethertype)s %(proto_port)s %(direction)s %(remote)s ಅನ್ನು ಅನುಮತಿಸು"
 
 msgid "AMI - Amazon Machine Image"
 msgstr "AKI - ಅಮೆಜಾನ್ ಮೆಶೀನ್ ಇಮೇಜ್"
@@ -171,14 +161,6 @@ msgstr ""
 
 msgid "Add/Remove Hosts to Aggregate"
 msgstr "ಒಟ್ಟುಗೂಡಿಕೆಗೆ ಆತಿಥೇಯಗಳನ್ನು ಸೇರಿಸು/ತೆಗೆದುಹಾಕು"
-
-msgid ""
-"Additional routes announced to the hosts. Each entry is: destination_cidr,"
-"nexthop (e.g., 192.168.200.0/24,10.56.1.254) and one entry per line."
-msgstr ""
-"ಆತಿಥೇಯಕ್ಕೆ ಘೋಷಿಸಲಾದ ಹೆಚ್ಚುವರಿ ರೌಟ್‌ಗಳು. ಪ್ರತಿಯೊಂದು ನಮೂದು ಸಹ: destination_cidr,"
-"nexthop (ಉದಾ., 192.168.200.0/24,10.56.1.254) ರೀತಿಯಲ್ಲಿರುತ್ತದೆ ಮತ್ತು ಪ್ರತಿ "
-"ಸಾಲಿನಲ್ಲಿ ಒಂದು ನಮೂದು ಇರುತ್ತದೆ.."
 
 msgid "Admin"
 msgstr "ವ್ಯವಸ್ಥಾಪಕ"
@@ -753,11 +735,11 @@ msgstr "DNS ನೇಮ್‌ ಸರ್ವರ್‌ಗಳು"
 msgid "Decrypt Password"
 msgstr "ಗುಪ್ತಪದವನ್ನು ಡಿಕ್ರಿಪ್ಟ್ ಮಾಡಿ"
 
+msgid "Default Quotas"
+msgstr "ಪೂರ್ವನಿಯೋಜಿತ ಕೋಟಾಗಳು"
+
 msgid "Default quotas updated."
 msgstr "ಪೂರ್ವನಿಯೋಜಿತ ಕೋಟಾಗಳನ್ನು ಅಪ್‌ಡೇಟ್ ಮಾಡಲಾಗಿದೆ."
-
-msgid "Defaults"
-msgstr "ಪೂರ್ವನಿಯೋಜಿತಗಳು"
 
 msgid "Delete Volume"
 msgid_plural "Delete Volumes"
@@ -965,15 +947,6 @@ msgstr "ಕೆಳಗೆ"
 msgid "Download CSV Summary"
 msgstr "CSV ಸಾರಾಂಶವನ್ನು ಡೌನ್‌ಲೋಡ್ ಮಾಡು"
 
-msgid "EC2 Access Key"
-msgstr "EC2 ಎಕ್ಸೆಸ್‌ ಕೀ"
-
-msgid "EC2 Secret Key"
-msgstr "EC2 ಸೀಕ್ರೆಟ್ ಕೀ"
-
-msgid "EC2 URL"
-msgstr "EC2 URL"
-
 msgid "Edit"
 msgstr "ಸಂಪಾದನೆ"
 
@@ -1133,10 +1106,6 @@ msgstr "QoS ಸ್ಪೆಕ್‌ ಸಂಬಂಧ ಜೋಡಿಕೆಯನ್ನ
 msgid "Error when adding or removing hosts."
 msgstr "ಆತಿಥೇಯಗಳನ್ನು ಸೇರಿಸುವಲ್ಲಿ ಅಥವ ತೆಗೆದುಹಾಕುವಲ್ಲಿ ದೋಷ."
 
-#, python-format
-msgid "Error writing zipfile: %(exc)s"
-msgstr "ಜಿಪ್‌ಕಡತವನ್ನು ಬರೆಯುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ: %(exc)s"
-
 msgid "Ether Type"
 msgstr "ಈತರ್ ಬಗೆ"
 
@@ -1181,14 +1150,6 @@ msgid "Failed"
 msgstr "ವಿಫಲಗೊಂಡಿದೆ"
 
 #, python-format
-msgid ""
-"Failed to add %(users_to_add)s project members%(group_msg)s and set project "
-"quotas."
-msgstr ""
-"%(users_to_add)s ಪರಿಯೋಜನೆಯ ಅಂಗಗಳನ್ನು %(group_msg)s ಸೇರಿಸಲು ಮತ್ತು ಪರಿಯೋಜನೆಯ "
-"ಕೋಟಾಗಳನ್ನು ಹೊಂದಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ."
-
-#, python-format
 msgid "Failed to add %s project groups and update project quotas."
 msgstr ""
 "%s ಪರಿಯೋಜನೆಯ ಗುಂಪುಗಳನ್ನು ಸೇರಿಸಲು ಮತ್ತು ಪರಿಯೋಜನೆಯ ಕೋಟಾಗಳನ್ನು ಅಪ್‌ಡೇಟ್‌ ಮಾಡಲಾಗಿಲ್ಲ."
@@ -1229,14 +1190,6 @@ msgstr "ಇನ್‌ಸ್ಟೆನ್ಸ್‌ಗಳನ್ನು ಖಾಲಿ �
 #, python-format
 msgid "Failed to live migrate instance to host \"%s\"."
 msgstr "ಇನ್‌ಸ್ಟೆನ್ಸ್‌ ಅನ್ನು \"%s\" ಆತಿಥೇಯಕ್ಕೆ ಲೈವ್‌ ವರ್ಗಾವಣೆ ಮಾಡಲಾಗಿಲ್ಲ."
-
-#, python-format
-msgid ""
-"Failed to modify %(users_to_modify)s project members%(group_msg)s and update "
-"project quotas."
-msgstr ""
-"%(users_to_modify)s ಪರಿಯೋಜನೆಯ ಅಂಗಗಳನ್ನು %(group_msg)s ಮಾರ್ಪಡಿಸಲು ಮತ್ತು "
-"ಪರಿಯೋಜನೆಯ ಕೋಟಾಗಳನ್ನು ಅಪ್‌ಡೇಟ್‌ ಮಾಡಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ."
 
 #, python-format
 msgid "Failed to modify %s domain groups."
@@ -1434,13 +1387,6 @@ msgstr "ಆತಿಥೇಯದ ಒಟ್ಟುಗೂಡಿಕೆಗಳು"
 
 msgid "Host Routes"
 msgstr "ಆತಿಥೇಯ ರೌಟ್‌ಗಳು"
-
-#, python-format
-msgid ""
-"Host Routes format error: Destination CIDR and nexthop must be specified "
-"(value=%s)"
-msgstr ""
-"ಆತಿಥೇಯ ರೌಟ್‌ಗಳ ವಿನ್ಯಾಸದ ದೋಷ: ಗುರಿಯ CIDR ಮತ್ತು ಮುಂದಿನ ಹಾಪ್ ಅನ್ನು ಸೂಚಿಸಬೇಕು(value=%s)"
 
 msgid ""
 "Host aggregates divide an availability zone into logical units by grouping "
@@ -1646,9 +1592,6 @@ msgstr "ಇನ್‌ಸ್ಟೆನ್ಸ್ ID"
 msgid "Instance Name"
 msgstr "ಇನ್‌ಸ್ಟೆನ್ಸ್ ಹೆಸರು"
 
-msgid "Instance Overview"
-msgstr "ಇನ್‌ಸ್ಟೆನ್ಸ್ ಅವಲೋಕನ"
-
 msgid "Instance Password is not set or is not yet available"
 msgstr "ಇನ್‌ಸ್ಟೆನ್ಸ್‌ ಗುಪ್ತಪದವನ್ನು ಹೊಂದಿಸಲಾಗಿಲ್ಲ ಅಥವ ಇನ್ನೂ ಸಹ ಲಭ್ಯವಿಲ್ಲ"
 
@@ -1762,10 +1705,6 @@ msgstr "ಲೈವ್‌ ವರ್ಗಾವಣೆ ಇನ್‌ಸ್ಟೆನ್�
 msgid "Live migrate an instance to a specific host."
 msgstr "ಒಂದು ಇನ್‌ಸ್ಟೆನ್ಸ್‌ ಅನ್ನು ನಿರ್ದಿಷ್ಟ ಆತಿಥೇಯಕ್ಕೆ ಲೈವ್‌ ವರ್ಗಾವಣೆ ಮಾಡಲಾಗಿಲ್ಲ."
 
-#, python-format
-msgid "Load Balancer VIP %s"
-msgstr "ಹೊರೆ ಸಮತೋಲಕ VIP %s"
-
 msgid "Local"
 msgstr "ಸ್ಥಳೀಯ"
 
@@ -1854,12 +1793,6 @@ msgstr "ವರ್ಗಾಯಿಸಲಾಗುತ್ತಿದೆ"
 
 msgid "Migration Policy"
 msgstr "ವರ್ಗಾವಣೆ ಪಾಲಿಸಿ"
-
-msgid "Min Disk"
-msgstr "ಕನಿಷ್ಟ ಡಿಸ್ಕ್"
-
-msgid "Min RAM"
-msgstr "ಕನಿಷ್ಟ RAM"
 
 msgid "Minimum Disk (GB)"
 msgstr "ಕನಿಷ್ಠ ಡಿಸ್ಕ್ (GB)"
@@ -2117,9 +2050,6 @@ msgstr "ಇನ್‌ಸ್ಟನ್ಸ್‌ಗಳ ಸಂಖ್ಯೆ"
 
 msgid "Number of Snapshots"
 msgstr "ಸ್ನ್ಯಾಪ್‌ಶಾಟ್‌ಗಳ ಸಂಖ್ಯೆ"
-
-msgid "Number of VCPUs"
-msgstr "VCPUಗಳ ಸಂಖ್ಯೆ"
 
 msgid "Number of Volumes"
 msgstr "ಪರಿಮಾಣಗಳ ಸಂಖ್ಯೆ"
@@ -2542,9 +2472,6 @@ msgstr ""
 msgctxt "Power state of an Instance"
 msgid "Running"
 msgstr "ಚಾಲನೆಯಲ್ಲಿದೆ"
-
-msgid "S3 URL"
-msgstr "S3 URL"
 
 msgid "SSH key pairs can be generated with the ssh-keygen command:"
 msgstr "SSH ಕೀಲಿ ಜೋಡಿಗಳನ್ನು ssh-keygen ಆದೇಶವನ್ನು ಬಳಸಿಕೊಂಡು ಉತ್ಪಾದಿಸಬಹುದು:"
@@ -3250,14 +3177,8 @@ msgstr "ಪರಿಮಾಣದ ಬಗೆಯ ಹೆಚ್ಚುವರಿ ಸ್ಪ
 msgid "Unable to extend volume."
 msgstr "ಪರಿಮಾಣವನ್ನು ವಿಸ್ತರಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ."
 
-msgid "Unable to fetch EC2 credentials."
-msgstr "EC2 ಕ್ರೆಡೆಂಶಿಯಲ್‌ಗಳನ್ನು ಪಡೆಯಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ."
-
 msgid "Unable to find default role."
 msgstr "ಪೂರ್ವನಿಯೋಜಿತ ಪಾತ್ರವು ಕಂಡುಬಂದಿಲ್ಲ."
-
-msgid "Unable to get EC2 credentials"
-msgstr "EC2 ಕ್ರೆಡೆಂಶಿಯಲ್‌ ಅನ್ನು ಪಡೆಯಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
 
 #, python-format
 msgid "Unable to get RDP console for instance \"%s\"."
@@ -3596,9 +3517,6 @@ msgstr "ಸಬ್‌ನೆಟ್‌ ವಿವರಗಳನ್ನು ಹಿಂಪ�
 msgid "Unable to retrieve subnet details."
 msgstr "ಸಬ್‌ನೆಟ್‌ ವಿವರಗಳನ್ನು ಹಿಂಪಡೆಯಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
 
-msgid "Unable to retrieve tenant limits."
-msgstr "ಟೆನೆಂಟ್ ಮಿತಿಗಳನ್ನು ಹಿಂಪಡೆಯಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ."
-
 msgid "Unable to retrieve the aggregate to be updated"
 msgstr "ಅಪ್‌ಡೇಟ್‌ ಮಾಡಬೇಕಿರುವ ಒಟ್ಟುಗೂಡಿಕೆಯನ್ನು ಹಿಂಪಡೆಯಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
 
@@ -3772,9 +3690,6 @@ msgstr "ಅಪ್‌ಡೇಟ್ ಮಾಡು"
 msgid "Update Default Quotas"
 msgstr "ಪೂರ್ವನಿಯೋಜಿತ ಕೋಟಾಗಳನ್ನು ಅಪ್‌ಡೇಟ್ ಮಾಡು"
 
-msgid "Update Defaults"
-msgstr "ಪೂರ್ವನಿಯೋಜಿತಗಳನ್ನು ಅಪ್‌ಡೇಟ್‌ಮಾಡು"
-
 msgid "Update Group"
 msgstr "ಗುಂಪನ್ನು ಅಪ್‌ಡೇಟ್ ಮಾಡಿ"
 
@@ -3902,18 +3817,6 @@ msgstr "\"%s\" ಬಳಕೆದಾರ ಹೆಸರನ್ನು ಈಗಾಗಲೇ
 
 msgid "Users"
 msgstr "ಬಳಕೆದಾದರರು"
-
-msgid "VCPU"
-msgstr "VCPU"
-
-msgid "VCPU Hours"
-msgstr "VCPU ಗಂಟೆಗಳು"
-
-msgid "VCPU Usage"
-msgstr "VCPU ಬಳಕೆ"
-
-msgid "VCPUs"
-msgstr "VCPUಗಳು"
 
 msgid "VLAN"
 msgstr "VLAN"
@@ -4105,6 +4008,3 @@ msgstr "ಮುನ್ನೆಲೆ"
 
 msgid "undefined"
 msgstr "ವಿವರಿಸದೆ ಇರುವ"
-
-msgid "unknown IP address"
-msgstr "ಗೊತ್ತಿರದ IP ವಿಳಾಸ"

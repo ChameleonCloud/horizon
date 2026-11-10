@@ -11,17 +11,19 @@
 #    under the License.
 
 import re
+import time
 
 from oslo_utils import uuidutils
 import pytest
+from selenium.webdriver.common.by import By
 
 from openstack_dashboard.test.selenium import widgets
 
 
 @pytest.fixture
 def floatingip_description():
-    return('horizon_floatingip_description_%s'
-           % uuidutils.generate_uuid(dashed=False))
+    return ('horizon_floatingip_description_%s'
+            % uuidutils.generate_uuid(dashed=False))
 
 
 @pytest.fixture
@@ -55,6 +57,18 @@ def clear_floatingip_using_ip(openstack_demo, new_instance_demo):
         openstack_demo.network.find_ip(new_instance_demo.public_v4))
 
 
+def wait_for_instance_has_specific_number_of_address(openstack_demo,
+                                                     new_instance_demo,
+                                                     number_of_address):
+    for attempt in range(5):
+        if (len(openstack_demo.compute.find_server(
+                new_instance_demo.id).addresses
+                ['default_test_network']) == number_of_address):
+            break
+        else:
+            time.sleep(3)
+
+
 def test_allocate_floatingip(login, driver, config, openstack_demo,
                              clear_floatingip_using_description,
                              floatingip_description):
@@ -65,12 +79,12 @@ def test_allocate_floatingip(login, driver, config, openstack_demo,
         'floating_ips',
     ))
     driver.get(url)
-    driver.find_element_by_link_text("Allocate IP To Project").click()
-    floatingip_form = driver.find_element_by_css_selector(".modal-dialog form")
-    floatingip_form.find_element_by_id("id_description").send_keys(
+    driver.find_element(By.LINK_TEXT, "Allocate IP To Project").click()
+    floatingip_form = driver.find_element(By.CSS_SELECTOR, ".modal-dialog form")
+    floatingip_form.find_element(By.ID, "id_description").send_keys(
         floatingip_description)
-    floatingip_form.find_element_by_css_selector(".btn-primary").click()
-    messages = widgets.get_and_dismiss_messages(driver)
+    floatingip_form.find_element(By.CSS_SELECTOR, ".btn-primary").click()
+    messages = widgets.get_and_dismiss_messages(driver, config)
     if len(messages) > 1:
         message = [msg for msg in messages if
                    "Success: Allocated Floating IP" in msg][0]
@@ -92,16 +106,17 @@ def test_release_floatingip(login, driver, openstack_demo, config,
         'floating_ips',
     ))
     driver.get(url)
-    rows = driver.find_elements_by_css_selector(
+    rows = driver.find_elements(
+        By.CSS_SELECTOR,
         f"table#floating_ips tr[data-display="
         f"'{new_floating_ip.floating_ip_address}']")
     assert len(rows) == 1
-    actions_column = rows[0].find_element_by_css_selector("td.actions_column")
+    actions_column = rows[0].find_element(By.CSS_SELECTOR, "td.actions_column")
     widgets.select_from_dropdown(actions_column, "Release Floating IP")
     widgets.confirm_modal(driver)
-    messages = widgets.get_and_dismiss_messages(driver)
-    assert(f"Success: Released Floating IP: "
-           f"{new_floating_ip.floating_ip_address}" in messages)
+    messages = widgets.get_and_dismiss_messages(driver, config)
+    assert (f"Success: Released Floating IP: "
+            f"{new_floating_ip.floating_ip_address}" in messages)
     assert openstack_demo.network.find_ip(
         new_floating_ip.floating_ip_address) is None
 
@@ -115,24 +130,28 @@ def test_associate_floatingip(login, driver, openstack_demo, new_floating_ip,
         'floating_ips',
     ))
     driver.get(url)
-    rows = driver.find_elements_by_css_selector(
+    rows = driver.find_elements(
+        By.CSS_SELECTOR,
         f"table#floating_ips tr[data-display="
         f"'{new_floating_ip.floating_ip_address}']")
     assert len(rows) == 1
-    rows[0].find_element_by_css_selector(".data-table-action").click()
-    associateip_form = driver.find_element_by_css_selector(
-        "form .modal-content")
+    rows[0].find_element(By.CSS_SELECTOR, ".data-table-action").click()
+    associateip_form = driver.find_element(
+        By.CSS_SELECTOR, "form .modal-content")
     widgets.select_from_specific_dropdown_in_form(
         associateip_form, "id_ip_id", new_floating_ip.floating_ip_address)
     widgets.select_from_specific_dropdown_in_form(
         associateip_form, "id_port_id",
         f"{instance_name}: {new_instance_demo.private_v4}")
-    associateip_form.find_element_by_css_selector(".btn-primary").click()
-    messages = widgets.get_and_dismiss_messages(driver)
-    assert(f"Success: IP address {new_floating_ip.floating_ip_address}"
-           f" associated." in messages)
-    assert(new_instance_demo.id == openstack_demo.network.find_ip(
-           new_floating_ip.floating_ip_address).port_details['device_id'])
+    associateip_form.find_element(By.CSS_SELECTOR, ".btn-primary").click()
+    messages = widgets.get_and_dismiss_messages(driver, config)
+    assert (f"Success: IP address {new_floating_ip.floating_ip_address}"
+            f" associated." in messages)
+    wait_for_instance_has_specific_number_of_address(
+        openstack_demo, new_instance_demo, 2)
+    assert (new_instance_demo.id == openstack_demo.network.find_ip(
+        new_floating_ip.floating_ip_address).port_details['device_id'])
+
 
 @pytest.mark.parametrize('new_instance_demo', [(1, True)],
                          indirect=True)
@@ -149,15 +168,18 @@ def test_disassociate_floatingip(login, driver, openstack_demo, config,
     for address in new_instance_demo.addresses['default_test_network']:
         if not address['addr'].startswith("10.10.", 0, 6):
             instance_auto_ip = address['addr']
-    rows = driver.find_elements_by_css_selector(
+    rows = driver.find_elements(
+        By.CSS_SELECTOR,
         f"table#floating_ips tr[data-display="
         f"'{instance_auto_ip}']")
     assert len(rows) == 1
-    rows[0].find_element_by_css_selector(".data-table-action").click()
+    rows[0].find_element(By.CSS_SELECTOR, ".data-table-action").click()
     widgets.confirm_modal(driver)
-    messages = widgets.get_and_dismiss_messages(driver)
-    assert(f"Success: Successfully disassociated Floating IP: "
-           f"{instance_auto_ip}" in messages)
+    messages = widgets.get_and_dismiss_messages(driver, config)
+    assert (f"Success: Successfully disassociated Floating IP: "
+            f"{instance_auto_ip}" in messages)
+    wait_for_instance_has_specific_number_of_address(
+        openstack_demo, new_instance_demo, 1)
     instance_sdk = openstack_demo.compute.find_server(new_instance_demo.id)
     assert (len(instance_sdk.addresses['default_test_network']) == 1)
     assert (instance_sdk.addresses['default_test_network']

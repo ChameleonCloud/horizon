@@ -88,7 +88,7 @@
         singleton: true
       })
       .append({
-        label: gettext('VCPUs'),
+        label: gettext('vCPUs'),
         name: 'vcpus',
         singleton: true
       })
@@ -119,12 +119,11 @@
     function flavorProperties() {
       return {
         name: gettext('Flavor Name'),
-        vcpus: gettext('VCPUs'),
+        vcpus: gettext('vCPUs'),
         ram: {label: gettext('RAM'), filters: ['mb']},
         disk: {label: gettext('Root Disk'), filters: ['gb']},
         'OS-FLV-EXT-DATA:ephemeral': {label: gettext('Ephemeral Disk'), filters: ['gb']},
         swap: {label: gettext('Swap Disk'), filters: ['gb']},
-        rxtx_factor: gettext('RX/TX Factor'),
         id: gettext('ID'),
         'os-flavor-access:is_public': {label: gettext('Public'), filters: ['yesno']},
         metadata: gettext('Metadata')

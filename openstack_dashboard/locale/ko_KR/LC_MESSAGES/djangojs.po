@@ -24,11 +24,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: horizon VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
-"POT-Creation-Date: 2025-07-08 23:51+0000\n"
+"POT-Creation-Date: 2025-07-21 16:55+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2023-09-27 10:43+0000\n"
+"PO-Revision-Date: 2023-09-27 10:42+0000\n"
 "Last-Translator: Ian Y. Choi <ianyrchoi@gmail.com>\n"
 "Language-Team: Korean (South Korea)\n"
 "Language: ko_KR\n"
@@ -68,16 +68,6 @@ msgstr "7"
 
 msgid "75%"
 msgstr "75%"
-
-msgid ""
-"<b>Image (with Create New Volume checked)</b>: This options uses an image to "
-"boot the instance, and creates a new volume to persist instance data. You "
-"can specify volume size and whether to delete the volume on deletion of the "
-"instance."
-msgstr ""
-"<b>이미지 (새 볼륨 생성 체크 포함)</b>: 이 옵션은 인스턴스를 부팅하기 위해 이"
-"미지를 사용하고, 인스턴스 데이터를 영구 보존하기 위해 새로운 볼륨을 생성합니"
-"다. 볼륨 크기 및 인스턴스 삭제 시 볼륨을 삭제할 것인지를 선택할 수 있습니다."
 
 msgid "<b>Image</b>: This option uses an image to boot the instance."
 msgstr "<b>이미지</b>: 이 옵션은 인스턴스를 부팅하기 위해 이미지를 사용합니다."
@@ -1751,9 +1741,6 @@ msgstr "메타데이터를 성공적으로 업데이트했습니다."
 msgid "Middle"
 msgstr "Middle"
 
-msgid "Min Disk (GB)"
-msgstr "최소 디스크 (GB)"
-
 msgid "Min Kbps"
 msgstr "최소 Kbps"
 
@@ -1762,9 +1749,6 @@ msgstr "최소 Kpps"
 
 msgid "Min Port"
 msgstr "최소 포트번호"
-
-msgid "Min RAM (MB)"
-msgstr "최소 RAM (MB)"
 
 msgid "Min. Size (bytes)"
 msgstr "최소 크기 (바이트)"
@@ -2247,24 +2231,11 @@ msgstr "QoS 정책 %s 을(를) 성공적으로 생성하였습니다."
 msgid "QoS Policy ID"
 msgstr "QoS 정책 ID"
 
-msgid "QoS Policy Id"
-msgstr "QoS 정책 ID"
-
 msgid "QoS Policy Name"
 msgstr "QoS 정책 이름"
 
-msgid "QoSPolicyId"
-msgstr "QoSPolicyId"
-
-msgid "QoSPolicyName"
-msgstr "QoSPolicyName"
-
 msgid "Qos Policy  Rule  was successfully deleted."
 msgstr "QoS 정책 규칙을 성공적으로 삭제하였습니다."
-
-#, python-format
-msgid "Qos Policy Rule %s was successfully updated."
-msgstr "QoS 정책 규칙 %s을(를) 성공적으로 업데이트하였습니다."
 
 msgid "Queued"
 msgstr "Queued"
@@ -2274,9 +2245,6 @@ msgstr "RAM"
 
 msgid "RAW"
 msgstr "RAW"
-
-msgid "RX/TX Factor"
-msgstr "RX/TX 요인"
 
 msgid "Radios"
 msgstr "Radios"
@@ -2336,9 +2304,6 @@ msgstr "규칙 유형"
 
 msgid "Rule to edit"
 msgstr "편집할 규칙"
-
-msgid "RuleId"
-msgstr "RuleId"
 
 msgid "Rules"
 msgstr "규칙"
@@ -2484,17 +2449,11 @@ msgstr "아래 사용 가능한 포트에서 하나 이상의 포트를 선택�
 msgid "Select one or more security groups from the available groups below."
 msgstr "아래 사용가능한 그룹에서 하나 이상의 보안 그룹을 선택합니다."
 
-msgid "Select the Ramdisk from the drop down menu."
-msgstr "드롭 다운 메뉴에서 램디스크를 선택합니다."
-
 msgid "Select the availability zone from the drop down menu."
 msgstr "드롭 다운 메뉴에서 가용 구역을 선택합니다."
 
 msgid "Select the format of the disk from the drop down menu."
 msgstr "드롭 다운 메뉴에서 디스크 형식을 선택합니다."
-
-msgid "Select the kernel to run from the drop down menu."
-msgstr "드롭 다운 메뉴에서 실행할 커널을 선택합니다."
 
 msgid "Select the security groups to launch the instance in."
 msgstr "인스턴스 작동시 보안 그룹을 선택합니다."
@@ -2616,9 +2575,6 @@ msgstr "Source Title"
 msgid "Source Type"
 msgstr "소스 유형"
 
-msgid "Specify an image to upload to the Image Service."
-msgstr "이미지 서비스에 업로드할 이미지를 지정합니다."
-
 msgid "Stacked"
 msgstr "Stacked"
 
@@ -2713,9 +2669,6 @@ msgstr "이미지 액세스 권한"
 msgid "The admin password is incorrect."
 msgstr "관리자 암호가 잘못되었습니다."
 
-msgid "The architecture of the image."
-msgstr "이미지 아키텍처"
-
 msgid ""
 "The current Horizon settings indicate no valid\n"
 "                       image creation methods are available. Providing\n"
@@ -2781,24 +2734,10 @@ msgid ""
 msgstr "최소 KBPS (초당 킬로비트) 값으로 포트에 대해 사용 가능해야 합니다."
 
 msgid ""
-"The minimum disk size required to boot the image. If unspecified, this value "
-"defaults to 0 (no minimum)."
-msgstr ""
-"이미지를 부팅하기 위한 최소 디스크 크기입니다. 지정하지 않는 경우 기본값은 0"
-"입니다(최소값 없음)."
-
-msgid ""
 "The minimum kpps (kilo(1000) packets per second) value which should be "
 "available for port."
 msgstr ""
 "최소 kpps (초당 킬로(1000) 패킷 수) 값으로 포트에 대해 사용 가능해야 합니다."
-
-msgid ""
-"The minimum memory size required to boot the image. If unspecified, this "
-"value defaults to 0 (no minimum)."
-msgstr ""
-"이미지를 부팅하기 위한 최소 메모리 크기입니다. 지정하지 않는 경우 기본값은 0"
-"입니다(최소값 없음)."
 
 msgid "The name of the Volume."
 msgstr "볼륨 이름입니다."
@@ -2949,13 +2888,6 @@ msgstr ""
 "flavor를 선택하거나 인스턴스 개수를 줄여 주세요."
 
 msgid ""
-"This flavor requires more VCPUs than your quota allows. Please select a "
-"smaller flavor or decrease the instance count."
-msgstr ""
-"해당 flavor는 쿼터에서 허용하는 것보다 많은 VCPU를 필요로 합니다. 보다 작은 "
-"flavor를 선택하거나 인스턴스 개수를 줄여 주세요."
-
-msgid ""
 "This is a simple hero unit, a simple jumbotron-style component for calling "
 "extra attention to featured content or information."
 msgstr ""
@@ -3023,9 +2955,6 @@ msgstr "인스턴스 총계"
 msgid "Total RAM"
 msgstr "RAM 총계"
 
-msgid "Total VCPUs"
-msgstr "VCPU 총계"
-
 msgid "Total Volume Storage"
 msgstr "총합 볼륨 스토리지"
 
@@ -3061,18 +2990,6 @@ msgstr "Typography"
 
 msgid "URL"
 msgstr "URL"
-
-msgid "Unable to add the bandwidthrule ."
-msgstr "bandwidthrule을 생성할 수 없습니다."
-
-msgid "Unable to add the dscp_marking_rule ."
-msgstr "dscp_marking_rule을 생성할 수 없습니다."
-
-msgid "Unable to add the minimum_bandwidth_rule ."
-msgstr "minimum_bandwidth_rule을 생성할 수 없습니다."
-
-msgid "Unable to add the minimum_packet_rate_rule."
-msgstr "minimum_packet_rate_rule을 생성할 수 없습니다."
 
 msgid "Unable to allocate new floating IP address."
 msgstr "새로운 floating IP 주소를 할당할 수 없습니다."
@@ -3193,13 +3110,6 @@ msgid "Unable to delete policy: %s."
 msgid_plural "Unable to delete policies: %s."
 msgstr[0] "정책을 삭제할 수 없습니다: %s"
 
-#, python-format
-msgid "Unable to delete qos policy %(id)s"
-msgstr "%(id)s의 qos 정책을 삭제할 수 없습니다."
-
-msgid "Unable to delete the bandwidth_limit_rule."
-msgstr "bandwidth_limit_rule을 삭제할 수 없습니다."
-
 msgid "Unable to delete the container."
 msgstr "컨테이너를 삭제할 수 없습니다."
 
@@ -3208,9 +3118,6 @@ msgstr "도메인을 삭제하지 못했습니다."
 
 msgid "Unable to delete the domains."
 msgstr "도메인을 삭제하지 못했습니다."
-
-msgid "Unable to delete the dscp_marking_rule."
-msgstr "dscp_marking_rule을 삭제할 수 없습니다."
 
 #, python-format
 msgid "Unable to delete the flavor with id: %(id)s"
@@ -3232,12 +3139,6 @@ msgstr "ID가 %(id)s인 이미지를 삭제할 수 없습니다"
 #, python-format
 msgid "Unable to delete the keypair with name: %(name)s"
 msgstr "키 페어 이름: %(name)s 를 삭제할 수 없습니다"
-
-msgid "Unable to delete the minimum_bandwidth_rule ."
-msgstr "minimum_bandwidth_rule을 삭제할 수 없습니다."
-
-msgid "Unable to delete the minimum_packet_rate_rule ."
-msgstr "minimum_packet_rate_rule을 삭제할 수 없습니다."
 
 msgid "Unable to delete the object."
 msgstr "오브젝트를 삭제 할 수 없습니다."
@@ -3489,9 +3390,6 @@ msgstr "프로젝트를 찾지 못했습니다."
 msgid "Unable to retrieve the projects."
 msgstr "프로젝트들을 찾지 못했습니다."
 
-msgid "Unable to retrieve the qos policies."
-msgstr "QoS 정책을 검색할 수 없습니다."
-
 msgid "Unable to retrieve the resource types."
 msgstr "해당 리소스 타입을 찾지 못했습니다."
 
@@ -3581,12 +3479,6 @@ msgstr "메타데이터를 업데이트할 수 없습니다."
 
 msgid "Unable to update project quota data."
 msgstr "프로젝트 쿼터(quota) 데이터를 업데이트할 수 없습니다."
-
-msgid "Unable to update the bandwidthrule."
-msgstr "bandwidthrule를 업데이트할 수 없습니다."
-
-msgid "Unable to update the dscp marking rule."
-msgstr "dscp marking 규칙을 업데이트할 수 없습니다."
 
 msgid "Unable to update the flavor."
 msgstr "Flavor 업데이트를 할 수 없습니다."
@@ -3724,12 +3616,6 @@ msgstr "사용자 이름"
 
 msgid "User password has been updated successfully."
 msgstr "사용자 암호를 성공적으로 업데이트 했습니다."
-
-msgid "VCPUS"
-msgstr "VCPUS"
-
-msgid "VCPUs"
-msgstr "VCPUs"
 
 msgid "VDI"
 msgstr "VDI"
@@ -4025,12 +3911,6 @@ msgstr "ingress"
 
 msgid "inherit"
 msgstr "상속"
-
-msgid "min disk is required and must be an integer not less than 0"
-msgstr "최소 디스크 크기가 필요하고 0 이상의 정수여야 합니다."
-
-msgid "min ram is required and must be an integer not less than 0"
-msgstr "최소 램 크기가 필요하고 0 이상의 정수여야 합니다."
 
 #, python-format
 msgid "resource load failed: %s"

@@ -8,7 +8,7 @@ create a snapshot from, and migrate instances. You can also view the
 logs for instances or launch a VNC console for an instance.
 
 For information about using the Dashboard to launch instances as an end
-user, see the :doc:`OpenStack End User Guide </user/launch-instances>`.
+user, see the :ref:`launch-and-manage-instances`.
 
 Create instance snapshots
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -29,8 +29,7 @@ Create instance snapshots
 
 #. To launch an instance from the snapshot, select the snapshot and
    click :guilabel:`Launch`. For information about launching
-   instances, see the
-   :doc:`OpenStack End User Guide </user/launch-instances>`.
+   instances, see the :ref:`launch-and-manage-instances`.
 
 Control the state of an instance
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -62,7 +61,7 @@ Track usage
 Use the :guilabel:`Overview` category to track usage of instances
 for each project.
 
-You can track costs per month by showing meters like number of VCPUs,
+You can track costs per month by showing meters like number of vCPUs,
 disks, RAM, and uptime of all your instances.
 
 #. Log in to the Dashboard and select the :guilabel:`admin` project from the

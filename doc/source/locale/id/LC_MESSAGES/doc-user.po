@@ -2,9 +2,9 @@
 # suhartono <cloudsuhartono@gmail.com>, 2019. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: horizon 25.3.1.dev27\n"
+"Project-Id-Version: horizon 25.7.2.dev3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-08 23:51+0000\n"
+"POT-Creation-Date: 2026-04-24 08:10+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -135,14 +135,6 @@ msgstr ":guilabel:`Create Subnet`: Pilih check box ini untuk membuat subnet"
 
 msgid ":guilabel:`DNS Name Servers`: Specify a name for the DNS server."
 msgstr ":guilabel:`DNS Name Servers`: Tentukan nama untuk server DNS."
-
-msgid ""
-":guilabel:`Defaults`: View default quota values. Quotas are hard-coded in "
-"OpenStack Compute and define the maximum allowable size and number of "
-"resources."
-msgstr ""
-":guilabel:`Defaults`: Melihat nilai kuota default. Kuota adalah hard-coded "
-"di OpenStack Compute dan menentukan ukuran maksimum dan jumlah sumber daya."
 
 msgid ""
 ":guilabel:`Description`: Optionally, provide a brief description for the "
@@ -375,13 +367,6 @@ msgstr ""
 
 msgid ":guilabel:`Security Groups` tab"
 msgstr "Tab :guilabel:`Security Groups`"
-
-msgid ""
-":guilabel:`Security Groups`: View, create, edit, and delete security groups "
-"and security group rules.."
-msgstr ""
-":guilabel:`Security Groups`: Melihat, membuat, mengedit, dan menghapus "
-"kelompok keamanan dan aturan kelompok keamanan.."
 
 msgid ":guilabel:`Services`: View a list of the services."
 msgstr ":guilabel:`Services`: Melihat daftar layanan."
@@ -924,24 +909,12 @@ msgstr ""
 msgid "Go to the :guilabel:`Ports` tab and click :guilabel:`Create Port`."
 msgstr "Pergi ke tab :guilabel:`Ports` dan klik :guilabel:`Create Port`."
 
-msgid "Good"
-msgstr "Good"
-
 msgid ""
 "Good: Moderately tested, should look nice and work fine, maybe a few visual "
 "hiccups"
 msgstr ""
 "Good: Cukup diuji, harus terlihat bagus dan berfungsi dengan baik, mungkin "
 "beberapa cegukan visual (visual hiccups)."
-
-msgid ""
-"Horizon is primarily tested and supported on the latest version of Firefox "
-"and the latest version of Chrome. Issues related to IE, Safari and Opera "
-"will also be considered."
-msgstr ""
-"Horizon terutama diuji dan didukung pada versi terbaru Firefox dan versi "
-"terbaru Chrome. Masalah yang terkait dengan IE, Safari dan Opera juga akan "
-"dipertimbangkan."
 
 msgid ""
 "However, in addition to the fixed IP address, a floating IP address can also "
@@ -957,12 +930,6 @@ msgstr ""
 "Instance yang terlibat. Prosedur ini merinci reservasi alamat IP mengambang "
 "dari pool alamat yang ada dan alamat yang berasosiasi dengan instance "
 "spesifik."
-
-msgid "IE 10 and below"
-msgstr "IE 10 dan di bawahnya"
-
-msgid "IE 11"
-msgstr "IE 11"
 
 msgid ""
 "If a certificate warning appears when you try to access the URL for the "
@@ -1323,9 +1290,6 @@ msgstr "Log in ke dasbor."
 msgid "Log in to the dashboard."
 msgstr "Log in ke dasbor."
 
-msgid "MS Edge"
-msgstr "MS Edge"
-
 msgid "Manage an instance"
 msgstr "Mengelola sebuah instance"
 
@@ -1355,9 +1319,6 @@ msgstr ""
 
 msgid "No: Not supported"
 msgstr "No: Tidak didukung"
-
-msgid "Not supported."
-msgstr "Tidak didukung."
 
 msgid "Notes"
 msgstr "Catatan"
@@ -1602,13 +1563,6 @@ msgstr "Pilih instance yang membuat snapshot."
 msgid "Select the volume and click :guilabel:`Manage Attachments`."
 msgstr "Pilih volume dan klik :guilabel:`Manage Attachments`."
 
-msgid ""
-"Select the volume or volume snapshot from which to boot. Enter a device "
-"name. Enter ``vda`` for KVM images or ``xvda`` for Xen images."
-msgstr ""
-"Pilih volume atau volume snapshot dari mana untuk boot. Masukkan nama "
-"perangkat. Masukkan ``vda`` untuk image KVM atau ``xvda`` untuk image Xen."
-
 msgid "Select the volume that you want to edit."
 msgstr "Pilih volume yang ingin Anda edit."
 
@@ -1775,10 +1729,6 @@ msgstr ""
 msgid "The dashboard shows the network on the :guilabel:`Networks` tab."
 msgstr "Dashboard menunjukkan jaringan pada tab :guilabel:`Networks`."
 
-msgid "The dashboard shows the new volume snapshot in Volume Snapshots tab."
-msgstr ""
-"Dashboard menunjukkan snapshot volume yang baru di tab Volume Snapshots."
-
 msgid "The dashboard shows the volume on the :guilabel:`Volumes` tab."
 msgstr "Dashboard menunjukkan volume pada tab :guilabel:`Volumes`."
 
@@ -1833,18 +1783,12 @@ msgstr ""
 "tab :guilabel:`Settings` (:ref:`dashboard-settings-tab`) atau keluar dari "
 "dashboard."
 
-msgid "The user name is ``ubuntu`` for the Ubuntu cloud images on TryStack."
-msgstr "Username adalah ``ubuntu`` untuk image cloud Ubuntu di TryStack."
-
 msgid ""
 "The visible tabs and functions in the dashboard depend on the access "
 "permissions, or roles, of the user you are logged in as."
 msgstr ""
 "Tab dan fungsi terlihat di dashboard tergantung pada hak akses, atau peran, "
 "pengguna dimana Anda login sebagai apa."
-
-msgid "There're some bugs but most"
-msgstr "Ada beberapa bug tetapi kebanyakan"
 
 msgid "There're some bugs but most of features work"
 msgstr "Ada beberapa bug tetapi sebagian besar fitur berfungsi"
@@ -1927,14 +1871,6 @@ msgstr "Untuk menambahkan aturan ICMP, klik :guilabel:`Add Rule`."
 
 msgid "To allow SSH access, click :guilabel:`Add Rule`."
 msgstr "Untuk mengizinkan akses SSH, klik :guilabel:`Add Rule`."
-
-msgid ""
-"To boot a Xen image from a volume, the image you launch in must be the same "
-"type, fully virtualized or paravirtualized, as the one on the volume."
-msgstr ""
-"Untuk boot image Xen dari volume, image Anda memulai pada harus tipe yang "
-"sama, sepenuhnya virtual atau paravirtualized, sebagai salah satu pada "
-"volume."
 
 msgid ""
 "To change its permissions so that only you can read and write to the file, "
@@ -2024,12 +1960,6 @@ msgstr ""
 "sebuah image apapun pada volume. Apapun image yang Anda pilih tidak bisa "
 "boot. Sebaliknya, itu diganti dengan image pada volume yang Anda pilih dalam "
 "langkah selanjutnya."
-
-msgid ""
-"To use SSH to connect to your instance, use the downloaded keypair file."
-msgstr ""
-"Untuk menggunakan SSH untuk koneksi ke instance Anda, gunakan file keypair "
-"yang di-download"
 
 msgid ""
 "To use the Virtual Network Computing (VNC) client for the dashboard, your "
@@ -2159,12 +2089,6 @@ msgstr ""
 "atur ``cpu_mode = \"none\" `` di samping ``virt_type = qemu`` di ``/etc/nova/"
 "nova-compute.conf`` untuk mengatasi kesalahan berikut:"
 
-msgid ""
-"When you delete an instance, the data in its attached volumes is not deleted."
-msgstr ""
-"Ketika Anda menghapus sebuah instance, data dalam volume yang melekat tidak "
-"dihapus."
-
 msgid "When you launch an instance from a volume, note the following steps:"
 msgstr ""
 "Ketika Anda memulai sebuah instance dari volume, perhatikan langkah berikut:"
@@ -2282,6 +2206,3 @@ msgid ""
 "``<name>`` is the name of the container to which you are uploading the "
 "object."
 msgstr "``<name>`` adalah nama dari wadah (container) yang Anda upload objek."
-
-msgid "of features work"
-msgstr "fitur berfungsi"

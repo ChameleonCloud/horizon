@@ -318,7 +318,7 @@ horizon.datatables.confirm = function(action) {
 
   var body;
   try {
-    body = $(template.render(params)).html();
+    body = $(template.render(params)).text();
   } catch (e) {
     body = name_string + gettext("Please confirm your selection. ") + help_text;
   }
@@ -499,7 +499,7 @@ horizon.datatables.update_footer_count = function (el, modifier) {
     $header = $el.find('thead span.table_count');
     $footer = $el.find('tfoot span.table_count');
   }
-  row_count = $el.find('tbody tr:visible').length + modifier - $el.find('.empty').length;
+  row_count = $el.find('tbody tr:visible').has('td.normal_column').length + modifier - $el.find('.empty').length;
   if (row_count) {
     footer_text_template = ngettext("Displaying %s item", "Displaying %s items", row_count);
     footer_text = interpolate(footer_text_template, [row_count]);

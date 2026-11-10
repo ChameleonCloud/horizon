@@ -91,7 +91,7 @@ class Service(base.APIDictWrapper):
         self.region = region
 
     def __str__(self):
-        if(self.type == "identity"):
+        if self.type == "identity":
             return _("%(type)s (%(backend)s backend)") \
                 % {"type": self.type, "backend": keystone_backend_name()}
         return self.type
@@ -124,7 +124,7 @@ def _get_endpoint_url(request, endpoint_type, catalog=None):
     return url
 
 
-def keystoneclient(request, admin=False, force_scoped=False):
+def keystoneclient(request, admin=False, force_scoped=None):
     """Returns a client connected to the Keystone backend.
 
     Several forms of authentication are supported:
@@ -151,6 +151,8 @@ def keystoneclient(request, admin=False, force_scoped=False):
     token_id = user.token.id
 
     if settings.OPENSTACK_KEYSTONE_MULTIDOMAIN_SUPPORT:
+        if force_scoped is None:
+            force_scoped = not settings.OPENSTACK_KEYSTONE_PREFER_DOMAIN_TOKEN
         is_domain_context_specified = bool(
             request.session.get("domain_context"))
 
@@ -518,9 +520,12 @@ def credential_get(request, credential_id, admin=True):
 
 
 @profiler.trace
-def credentials_list(request, user=None):
+def credentials_list(request, user_id=None, filters=None):
     manager = keystoneclient(request).credentials
-    return manager.list(user=user)
+    kwargs = {"user_id": user_id}
+    if filters:
+        kwargs.update(filters)
+    return manager.list(**kwargs)
 
 
 @profiler.trace
@@ -835,35 +840,6 @@ def get_default_role(request):
                 DEFAULT_ROLE = role
                 break
     return DEFAULT_ROLE
-
-
-def ec2_manager(request):
-    client = keystoneclient(request)
-    if hasattr(client, 'ec2'):
-        return client.ec2
-
-    from keystoneclient.v3 import ec2
-    return ec2.EC2Manager(client)
-
-
-@profiler.trace
-def list_ec2_credentials(request, user_id):
-    return ec2_manager(request).list(user_id)
-
-
-@profiler.trace
-def create_ec2_credentials(request, user_id, tenant_id):
-    return ec2_manager(request).create(user_id, tenant_id)
-
-
-@profiler.trace
-def get_user_ec2_credentials(request, user_id, access_token):
-    return ec2_manager(request).get(user_id, access_token)
-
-
-@profiler.trace
-def delete_user_ec2_credentials(request, user_id, access_token):
-    return ec2_manager(request).delete(user_id, access_token)
 
 
 def keystone_can_edit_domain():

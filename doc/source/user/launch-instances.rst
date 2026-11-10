@@ -1,3 +1,5 @@
+.. _launch-and-manage-instances:
+
 ===========================
 Launch and manage instances
 ===========================
@@ -192,12 +194,8 @@ When you launch an instance from a volume, note the following steps:
   does not boot. Instead, it is replaced by the image on the volume that
   you choose in the next steps.
 
-  To boot a Xen image from a volume, the image you launch in must be
-  the same type, fully virtualized or paravirtualized, as the one on
-  the volume.
-
 * Select the volume or volume snapshot from which to boot. Enter a
-  device name. Enter ``vda`` for KVM images or ``xvda`` for Xen images.
+  device name (``vda`` for KVM images).
 
 .. note::
 
@@ -213,12 +211,13 @@ When you launch an instance from a volume, note the following steps:
 Connect to your instance by using SSH
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To use SSH to connect to your instance, use the downloaded keypair
-file.
+To connect to your instance via SSH, use the downloaded key pair file.
 
 .. note::
 
-   The user name is ``ubuntu`` for the Ubuntu cloud images on TryStack.
+   The user name is ``ubuntu`` for the Ubuntu cloud image.
+   The user name is ``rocky`` for the Rocky Linux cloud image.
+   More details see `Get images <https://docs.openstack.org/image-guide/obtain-images.html>`_.
 
 #. Copy the IP address for your instance.
 

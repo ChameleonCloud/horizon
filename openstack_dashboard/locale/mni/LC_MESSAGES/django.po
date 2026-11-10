@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: horizon VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
-"POT-Creation-Date: 2025-07-08 23:51+0000\n"
+"POT-Creation-Date: 2026-04-24 08:10+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -13,12 +13,6 @@ msgstr ""
 "Language: mni\n"
 "X-Generator: Zanata 4.3.3\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-
-msgid " - End"
-msgstr " - এন্দ"
-
-msgid " : Next hop"
-msgstr " : নেক্স হোপ"
 
 #, python-format
 msgid "%(field_name)s: Invalid IP address (value=%(ip)s)"
@@ -74,10 +68,6 @@ msgstr "অপলোদ তৌনবা লোকেল ইমেজ অমা�
 
 msgid "AKI - Amazon Kernel Image"
 msgstr "AKI - আমাজোন কর্নেল ইমেজ"
-
-#, python-format
-msgid "ALLOW %(ethertype)s %(proto_port)s %(direction)s %(remote)s"
-msgstr "%(ethertype)s %(proto_port)s %(direction)s %(remote)s য়াহল্লু"
 
 msgid "AMI - Amazon Machine Image"
 msgstr "AMI - আমাজোন মেছিন ইমেজ"
@@ -166,13 +156,6 @@ msgstr ""
 
 msgid "Add/Remove Hosts to Aggregate"
 msgstr "এগ্রিগেত্তা হোষ্টশীং হাপচিল্লু/লৌথোকউ"
-
-msgid ""
-"Additional routes announced to the hosts. Each entry is: destination_cidr,"
-"nexthop (e.g., 192.168.200.0/24,10.56.1.254) and one entry per line."
-msgstr ""
-"হোষ্টশীংদা অহেনবা রুতশীং খংহল্লে। এন্ত্রি খুদিংমক অসি: destination_cidr,nexthop (e."
-"g., 192.168.200.0/24,10.56.1.254) অমসুং লাইন খুদিংগী এন্ত্রি অমনি।"
 
 msgid "Admin"
 msgstr "এদমিন"
@@ -704,11 +687,11 @@ msgstr "DNS নেম সর্ভরশীং"
 msgid "Decrypt Password"
 msgstr "দিক্রিপ্ত পাসৱার্দ"
 
+msgid "Default Quotas"
+msgstr "দিফোল্ট ক্যুওতাশীং"
+
 msgid "Default quotas updated."
 msgstr "দিফোল্ট ক্যুওতাশীং অপদেত তৌরে।"
-
-msgid "Defaults"
-msgstr "দিফোল্টশীং"
 
 #, python-format
 msgid "Delete the created network \"%s\" due to subnet creation failure."
@@ -904,15 +887,6 @@ msgstr "দাউন"
 msgid "Download CSV Summary"
 msgstr "CSV সম্মরি দাউনলোদ তৌ"
 
-msgid "EC2 Access Key"
-msgstr "EC2 এক্সেস কী"
-
-msgid "EC2 Secret Key"
-msgstr "EC2 সিক্রেত কী"
-
-msgid "EC2 URL"
-msgstr "EC2 URL"
-
 msgid "Edit"
 msgstr "এদিত তৌ"
 
@@ -1072,10 +1046,6 @@ msgstr "QoS স্পেক এসোসিএসন অদু অপদেত �
 msgid "Error when adding or removing hosts."
 msgstr "হোষ্টশীং হাপচিনলিঙৈদা নত্ত্রগা লৌথোক্লিঙৈদা শোয়খ্রে।"
 
-#, python-format
-msgid "Error writing zipfile: %(exc)s"
-msgstr "জিপফাইল ইবদা শোয়রে: %(exc)s"
-
 msgid "Ether Type"
 msgstr "ইথর তাইপ"
 
@@ -1112,14 +1082,6 @@ msgstr ""
 
 msgid "Extra Specs"
 msgstr "অহেনবা স্পেকশীং"
-
-#, python-format
-msgid ""
-"Failed to add %(users_to_add)s project members%(group_msg)s and set project "
-"quotas."
-msgstr ""
-"%(users_to_add)s প্রোজেক্ত মেম্বর%(group_msg)s অমসুং প্রোজেক্ত ক্যুওতাশীং সেত তৌবা "
-"মায় পাক্ত্রে।"
 
 #, python-format
 msgid "Failed to add %s project groups and update project quotas."
@@ -1160,14 +1122,6 @@ msgstr "ইন্সতেন্সশীং হাংহনবা ঙমদ্�
 #, python-format
 msgid "Failed to live migrate instance to host \"%s\"."
 msgstr "ইন্সতেন্স অদু হোষ্ট \"%s\"দা  লাইভ মাইগ্রেত তৌবা ঙমদ্রে।"
-
-#, python-format
-msgid ""
-"Failed to modify %(users_to_modify)s project members%(group_msg)s and update "
-"project quotas."
-msgstr ""
-"%(users_to_modify)s প্রোজেক্ত মেম্বর %(group_msg)s শেমদোক-শেমজিন তৌবা অমসুং "
-"প্রোজেক্ত ক্যুওতাশীং অপদেত তৌবা মায় পাক্ত্রে।"
 
 #, python-format
 msgid "Failed to modify %s domain groups."
@@ -1354,14 +1308,6 @@ msgstr "হোষ্ট এগ্রিগেতশীং"
 msgid "Host Routes"
 msgstr "হোষ্ট রুতশীং"
 
-#, python-format
-msgid ""
-"Host Routes format error: Destination CIDR and nexthop must be specified "
-"(value=%s)"
-msgstr ""
-"হোষ্ট রুতশীংগী ফোর্মেত শোয়রে: দেষ্টিনেসন CIDR অমসুং নেক্সহোপ অদু শেংনা তাক্কদবনি "
-"(ভেল্যু=%s)"
-
 msgid ""
 "Host aggregates divide an availability zone into logical units by grouping "
 "together hosts. Create a host aggregate then select the hosts contained in "
@@ -1544,9 +1490,6 @@ msgstr "ইন্সতেন্স ID"
 msgid "Instance Name"
 msgstr "ইন্সতেন্স মমীং"
 
-msgid "Instance Overview"
-msgstr "ইন্সতেন্স ওভরভ্যু"
-
 msgid "Instance Password is not set or is not yet available"
 msgstr "ইন্সতেন্স পাসৱার্দ সেত তৌদে নত্ত্রগা হৌজিক ফাউবা ফংদ্রি"
 
@@ -1659,10 +1602,6 @@ msgstr "লাইভ মাইগ্রেত ইন্সতেন্স"
 msgid "Live migrate an instance to a specific host."
 msgstr "অকক্নবা হোষ্ট অমদা ইন্সতেন্স অমা লাইভ মাইগ্রেত তৌ।"
 
-#, python-format
-msgid "Load Balancer VIP %s"
-msgstr "লোদ বেলান্সর VIP %s"
-
 msgid "Local"
 msgstr "লোকেল"
 
@@ -1748,12 +1687,6 @@ msgstr "মাইগ্রেত তৌরি"
 
 msgid "Migration Policy"
 msgstr "মাইগ্রেসনগী পোলিসি"
-
-msgid "Min Disk"
-msgstr "মিনিমম দিস্ক"
-
-msgid "Min RAM"
-msgstr "মিনিমম RAM"
 
 msgid "Minimum Disk (GB)"
 msgstr "মিনিমম দিস্ক (GB)"
@@ -2008,9 +1941,6 @@ msgstr "ইন্সতেন্সশীংগী মশীং"
 
 msgid "Number of Snapshots"
 msgstr "স্নেপশোতকী মশীং"
-
-msgid "Number of VCPUs"
-msgstr "VCPUশীংগী মশীং"
 
 msgid "Number of Volumes"
 msgstr "ভোল্যুমশীংগী মশীং"
@@ -2348,9 +2278,6 @@ msgid ""
 msgstr ""
 "সেক্যুরিতি গ্রুপ অদুদা এসাইন তৌরিবা ইন্সতেন্সশীংদা করম্বা ত্রাফিক য়াহনবগে হায়বদু "
 "রুলশীংনা তাকই। "
-
-msgid "S3 URL"
-msgstr "S3 URL"
 
 msgid "SSH key pairs can be generated with the ssh-keygen command:"
 msgstr "SSH কী পেয়রশীং অসি ssh-keygen কমান্দনা শেম্বা য়াই:"
@@ -2985,14 +2912,8 @@ msgstr "ভোল্যুম তাইপ এক্সত্রা স্পে
 msgid "Unable to extend volume."
 msgstr "ভোল্যুম এক্সতেন্দ তৌবা ঙমদে।"
 
-msgid "Unable to fetch EC2 credentials."
-msgstr "EC2 ক্রিদেন্সিএলশীং ফংবা ঙমদে।"
-
 msgid "Unable to find default role."
 msgstr "দিফোল্ট রোল ফংবা ঙমদে।"
-
-msgid "Unable to get EC2 credentials"
-msgstr "EC2 ক্রিদেন্সিএলশীং ফংবা ঙমদে"
 
 #, python-format
 msgid "Unable to get RDP console for instance \"%s\"."
@@ -3327,9 +3248,6 @@ msgstr "সবনেতকী অকুপ্পা মরোলশীং রি
 msgid "Unable to retrieve subnet details."
 msgstr "সবনেতকী অকুপ্পা মরোলশীং রিত্রিভ তৌবা ঙমদে"
 
-msgid "Unable to retrieve tenant limits."
-msgstr "তেনেন্ত লিমিতশীং রিত্রিভ তৌবা ঙমদ্রে।"
-
 msgid "Unable to retrieve the aggregate to be updated"
 msgstr "অপদেত তৌনবা এগ্রিগেত অদু রিত্রিভ তৌবা ঙমদে"
 
@@ -3494,9 +3412,6 @@ msgstr "অপদেত তৌ"
 msgid "Update Default Quotas"
 msgstr "দিফোল্ট ক্যুওতাশীং অপদেত তৌ"
 
-msgid "Update Defaults"
-msgstr "দিফোল্টশীং অপদেত তৌ"
-
 msgid "Update Group"
 msgstr "গ্রুপ অপদেত তৌ"
 
@@ -3619,18 +3534,6 @@ msgstr "য়ুজর মমীং \"%s\" অসি হান্ননা শী�
 
 msgid "Users"
 msgstr "য়ুজরশীং"
-
-msgid "VCPU"
-msgstr "VCPU"
-
-msgid "VCPU Hours"
-msgstr "VCPU পুংশীং"
-
-msgid "VCPU Usage"
-msgstr "VCPU য়ুসেজ"
-
-msgid "VCPUs"
-msgstr "VCPUশীং"
 
 msgid "VLAN"
 msgstr "VLAN"
@@ -3820,6 +3723,3 @@ msgstr "ফ্রন্ত-এন্দ"
 
 msgid "undefined"
 msgstr "শেংনা তাক্তে"
-
-msgid "unknown IP address"
-msgstr "শকখংদবা IP এদ্রেস"

@@ -12,6 +12,7 @@
 
 from oslo_utils import uuidutils
 import pytest
+from selenium.webdriver.common.by import By
 
 from openstack_dashboard.test.selenium import widgets
 
@@ -47,15 +48,15 @@ def test_create_grouptype(login, driver, grouptype_name, openstack_admin,
         'group_types',
     ))
     driver.get(url)
-    driver.find_element_by_link_text("Create Group Type").click()
-    grouptype_form = driver.find_element_by_css_selector(".modal-content form")
-    grouptype_form.find_element_by_id("id_name").send_keys(grouptype_name)
-    grouptype_form.find_element_by_css_selector(".btn-primary").click()
-    messages = widgets.get_and_dismiss_messages(driver)
-    assert(f'Success: Successfully created group type: {grouptype_name}'
-           in messages)
-    assert(openstack_admin.block_storage.find_group_type(grouptype_name)
-           is not None)
+    driver.find_element(By.LINK_TEXT, "Create Group Type").click()
+    grouptype_form = driver.find_element(By.CSS_SELECTOR, ".modal-content form")
+    grouptype_form.find_element(By.ID, "id_name").send_keys(grouptype_name)
+    grouptype_form.find_element(By.CSS_SELECTOR, ".btn-primary").click()
+    messages = widgets.get_and_dismiss_messages(driver, config)
+    assert (f'Success: Successfully created group type: {grouptype_name}'
+            in messages)
+    assert (openstack_admin.block_storage.find_group_type(grouptype_name)
+            is not None)
 
 
 def test_delete_grouptype(login, driver, grouptype_name, openstack_admin,
@@ -67,12 +68,13 @@ def test_delete_grouptype(login, driver, grouptype_name, openstack_admin,
         'group_types',
     ))
     driver.get(url)
-    rows = driver.find_elements_by_css_selector(
+    rows = driver.find_elements(
+        By.CSS_SELECTOR,
         f"table#group_types tr[data-display='{grouptype_name}']")
     assert len(rows) == 1
-    actions_column = rows[0].find_element_by_css_selector("td.actions_column")
+    actions_column = rows[0].find_element(By.CSS_SELECTOR, "td.actions_column")
     widgets.select_from_dropdown(actions_column, "Delete Group Type")
     widgets.confirm_modal(driver)
-    messages = widgets.get_and_dismiss_messages(driver)
+    messages = widgets.get_and_dismiss_messages(driver, config)
     assert f"Success: Deleted Group Type: {grouptype_name}" in messages
     assert openstack_admin.block_storage.find_group_type(grouptype_name) is None

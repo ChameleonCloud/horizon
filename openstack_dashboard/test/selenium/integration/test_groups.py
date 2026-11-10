@@ -12,6 +12,7 @@
 
 from oslo_utils import uuidutils
 import pytest
+from selenium.webdriver.common.by import By
 
 from openstack_dashboard.test.selenium import widgets
 
@@ -47,13 +48,13 @@ def test_create_group(login, driver, group_name, openstack_admin, config,
         'groups',
     ))
     driver.get(url)
-    driver.find_element_by_link_text("Create Group").click()
-    group_form = driver.find_element_by_css_selector(".modal-dialog form")
-    group_form.find_element_by_id("id_name").send_keys(group_name)
-    group_form.find_element_by_css_selector(".btn-primary").click()
-    messages = widgets.get_and_dismiss_messages(driver)
-    assert(f'Success: Group "{group_name}" was successfully created.'
-           in messages)
+    driver.find_element(By.LINK_TEXT, "Create Group").click()
+    group_form = driver.find_element(By.CSS_SELECTOR, ".modal-dialog form")
+    group_form.find_element(By.ID, "id_name").send_keys(group_name)
+    group_form.find_element(By.CSS_SELECTOR, ".btn-primary").click()
+    messages = widgets.get_and_dismiss_messages(driver, config)
+    assert (f'Success: Group "{group_name}" was successfully created.'
+            in messages)
     assert openstack_admin.identity.find_group(group_name) is not None
 
 
@@ -66,13 +67,13 @@ def test_delete_group(login, driver, group_name, openstack_admin, config,
         'groups',
     ))
     driver.get(url)
-    rows = driver.find_elements_by_css_selector(
-        f"table#groups tr[data-display='{group_name}']")
+    rows = driver.find_elements(
+        By.CSS_SELECTOR, f"table#groups tr[data-display='{group_name}']")
     assert len(rows) == 1
-    actions_column = rows[0].find_element_by_css_selector("td.actions_column")
+    actions_column = rows[0].find_element(By.CSS_SELECTOR, "td.actions_column")
     widgets.select_from_dropdown(actions_column, "Delete Group")
     widgets.confirm_modal(driver)
-    messages = widgets.get_and_dismiss_messages(driver)
+    messages = widgets.get_and_dismiss_messages(driver, config)
     assert f"Success: Deleted Group: {group_name}" in messages
     assert openstack_admin.identity.find_group(group_name) is None
 
@@ -86,22 +87,22 @@ def test_edit_group_name_and_description(login, driver, group_name,
         'groups',
     ))
     driver.get(url)
-    rows = driver.find_elements_by_css_selector(
-        f"table#groups tr[data-display='{group_name}']")
+    rows = driver.find_elements(
+        By.CSS_SELECTOR, f"table#groups tr[data-display='{group_name}']")
     assert len(rows) == 1
-    actions_column = rows[0].find_element_by_css_selector("td.actions_column")
+    actions_column = rows[0].find_element(By.CSS_SELECTOR, "td.actions_column")
     widgets.select_from_dropdown(actions_column, "Edit Group")
-    group_form = driver.find_element_by_css_selector(".modal-dialog form")
-    group_form.find_element_by_id("id_name").clear()
-    group_form.find_element_by_id("id_name").send_keys(f"EDITED_{group_name}")
-    group_form.find_element_by_id("id_description").clear()
-    group_form.find_element_by_id("id_description").send_keys(
+    group_form = driver.find_element(By.CSS_SELECTOR, ".modal-dialog form")
+    group_form.find_element(By.ID, "id_name").clear()
+    group_form.find_element(By.ID, "id_name").send_keys(f"EDITED_{group_name}")
+    group_form.find_element(By.ID, "id_description").clear()
+    group_form.find_element(By.ID, "id_description").send_keys(
         f"EDITED_Description for: {group_name}")
-    group_form.find_element_by_css_selector(".btn-primary").click()
-    messages = widgets.get_and_dismiss_messages(driver)
-    assert f"Success: Group has been updated successfully." in messages
-    assert(openstack_admin.identity.find_group(
-           f"EDITED_{group_name}") is not None)
-    assert(openstack_admin.identity.find_group(
-           f"EDITED_{group_name}").description ==
-           f"EDITED_Description for: {group_name}")
+    group_form.find_element(By.CSS_SELECTOR, ".btn-primary").click()
+    messages = widgets.get_and_dismiss_messages(driver, config)
+    assert "Success: Group has been updated successfully." in messages
+    assert (openstack_admin.identity.find_group(
+        f"EDITED_{group_name}") is not None)
+    assert (openstack_admin.identity.find_group(
+        f"EDITED_{group_name}").description ==
+        f"EDITED_Description for: {group_name}")

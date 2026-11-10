@@ -34,7 +34,7 @@ t_b_p_s = conf.theme.browse_left_panel_sec
         (t_b_p_m[0], t_b_p_s[0], "API Access",
             "API Access - OpenStack Dashboard", "API Access"),
         (t_b_p_m[1], t_b_p_s[1], "Overview",
-            "Instance Overview - OpenStack Dashboard", "Overview"),
+            "Overview - OpenStack Dashboard", "Overview"),
         (t_b_p_m[2], t_b_p_s[2], "Instances",
             "Instances - OpenStack Dashboard", "Instances"),
         (t_b_p_m[3], t_b_p_s[3], "Images",
@@ -93,8 +93,8 @@ t_b_p_s = conf.theme.browse_left_panel_sec
             "Trunks - OpenStack Dashboard", "Trunks"),
         (t_b_p_m[30], t_b_p_s[30], "RBAC Policies",
             "RBAC Policies - OpenStack Dashboard", "RBAC Policies"),
-        (t_b_p_m[31], t_b_p_s[31], "Defaults",
-            "Defaults - OpenStack Dashboard", "Defaults"),
+        (t_b_p_m[31], t_b_p_s[31], "Default Quotas",
+            "Default Quotas - OpenStack Dashboard", "Default Quotas"),
         (t_b_p_m[32], t_b_p_s[32], "Metadata Definitions",
             "Metadata Definitions - OpenStack Dashboard",
             "Metadata Definitions"),
@@ -111,6 +111,9 @@ t_b_p_s = conf.theme.browse_left_panel_sec
         (t_b_p_m[38], t_b_p_s[38], "Application Credentials",
             "Application Credentials - OpenStack Dashboard",
             "Application Credentials"),
+        (t_b_p_m[39], t_b_p_s[39], "User Credentials",
+            "User Credentials - OpenStack Dashboard",
+            "User Credentials"),
     ]
 )
 def test_browse_left_panel(live_server, driver, user, dashboard_data,
@@ -147,43 +150,47 @@ def test_browse_left_panel(live_server, driver, user, dashboard_data,
 
         driver.get(live_server.url + '/settings')
         # First scroll click
-        driver.find_element_by_xpath(
-            f".//a[normalize-space()='{main_panel.capitalize()}']").click()
+        widgets.scroll_into_view_and_click(driver, driver.find_element(
+            By.XPATH,
+            f".//a[normalize-space()='{main_panel.capitalize()}']"))
         if sec_panel != 'None':
             sec_line_req_button = config.theme.b_l_p_sec_line_req_btn.format(
                 main_panel=main_panel, sec_panel=sec_panel)
             # Second scroll click
-            WebDriverWait(driver, config.selenium.implicit_wait).until(
-                EC.element_to_be_clickable(
-                    (By.XPATH, sec_line_req_button))).click()
+            widgets.scroll_into_view_and_click(
+                driver,
+                WebDriverWait(driver, config.selenium.implicit_wait).until(
+                    EC.element_to_be_clickable(
+                        (By.XPATH, sec_line_req_button))))
             sidebar_xpath = config.theme.b_l_p_sidebar_xpath.format(
                 main_panel=main_panel, sec_panel=sec_panel)
             # Get tab with output of second scroll
-            sidebar = driver.find_element_by_xpath(sidebar_xpath)
+            sidebar = driver.find_element(By.XPATH, sidebar_xpath)
         else:
             # In case there is not second scroll
             sec_line_xpath = config.theme.b_l_p_sec_line_xpath.format(
                 main_panel=main_panel)
-            sidebar = driver.find_element_by_xpath(sec_line_xpath)
-        WebDriverWait(sidebar, config.selenium.implicit_wait).until(
-            EC.element_to_be_clickable(
-                (By.LINK_TEXT, link_text))).click()
+            sidebar = driver.find_element(By.XPATH, sec_line_xpath)
+        widgets.scroll_into_view_and_click(
+            driver,
+            WebDriverWait(sidebar, config.selenium.implicit_wait).until(
+                EC.element_to_be_clickable((By.LINK_TEXT, link_text))))
         assert driver.title == title
-        assert driver.find_element_by_css_selector("h1").text == h1_text
+        assert driver.find_element(By.CSS_SELECTOR, "h1").text == h1_text
 
 
 def test_browse_user_setting_tab(live_server, driver, user, config):
     driver.get(live_server.url + '/project/api_access')
-    user_button = driver.find_element_by_xpath(config.theme.user_name_xpath)
+    user_button = driver.find_element(By.XPATH, config.theme.user_name_xpath)
     widgets.select_from_dropdown(user_button, "Settings")
     assert driver.title == "User Settings - OpenStack Dashboard"
-    assert driver.find_element_by_css_selector("h1").text == "User Settings"
+    assert driver.find_element(By.CSS_SELECTOR, "h1").text == "User Settings"
 
 
 def test_browse_change_password_tab(live_server, driver, user, config):
     driver.get(live_server.url + '/project/api_access')
-    user_button = driver.find_element_by_xpath(config.theme.user_name_xpath)
+    user_button = driver.find_element(By.XPATH, config.theme.user_name_xpath)
     widgets.select_from_dropdown(user_button, "Settings")
-    driver.find_element_by_link_text("Change Password").click()
+    driver.find_element(By.LINK_TEXT, "Change Password").click()
     assert driver.title == "Change Password - OpenStack Dashboard"
-    assert driver.find_element_by_css_selector("h1").text == "Change Password"
+    assert driver.find_element(By.CSS_SELECTOR, "h1").text == "Change Password"

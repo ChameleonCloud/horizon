@@ -136,7 +136,7 @@ def get_extra_specs(flavor):
 
 class FlavorsTable(tables.DataTable):
     name = tables.WrappingColumn('name', verbose_name=_('Flavor Name'))
-    vcpus = tables.Column('vcpus', verbose_name=_('VCPUs'))
+    vcpus = tables.Column('vcpus', verbose_name=_('vCPUs'))
     ram = tables.Column(get_size,
                         verbose_name=_('RAM'),
                         attrs={'data-type': 'size'})
@@ -149,7 +149,6 @@ class FlavorsTable(tables.DataTable):
     swap = tables.Column(get_swap_size,
                          verbose_name=_('Swap Disk'),
                          attrs={'data-type': 'size'})
-    rxtx_factor = tables.Column('rxtx_factor', verbose_name=_("RX/TX factor"))
     flavor_id = tables.Column('id', verbose_name=_('ID'))
     public = tables.Column("is_public",
                            verbose_name=_("Public"),

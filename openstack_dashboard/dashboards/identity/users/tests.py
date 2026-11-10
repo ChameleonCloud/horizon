@@ -21,6 +21,7 @@ from unittest import mock
 
 from django.test.utils import override_settings
 from django.urls import reverse
+from selenium.webdriver.common.by import By
 
 from openstack_dashboard import api
 from openstack_dashboard.dashboards.identity.users import tabs
@@ -263,7 +264,8 @@ class UsersViewTests(test.BaseAdminViewTests):
 
         res = self.client.post(USER_CREATE_URL, formData)
 
-        self.assertFormError(res, "form", None, ['Passwords do not match.'])
+        self.assertFormError(res.context["form"], None,
+                             ['Passwords do not match.'])
 
         self.assert_mock_multiple_calls_with_same_arguments(
             self.mock_get_default_domain, 2,
@@ -310,7 +312,7 @@ class UsersViewTests(test.BaseAdminViewTests):
         res = self.client.post(USER_CREATE_URL, formData)
 
         self.assertFormError(
-            res, "form", 'password',
+            res.context["form"], 'password',
             ['Password must be between 8 and 18 characters.'])
 
         self.assert_mock_multiple_calls_with_same_arguments(
@@ -358,7 +360,7 @@ class UsersViewTests(test.BaseAdminViewTests):
         res = self.client.post(USER_CREATE_URL, formData)
 
         self.assertFormError(
-            res, "form", 'password',
+            res.context["form"], 'password',
             ['Password must be between 8 and 18 characters.'])
 
         self.assert_mock_multiple_calls_with_same_arguments(
@@ -697,7 +699,7 @@ class UsersViewTests(test.BaseAdminViewTests):
 
         res = self.client.post(USER_CHANGE_PASSWORD_URL, formData)
 
-        self.assertFormError(res, "form", None,
+        self.assertFormError(res.context["form"], None,
                              ['The admin password is incorrect.'])
         self.mock_user_get.assert_called_with(test.IsHttpRequest(), '1',
                                               admin=False)
@@ -720,7 +722,7 @@ class UsersViewTests(test.BaseAdminViewTests):
         res = self.client.post(USER_CHANGE_PASSWORD_URL, formData)
 
         self.assertFormError(
-            res, "form", 'password',
+            res.context["form"], 'password',
             ['Password must be between 8 and 18 characters.'])
 
         self.mock_user_get.assert_called_once_with(test.IsHttpRequest(), '1',
@@ -741,7 +743,7 @@ class UsersViewTests(test.BaseAdminViewTests):
         res = self.client.post(USER_CHANGE_PASSWORD_URL, formData)
 
         self.assertFormError(
-            res, "form", 'password',
+            res.context["form"], 'password',
             ['Password must be between 8 and 18 characters.'])
 
         self.mock_user_get.assert_called_once_with(test.IsHttpRequest(), '1',
@@ -1342,20 +1344,20 @@ class SeleniumTests(test.SeleniumAdminTestCase):
         self.selenium.get("%s%s" % (self.live_server_url, USERS_INDEX_URL))
 
         # Open the modal menu
-        self.selenium.find_element_by_id("users__action_create").click()
+        self.selenium.find_element(By.ID, "users__action_create").click()
         wait = self.ui.WebDriverWait(self.selenium, 10,
                                      ignored_exceptions=[socket_timeout])
-        wait.until(lambda x: self.selenium.find_element_by_id("id_name"))
+        wait.until(lambda x: self.selenium.find_element(By.ID, "id_name"))
 
         self.assertFalse(self._is_element_present("id_confirm_password_error"),
                          "Password error element shouldn't yet exist.")
-        self.selenium.find_element_by_id("id_name").send_keys("Test User")
-        self.selenium.find_element_by_id("id_password").send_keys("test")
-        self.selenium.find_element_by_id("id_confirm_password").send_keys("te")
-        self.selenium.find_element_by_id("id_email").send_keys("a@b.com")
+        self.selenium.find_element(By.ID, "id_name").send_keys("Test User")
+        self.selenium.find_element(By.ID, "id_password").send_keys("test")
+        self.selenium.find_element(By.ID, "id_confirm_password").send_keys("te")
+        self.selenium.find_element(By.ID, "id_email").send_keys("a@b.com")
 
-        wait.until(lambda x: self.selenium.find_element_by_id(
-            "id_confirm_password_error"))
+        wait.until(lambda x: self.selenium.find_element(By.ID,
+                   "id_confirm_password_error"))
 
         self.assertTrue(self._is_element_present("id_confirm_password_error"),
                         "Couldn't find password error element.")
@@ -1384,9 +1386,9 @@ class SeleniumTests(test.SeleniumAdminTestCase):
 
         self.assertFalse(self._is_element_present("id_confirm_password_error"),
                          "Password error element shouldn't yet exist.")
-        self.selenium.find_element_by_id("id_password").send_keys("test")
-        self.selenium.find_element_by_id("id_confirm_password").send_keys("te")
-        self.selenium.find_element_by_id("id_name").click()
+        self.selenium.find_element(By.ID, "id_password").send_keys("test")
+        self.selenium.find_element(By.ID, "id_confirm_password").send_keys("te")
+        self.selenium.find_element(By.ID, "id_name").click()
         self.assertTrue(self._is_element_present("id_confirm_password_error"),
                         "Couldn't find password error element.")
         self.mock_user_get.assert_called_once_with(test.IsHttpRequest(), '1',
@@ -1394,7 +1396,7 @@ class SeleniumTests(test.SeleniumAdminTestCase):
 
     def _is_element_present(self, element_id):
         try:
-            self.selenium.find_element_by_id(element_id)
+            self.selenium.find_element(By.ID, element_id)
             return True
         except Exception:
             return False

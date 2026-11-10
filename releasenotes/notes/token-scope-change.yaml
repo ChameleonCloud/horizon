@@ -1,0 +1,10 @@
+---
+fixes:
+  - |
+    [:bug:`2115353`] Added option to opt out of Keystone token scope swap.
+
+    Horizon may prefer a domain-scoped token for some users (e.g. domain +
+    project admins). This can conflict with certain custom Keystone policies.
+
+    New setting ``OPENSTACK_KEYSTONE_PREFER_DOMAIN_TOKEN`` (default: ``True``)
+    allows operators to disable this behavior.

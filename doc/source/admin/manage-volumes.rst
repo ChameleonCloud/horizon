@@ -6,7 +6,7 @@ Volumes are the Block Storage devices that you attach to instances to enable
 persistent storage. Users can attach a volume to a running instance or detach
 a volume and attach it to another instance at any time. For information about
 using the dashboard to create and manage volumes as an end user, see the
-:doc:`OpenStack End User Guide </user/manage-volumes>`.
+:ref:`create-and-manage-volumes`.
 
 As an administrative user, you can manage volumes and volume types for users
 in various projects. You can create and delete volume types, and you can view
@@ -102,7 +102,7 @@ volumes.
 |                    |                       |for additional options      |
 +--------------------+-----------------------+----------------------------+
 |     Key Size (bits)| 256 (Recommended for  |Using this selection for    |
-|                    | aes-xts-plain64 and   |aes-xts, the underlying key |
+|                    | aes-xts-plain64 and   |AES-XTS, the underlying key |
 |                    | aes-cbc-essiv)        |size would only be 128-bits*|
 +--------------------+-----------------------+----------------------------+
 
@@ -113,7 +113,7 @@ volumes.
    To see further information and CLI instructions, see
    `Create an encrypted volume type
    <https://docs.openstack.org/cinder/latest/configuration/block-storage/volume-encryption.html#create-an-encrypted-volume-type>`__
-   in the OpenStack Block Storage Configuration Guide.
+   in the OpenStack Block Storage (cinder) Configuration Guide.
 
 Delete volume types
 ~~~~~~~~~~~~~~~~~~~

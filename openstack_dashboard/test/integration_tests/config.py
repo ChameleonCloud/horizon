@@ -108,9 +108,9 @@ AvailableServiceGroup = [
 ]
 
 SeleniumGroup = [
-    cfg.FloatOpt(
-        'message_implicit_wait',
-        default=0.1,
+    cfg.IntOpt(
+        'message_wait',
+        default=60,
         help='Timeout in seconds to wait for message confirmation modal'),
     cfg.IntOpt(
         'implicit_wait',
@@ -194,8 +194,18 @@ PluginGroup = [
 
 ThemeGroup = [
     cfg.StrOpt('project_name_xpath',
-               default='.//*[@class="context-project"]',
+               default='.//*[@class="context-project"]//ancestor::ul',
                help='Default xpath for project name dropdown button'),
+    cfg.StrOpt('project_text_xpath',
+               default='.//*[@class="context-project"]',
+               help='Default xpath for element displaying '
+                    'the current project name'),
+    cfg.StrOpt('region_name_xpath',
+               default='.//span[@class="region-title"]',
+               help='Default xpath for region name dropdown button'),
+    cfg.StrOpt('region_list_xpath',
+               default='.//ul[@id="region_list"]',
+               help='Default xpath for region name dropdown button'),
     cfg.ListOpt('help_sequence',
                 default=['.//*[@class="dropdown user-menu"]',
                          './/*[normalize-space()="Help"]'],
@@ -243,6 +253,78 @@ ThemeGroup = [
 ]
 
 
+IdPsOIDCGroup = [
+    cfg.StrOpt('keycloak_test_user1_username',
+               default='kctestuser1',
+               help='Username to use for keycloak test user 1'),
+    cfg.StrOpt('keycloak_test_user1_password',
+               default='nomoresecrets1',
+               help='Password to use for keycloak test user 1.',
+               secret=True),
+    cfg.StrOpt('keycloak_test_user2_username',
+               default='kctestuser2',
+               help='Username to use for keycloak test user 2'),
+    cfg.StrOpt('keycloak_test_user2_password',
+               default='nomoresecrets2',
+               help='Password to use for keycloak test user 2.',
+               secret=True),
+    cfg.StrOpt('keycloak_test_user3_username',
+               default='kctestuser3',
+               help='Username to use for keycloak test user 3'),
+    cfg.StrOpt('keycloak_test_user3_password',
+               default='nomoresecrets3',
+               help='Password to use for keycloak test user 3.',
+               secret=True),
+    cfg.StrOpt('keycloak_test_user4_username',
+               default='kctestuser4',
+               help='Username to use for keycloak test user 4'),
+    cfg.StrOpt('keycloak_test_user4_password',
+               default='nomoresecrets4',
+               help='Password to use for keycloak test user 4.',
+               secret=True),
+    cfg.StrOpt('keycloak_test_user_home_project',
+               default='SSOproject',
+               help='Project to keep all objects belonging to a '
+               'regular keycloak user.'),
+    cfg.StrOpt('keycloak_test_user_home_project2',
+               default='SSOproject2',
+               help='Project to keep all objects belonging to a '
+               'regular keycloak user.'),
+    cfg.StrOpt('identity_provider1',
+               default='kcIDP1',
+               help='Name of IdP for OIDC connect'),
+    cfg.StrOpt('identity_provider2',
+               default='kcIDP2',
+               help='Name of IdP for OIDC connect'),
+    cfg.StrOpt('web_sso_choice_value1',
+               default='OIDC1',
+               help='Value of the web_sso_choice Horizon locator'),
+    cfg.StrOpt('web_sso_choice_value2',
+               default='OIDC2',
+               help='Value of the web_sso_choice Horizon locator'),
+]
+
+
+ServicesRegionsGroup = [
+    cfg.StrOpt('region_one_name',
+               default='regionOne',
+               help='Name of the first service region'),
+    cfg.StrOpt('region_two_name',
+               default='regionTwo',
+               help='Name of the second service region.'),
+    cfg.StrOpt('region_name_xpath',
+               default='.//*[@class="context-region"]',
+               help='Default xpath for services regions name dropdown button'),
+    cfg.StrOpt('region_dropdown_xpath',
+               default='.//span[@class="context-region"]/ancestor::li',
+               help='Default xpath for services regions dropdown container'),
+    cfg.StrOpt('region_btn_text_pattern',
+               default='{region}',
+               help='Default text pattern for services regions '
+                    'dropdown button text'),
+]
+
+
 def _get_config_files():
     conf_dir = os.path.join(
         os.path.abspath(os.path.dirname(os.path.dirname(__file__))),
@@ -270,6 +352,8 @@ def get_config():
     cfg.CONF.register_opts(PluginGroup, group="plugin")
     cfg.CONF.register_opts(VolumeGroup, group="volume")
     cfg.CONF.register_opts(ThemeGroup, group="theme")
+    cfg.CONF.register_opts(IdPsOIDCGroup, group="IdPsOIDC")
+    cfg.CONF.register_opts(ServicesRegionsGroup, group="services_regions")
 
     return cfg.CONF
 
@@ -288,4 +372,6 @@ def list_opts():
         ("plugin", PluginGroup),
         ("volume", VolumeGroup),
         ("theme", ThemeGroup),
+        ("IdPsOIDC", IdPsOIDCGroup),
+        ("services_regions", ServicesRegionsGroup),
     ]

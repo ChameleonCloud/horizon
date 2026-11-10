@@ -30,7 +30,7 @@ LOG = logging.getLogger(__name__)
 
 class UpdateDefaultComputeQuotasAction(workflows.Action):
     instances = forms.IntegerField(min_value=-1, label=_("Instances"))
-    cores = forms.IntegerField(min_value=-1, label=_("VCPUs"))
+    cores = forms.IntegerField(min_value=-1, label=_("vCPUs"))
     ram = forms.IntegerField(min_value=-1, label=_("RAM (MB)"))
     metadata_items = forms.IntegerField(min_value=-1,
                                         label=_("Metadata Items"))
@@ -153,7 +153,7 @@ class UpdateDefaultVolumeQuotasStep(workflows.Step):
 class UpdateDefaultQuotas(workflows.Workflow):
     slug = "update_default_quotas"
     name = _("Update Default Quotas")
-    finalize_button_name = _("Update Defaults")
+    finalize_button_name = _("Update Default Quotas")
     success_message = _('Default quotas updated.')
     failure_message = _('Unable to update default quotas.')
     success_url = "horizon:admin:defaults:index"

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: horizon VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
-"POT-Creation-Date: 2025-07-08 23:51+0000\n"
+"POT-Creation-Date: 2026-04-24 08:10+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -13,12 +13,6 @@ msgstr ""
 "Language: gu\n"
 "X-Generator: Zanata 4.3.3\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-
-msgid " - End"
-msgstr "- અંત"
-
-msgid " : Next hop"
-msgstr ": આગામી હોપ"
 
 #, python-format
 msgid "%(field_name)s: Invalid IP address (value=%(ip)s)"
@@ -80,10 +74,6 @@ msgstr "અપલોડ કરવા માટે સ્થાનિક ઈમ�
 
 msgid "AKI - Amazon Kernel Image"
 msgstr "AKI - એમેઝોન કર્નલ ઈમેજ"
-
-#, python-format
-msgid "ALLOW %(ethertype)s %(proto_port)s %(direction)s %(remote)s"
-msgstr "પરવાનગી %(ethertype)s %(proto_port)s %(direction)s %(remote)s"
 
 msgid "AMI - Amazon Machine Image"
 msgstr "AMI - એમેઝોન મશીન ઇમેજ"
@@ -170,13 +160,6 @@ msgstr "આ સમૂહમાં યજમાનો ઉમેરો. યજમ�
 
 msgid "Add/Remove Hosts to Aggregate"
 msgstr "સમુહમાં યજમાનો ઉમેરો/દૂર કરો"
-
-msgid ""
-"Additional routes announced to the hosts. Each entry is: destination_cidr,"
-"nexthop (e.g., 192.168.200.0/24,10.56.1.254) and one entry per line."
-msgstr ""
-"હોસ્ટ માટે વધારાના રૂટ્સની જાહેરાત કરી. દરેક પ્રવેશ છે: destination_cidr,નેક્સ્ટહોપ (દા."
-"ત.., 192.168.200.0/24,10.56.1.254) અને લાઇન દીઠ એક પ્રવેશ."
 
 msgid "Admin"
 msgstr "સંચાલક"
@@ -746,11 +729,11 @@ msgstr "DNS નામ સર્વરો"
 msgid "Decrypt Password"
 msgstr "પાસવર્ડ ડિક્રિપ્ટ કરો"
 
+msgid "Default Quotas"
+msgstr "મૂળભૂત ક્વોટા"
+
 msgid "Default quotas updated."
 msgstr "મૂળભૂત ક્વોટા સુધારાયેલ છે."
-
-msgid "Defaults"
-msgstr "મૂળભૂત"
 
 #, python-format
 msgid "Delete the created network \"%s\" due to subnet creation failure."
@@ -945,15 +928,6 @@ msgstr "ડાઉન"
 msgid "Download CSV Summary"
 msgstr "CSV સારાંશ ડાઉનલોડ કરો"
 
-msgid "EC2 Access Key"
-msgstr "EC2 ઍક્સેસ કી"
-
-msgid "EC2 Secret Key"
-msgstr "EC2 ગુપ્ત કી"
-
-msgid "EC2 URL"
-msgstr "EC2 URL"
-
 msgid "Edit"
 msgstr "ફેરફાર કરો"
 
@@ -1113,10 +1087,6 @@ msgstr "QoS સ્પેક એસોસિયેશનને અદ્યતન
 msgid "Error when adding or removing hosts."
 msgstr "યજમાનો ઉમેરતી કે દુર કરતી વખતે ભૂલ."
 
-#, python-format
-msgid "Error writing zipfile: %(exc)s"
-msgstr "ઝિપફાઇલ લખવામાં ક્ષતિ: %(exc)s"
-
 msgid "Ether Type"
 msgstr "ઈથર પ્રકાર"
 
@@ -1158,14 +1128,6 @@ msgid "Failed"
 msgstr "નિષ્ફળ થયેલ"
 
 #, python-format
-msgid ""
-"Failed to add %(users_to_add)s project members%(group_msg)s and set project "
-"quotas."
-msgstr ""
-"%(users_to_add)s પ્રોજેક્ટ સભ્ય ઉમેરવા નિષ્ફળ%(group_msg)s અને પ્રોજેક્ટ ક્વોટા સુયોજિત "
-"કરો."
-
-#, python-format
 msgid "Failed to add %s project groups and update project quotas."
 msgstr "%s પ્રોજેક્ટ જૂથો ઉમેરવામાં અને પ્રોજેક્ટ ક્વોટા અદ્યતન કરવામાં નિષ્ફળ"
 
@@ -1204,14 +1166,6 @@ msgstr "ઉદાહરણો બહાર કાઢવા નિષ્ફળ: %
 #, python-format
 msgid "Failed to live migrate instance to host \"%s\"."
 msgstr " \"% s \" યજમાન માટે જીવંત સ્થળાંતર ઉદાહરણ નિષ્ફળ."
-
-#, python-format
-msgid ""
-"Failed to modify %(users_to_modify)s project members%(group_msg)s and update "
-"project quotas."
-msgstr ""
-"પ્રોજેક્ટ સભ્યોમા %(users_to_modify)s ફેરફાર કરવામા %(group_msg)s અને પ્રોજેક્ટ ક્વોટા "
-"અદ્યતન કરવામાં નિષ્ફળ"
 
 #, python-format
 msgid "Failed to modify %s domain groups."
@@ -1407,13 +1361,6 @@ msgstr "યજમાન સમૂહ"
 
 msgid "Host Routes"
 msgstr "હોસ્ટ રૂટ્સ"
-
-#, python-format
-msgid ""
-"Host Routes format error: Destination CIDR and nexthop must be specified "
-"(value=%s)"
-msgstr ""
-"હોસ્ટ રૂટ્સ બંધારણમાં ભૂલ: લક્ષ્યસ્થાન CIDR અને nexthop સ્પષ્ટ હોવા જ જોઈએ (value=%s)"
 
 msgid ""
 "Host aggregates divide an availability zone into logical units by grouping "
@@ -1611,9 +1558,6 @@ msgstr "ઇન્સ્ટન્સ ID"
 msgid "Instance Name"
 msgstr "ઇન્સ્ટન્સ નામ"
 
-msgid "Instance Overview"
-msgstr "ઉદાહરણના અવલોકન"
-
 msgid "Instance Password is not set or is not yet available"
 msgstr "ઉદાહરણ પાસવર્ડ સુયોજિત નથી અથવા હજુ સુધી ઉપલબ્ધ નથી"
 
@@ -1723,10 +1667,6 @@ msgstr "લાઈવ સ્થાનાંતરિત ઇન્સ્ટન્�
 msgid "Live migrate an instance to a specific host."
 msgstr "ચોક્કસ યજમાન માટે જીવંત સ્થળાંતર ઉદાહરણ."
 
-#, python-format
-msgid "Load Balancer VIP %s"
-msgstr "લોડ બેલેન્સર VIP %s"
-
 msgid "Local"
 msgstr "લોકલ"
 
@@ -1812,12 +1752,6 @@ msgstr "સ્થળાંતર "
 
 msgid "Migration Policy"
 msgstr "સ્થળાંતર પોલિસી"
-
-msgid "Min Disk"
-msgstr "ન્યુનત્તમ ડિસ્ક"
-
-msgid "Min RAM"
-msgstr "ન્યુનત્તમ રેમ"
 
 msgid "Minimum Disk (GB)"
 msgstr "ન્યુનત્તમ ડિસ્ક (GB)"
@@ -2075,9 +2009,6 @@ msgstr "ઇન્સ્ટન્સીસની સંખ્યા"
 
 msgid "Number of Snapshots"
 msgstr "સ્નેપશોટની સંખ્યા"
-
-msgid "Number of VCPUs"
-msgstr "VCPUs ની સંખ્યા"
 
 msgid "Number of Volumes"
 msgstr "વોલ્યુમોની સંખ્યા"
@@ -2499,9 +2430,6 @@ msgstr ""
 msgctxt "Power state of an Instance"
 msgid "Running"
 msgstr "ચાલી રહેલ"
-
-msgid "S3 URL"
-msgstr "S3 URL"
 
 msgid "SSH key pairs can be generated with the ssh-keygen command:"
 msgstr "SSH કી જોડીઓ એ ssh-કીજન આદેશ સાથે બનાવી શકાય છે:"
@@ -3191,14 +3119,8 @@ msgstr "વોલ્યુમ પ્રકારના વધારાના સ
 msgid "Unable to extend volume."
 msgstr "વોલ્યુમ વિસ્તારવા માટે અસમર્થ."
 
-msgid "Unable to fetch EC2 credentials."
-msgstr "EC2 ઓળખાણપત્ર મેળવવામાં અસમર્થ."
-
 msgid "Unable to find default role."
 msgstr "મૂળભૂત ભૂમિકા શોધવામાં અસમર્થ."
-
-msgid "Unable to get EC2 credentials"
-msgstr "EC2 ઓળખાણપત્ર મેળવવામાં અસમર્થ"
 
 #, python-format
 msgid "Unable to get RDP console for instance \"%s\"."
@@ -3534,9 +3456,6 @@ msgstr "સબનેટની વિગતો પુનઃપ્રાપ્ત 
 msgid "Unable to retrieve subnet details."
 msgstr "સબનેટની વિગતો પુનઃપ્રાપ્ત કરવામાં અક્ષમ."
 
-msgid "Unable to retrieve tenant limits."
-msgstr "ભાડૂત મર્યાદા પુનઃપ્રાપ્ત કરવામા અસમર્થ."
-
 msgid "Unable to retrieve the aggregate to be updated"
 msgstr "સુધારવા માટે સમૂહ મેળવવામાં અસમર્થ"
 
@@ -3709,9 +3628,6 @@ msgstr "અદ્યતન"
 msgid "Update Default Quotas"
 msgstr "ડિફૉલ્ટ ક્વોટાને સુધારો"
 
-msgid "Update Defaults"
-msgstr "મૂળભૂતોને સુધારો"
-
 msgid "Update Group"
 msgstr "જૂથ અદ્યતન કરો"
 
@@ -3837,18 +3753,6 @@ msgstr "વપરાશકર્તા નામ \"% s\" પહેલાથી �
 
 msgid "Users"
 msgstr "વપરાશકર્તાઓ"
-
-msgid "VCPU"
-msgstr "VCPU(વીસીપીયુ)"
-
-msgid "VCPU Hours"
-msgstr "VCPU કલાકો"
-
-msgid "VCPU Usage"
-msgstr "VCPU ઉપયોગ"
-
-msgid "VCPUs"
-msgstr "VCPUs"
 
 msgid "VLAN"
 msgstr "VLAN"
@@ -4036,6 +3940,3 @@ msgstr "અગ્ર-ભાગ"
 
 msgid "undefined"
 msgstr "અવ્યાખ્યાયિત"
-
-msgid "unknown IP address"
-msgstr "અજ્ઞાત IP સરનામું"

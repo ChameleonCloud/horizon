@@ -10,7 +10,9 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from contextlib import contextmanager
 from dataclasses import dataclass
+
 from selenium.common import exceptions
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -26,12 +28,23 @@ class TableDefinition:
     names: list
 
 
-def get_and_dismiss_messages(element):
-    messages = element.find_elements_by_css_selector("div.messages div.alert")
+@contextmanager
+def no_wait(driver, config):
+    driver.implicitly_wait(0)
+    try:
+        yield
+    finally:
+        driver.implicitly_wait(config.selenium.implicit_wait)
+
+
+def get_and_dismiss_messages(driver, config):
+    messages = WebDriverWait(driver, config.selenium.message_wait).until(
+        EC.presence_of_all_elements_located(
+            (By.CSS_SELECTOR, 'div.messages div.alert')))
     collect = []
     for message in messages:
-        text = message.find_element_by_css_selector("p, div").text
-        message.find_element_by_css_selector("a.close").click()
+        text = message.find_element(By.CSS_SELECTOR, "p, div").text
+        message.find_element(By.CSS_SELECTOR, "a.close").click()
         collect.append(text)
     return collect
 
@@ -41,38 +54,49 @@ def find_already_visible_element_by_xpath(element, driver):
         EC.visibility_of_element_located((By.XPATH, element)))
 
 
+def scroll_into_view_and_click(driver, element):
+    """Click an element after bringing it into the viewport.
+
+    EC.element_to_be_clickable only reports whether an element is displayed
+    and enabled. Scrolling it into view is a separate step the driver
+    performs itself at click time, and it raises
+    ElementNotInteractableException when it cannot. An element at the bottom
+    of a long sidebar can satisfy the wait and still fail that step, so
+    place it first and click afterwards.
+    """
+    driver.execute_script(
+        "arguments[0].scrollIntoView({block: 'center'});", element)
+    element.click()
+
+
 def select_from_dropdown(element, label):
-    menu_button = element.find_element_by_css_selector(
-        ".dropdown-toggle"
-    )
+    menu_button = element.find_element(By.CSS_SELECTOR, ".dropdown-toggle")
     menu_button.click()
-    options = element.find_element_by_css_selector("ul.dropdown-menu")
-    selection = options.find_element_by_xpath(
-        f".//*[normalize-space()='{label}']"
-    )
+    options = element.find_element(By.CSS_SELECTOR, "ul.dropdown-menu")
+    selection = options.find_element(
+        By.XPATH, f".//*[normalize-space()='{label}']")
     selection.click()
 
 
 def select_from_specific_dropdown_in_form(driver, dropdown_id, label):
-    dropdown = driver.find_element_by_xpath(
+    dropdown = driver.find_element(
+        By.XPATH,
         f".//*[@for='{dropdown_id}']/following-sibling::div")  # noqa: E231
     dropdown.click()
-    dropdown_options = dropdown.find_element_by_css_selector(
-        "ul.dropdown-menu")
-    dropdown_options.find_element_by_xpath(
-        f".//*[normalize-space()='{label}']").click()
+    dropdown_options = dropdown.find_element(
+        By.CSS_SELECTOR, "ul.dropdown-menu")
+    dropdown_options.find_element(
+        By.XPATH, f".//*[normalize-space()='{label}']").click()
 
 
 def confirm_modal(element):
-    confirm = element.find_element_by_css_selector(
-        ".modal-dialog .btn-danger"
-    )
+    confirm = element.find_element(By.CSS_SELECTOR, ".modal-dialog .btn-danger")
     confirm.click()
 
 
 def is_next_link_available(driver):
     try:
-        return driver.find_element_by_link_text("Next »").is_displayed()
+        return driver.find_element(By.LINK_TEXT, "Next »").is_displayed()
     except (exceptions.NoSuchElementException,
             exceptions.ElementNotVisibleException):
         return False
@@ -80,7 +104,7 @@ def is_next_link_available(driver):
 
 def is_prev_link_available(driver):
     try:
-        return driver.find_element_by_link_text("« Prev").is_displayed()
+        return driver.find_element(By.LINK_TEXT, "« Prev").is_displayed()
     except (exceptions.NoSuchElementException,
             exceptions.ElementNotVisibleException):
         return False
@@ -88,13 +112,13 @@ def is_prev_link_available(driver):
 
 def available_elements(driver, resource_type, name):
     try:
-        driver.find_elements_by_css_selector(
-            f"table#{resource_type} tr[data-display='{name}']")
+        driver.find_elements(
+            By.CSS_SELECTOR, f"table#{resource_type} tr[data-display='{name}']")
     except (exceptions.NoSuchElementException):
         pass
     finally:
-        return driver.find_elements_by_css_selector(
-            'table tr td:nth-child(2) a')
+        return driver.find_elements(
+            By.CSS_SELECTOR, 'table tr td:nth-child(2) a')
 
 
 def get_table_status(driver, resource_type, name, sorting=False):
@@ -110,8 +134,8 @@ def get_table_status(driver, resource_type, name, sorting=False):
 
 def get_image_table_definition(driver, sorting=False):
     """This function is specific to Image table definition"""
-    names = driver.find_elements_by_css_selector(
-        "td[class='rsp-p1 word-wrap']")
+    names = driver.find_elements(
+        By.CSS_SELECTOR, "td[class='rsp-p1 word-wrap']")
     if sorting:
         names = [name.text for name in names]
         names.sort()
@@ -123,17 +147,25 @@ def get_image_table_definition(driver, sorting=False):
 
 
 def select_from_transfer_table(element, label):
-    #   Choose row from available Images, Flavors, Networks, etc.
-    #   In launch tab for example: m1.tiny for Flavor, cirros for image, etc.
-
     try:
-        element.find_element_by_xpath(
+        element.find_element(
+            By.XPATH,
             f".//*[text()='{label}']//ancestor::tr/td//*"  # noqa: E231
             f"[@class='btn btn-default fa fa-arrow-up']").click()
     except exceptions.NoSuchElementException:
         try:
-            element.find_element_by_xpath(
+            element.find_element(
+                By.XPATH,
                 f".//*[text()='{label}']//ancestor::tr/td//*"  # noqa: E231
                 f"[@class='btn btn-default fa fa-arrow-down']")
         except exceptions.NoSuchElementException:
             raise
+
+
+def wait_for_page_ready(driver, config):
+    wait = WebDriverWait(driver, config.selenium.page_timeout)
+    wait.until(lambda d: d.execute_script(
+        "return document.readyState") == "complete")
+    wait.until(lambda d: d.execute_script(
+        "return (typeof jQuery === 'undefined') || (jQuery.active === 0)"
+    ))

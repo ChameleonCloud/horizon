@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: horizon VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
-"POT-Creation-Date: 2025-07-08 23:51+0000\n"
+"POT-Creation-Date: 2026-04-24 08:10+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -13,12 +13,6 @@ msgstr ""
 "Language: hi\n"
 "X-Generator: Zanata 4.3.3\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-
-msgid " - End"
-msgstr " - अंत"
-
-msgid " : Next hop"
-msgstr ": अगले हॉप"
 
 #, python-format
 msgid "%(field_name)s: Invalid IP address (value=%(ip)s)"
@@ -75,10 +69,6 @@ msgstr "अपलोड करने के लिए स्थानीय ब�
 
 msgid "AKI - Amazon Kernel Image"
 msgstr "AKI - अमेज़न कर्नेल बिंब"
-
-#, python-format
-msgid "ALLOW %(ethertype)s %(proto_port)s %(direction)s %(remote)s"
-msgstr "अनुमति दें %(ethertype)s %(proto_port)s %(direction)s %(remote)s"
 
 msgid "AMI - Amazon Machine Image"
 msgstr "AMI - अमेज़न सिस्टम बिंब"
@@ -165,14 +155,6 @@ msgid "Added User"
 msgid_plural "Added Users"
 msgstr[0] "जोड़ा गया उपयोक्ता"
 msgstr[1] "जोड़ा गया उपयोक्ता"
-
-msgid ""
-"Additional routes announced to the hosts. Each entry is: destination_cidr,"
-"nexthop (e.g., 192.168.200.0/24,10.56.1.254) and one entry per line."
-msgstr ""
-"होस्ट्स की घोषणा की अतिरिक्त रूट. प्रत्येक प्रविष्टि : destination_cidr,nexthop (e."
-"g., 192.168.200.0/24,10.56.1.254) (उदाहरण के लिए, 192.168.200.0/24, "
-"10.56.1.254) और प्रति पंक्ति एक प्रविष्टि."
 
 msgid "Admin"
 msgstr "प्रशासक"
@@ -651,11 +633,11 @@ msgstr "DNS नाम सर्वर"
 msgid "Decrypt Password"
 msgstr "पासवर्ड डिक्रिप्ट करें"
 
+msgid "Default Quotas"
+msgstr "डिफ़ॉल्ट कोटा"
+
 msgid "Default quotas updated."
 msgstr "डिफ़ॉल्ट कोटा अद्यतन."
-
-msgid "Defaults"
-msgstr "तयशुदा"
 
 msgid "Delete DHCP Agent"
 msgid_plural "Delete DHCP Agents"
@@ -1174,10 +1156,6 @@ msgstr "सकल में होस्ट जोड़ने में त्र�
 msgid "Error when adding or removing hosts."
 msgstr "होस्ट जोड़ने या हटाने में त्रुटि."
 
-#, python-format
-msgid "Error writing zipfile: %(exc)s"
-msgstr "zipfile लिखने में त्रुटि: %(exc)s"
-
 msgid "Ether Type"
 msgstr "ईथर प्रकार"
 
@@ -1196,14 +1174,6 @@ msgstr "बाहरी नेटवर्क "
 
 msgid "Extra Specs"
 msgstr "अतिरिक्त विनिर्देश"
-
-#, python-format
-msgid ""
-"Failed to add %(users_to_add)s project members%(group_msg)s and set project "
-"quotas."
-msgstr ""
-"परियोजना के  %(users_to_add)s सदस्यों %(group_msg)s को जोड़ने और परियोजना कोटा सेट "
-"करने में विफल."
 
 #, python-format
 msgid "Failed to add %s project groups and update project quotas."
@@ -1236,14 +1206,6 @@ msgstr "इंस्टेंस को खाली करने में अ�
 #, python-format
 msgid "Failed to live migrate instance to host \"%s\"."
 msgstr "होस्ट \"%s\" की ओर इंस्टेंस का  पलायन करने में असमर्थ."
-
-#, python-format
-msgid ""
-"Failed to modify %(users_to_modify)s project members%(group_msg)s and update "
-"project quotas."
-msgstr ""
-"परियोजना के %(users_to_modify)s सदस्यों %(group_msg)s और अद्यतन परियोजना कोटा "
-"संशोधित करने में विफल."
 
 #, python-format
 msgid "Failed to modify %s domain groups."
@@ -1413,14 +1375,6 @@ msgstr "कुल होस्ट"
 
 msgid "Host Routes"
 msgstr "होस्ट रूट"
-
-#, python-format
-msgid ""
-"Host Routes format error: Destination CIDR and nexthop must be specified "
-"(value=%s)"
-msgstr ""
-"होस्ट मार्गों प्रारूप त्रुटि: गंतव्य सीआईडीआर और nexthop निर्दिष्ट किया जाना चाहिए "
-"(मान=%s)"
 
 msgid ""
 "Host aggregates divide an availability zone into logical units by grouping "
@@ -1593,9 +1547,6 @@ msgstr "इंस्टैंस आईडी"
 msgid "Instance Name"
 msgstr "इंस्टैंस नाम"
 
-msgid "Instance Overview"
-msgstr "इंस्टेंस सारांश"
-
 msgid "Instance Password is not set or is not yet available"
 msgstr "इंस्टांस पासवर्ड सेट नहीं या अभी तक उपलब्ध नहीं है"
 
@@ -1699,10 +1650,6 @@ msgstr "लाइव पलायन इंस्टेंस"
 msgid "Live migrate an instance to a specific host."
 msgstr "विशिष्ट होस्ट के लिए इंस्टेंस विस्थापित कर सकते हैं."
 
-#, python-format
-msgid "Load Balancer VIP %s"
-msgstr "लोड बैलेंसर VIP %s"
-
 msgid "Local"
 msgstr "स्थानीय"
 
@@ -1778,12 +1725,6 @@ msgstr "उत्प्रवासित हो रहा है"
 
 msgid "Migration Policy"
 msgstr "उत्प्रवासन नीति"
-
-msgid "Min Disk"
-msgstr "कम डिस्क"
-
-msgid "Min RAM"
-msgstr "न्यूनतम रैम"
 
 msgid "Minimum Disk (GB)"
 msgstr "न्यूनतम डिस्क (जीबी)"
@@ -2005,9 +1946,6 @@ msgstr "टिप्पणी: "
 
 msgid "Number of Instances"
 msgstr "स्टैंसेज़ की संख्या "
-
-msgid "Number of VCPUs"
-msgstr "VCPUs की संख्या"
 
 msgid "Number of Volumes"
 msgstr "वॉल्यूम की संख्या"
@@ -2932,9 +2870,6 @@ msgstr "वॉल्यूम प्रकार अतिरिक्त स्
 msgid "Unable to extend volume."
 msgstr "वॉल्यूम का विस्तार करने में असमर्थ."
 
-msgid "Unable to fetch EC2 credentials."
-msgstr "EC2 पहचान लाने में असमर्थ."
-
 msgid "Unable to find default role."
 msgstr "तयशुदा भूमिका ढूँढ़ने में असमर्थ."
 
@@ -3224,9 +3159,6 @@ msgstr "सबनेट विवरण को पुनः प्राप्�
 msgid "Unable to retrieve subnet details."
 msgstr "सबनेट विवरण को पुनः प्राप्त करने में असमर्थ."
 
-msgid "Unable to retrieve tenant limits."
-msgstr "परियोजना सीमा को प्राप्त करने में असमर्थ."
-
 msgid "Unable to retrieve the aggregate to be updated"
 msgstr "अपडेट होने वाले सकल को निकालने में अक्षम."
 
@@ -3367,9 +3299,6 @@ msgstr "अद्यतन"
 msgid "Update Default Quotas"
 msgstr "डिफ़ॉल्ट कोटा अद्यतन करें"
 
-msgid "Update Defaults"
-msgstr "तयशुदा अद्यतन करें"
-
 msgid "Update Group"
 msgstr "समूह अपडेट करें"
 
@@ -3472,18 +3401,6 @@ msgstr "उपयोक्ता निर्धारण"
 
 msgid "Users"
 msgstr "उपयोक्ता"
-
-msgid "VCPU"
-msgstr "VCPU"
-
-msgid "VCPU Hours"
-msgstr "vCPU घंटेCPU घंटे"
-
-msgid "VCPU Usage"
-msgstr "VCPU प्रयोग"
-
-msgid "VCPUs"
-msgstr "VCPUs"
 
 msgid "VLAN"
 msgstr "VLAN"

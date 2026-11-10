@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: horizon VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
-"POT-Creation-Date: 2025-07-08 23:51+0000\n"
+"POT-Creation-Date: 2026-04-24 08:10+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,12 +14,6 @@ msgstr ""
 "Language: pa_IN\n"
 "X-Generator: Zanata 4.3.3\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-
-msgid " - End"
-msgstr " - ختم كریں "
-
-msgid " : Next hop"
-msgstr " :اگلا ہوپ"
 
 #, python-format
 msgid "%(field_name)s: Invalid IP address (value=%(ip)s)"
@@ -75,10 +69,6 @@ msgstr "ایک مقامی امیج اپ لوڈ کریں."
 
 msgid "AKI - Amazon Kernel Image"
 msgstr "AKI - ਐਮੇਜੌਨ ਕਰਨਲ ਇਮੇਜ"
-
-#, python-format
-msgid "ALLOW %(ethertype)s %(proto_port)s %(direction)s %(remote)s"
-msgstr "ALLOW %(ethertype)s %(proto_port)s %(direction)s %(remote)s"
 
 msgid "AMI - Amazon Machine Image"
 msgstr "AMI - ਐਮੇਜੌਨ ਮਸ਼ੀਨ ਇਮੇਜ"
@@ -163,14 +153,6 @@ msgstr "اس مجموعات میں میزبان اضافہ کریں. ہوسٹ ک
 
 msgid "Add/Remove Hosts to Aggregate"
 msgstr "مجموعی سے ہوسٹ شامل / ہٹايے"
-
-msgid ""
-"Additional routes announced to the hosts. Each entry is: destination_cidr,"
-"nexthop (e.g., 192.168.200.0/24,10.56.1.254) and one entry per line."
-msgstr ""
-"ہوسٹس کا اعلان اضافی روٹ. ہر اندراج: destination_cidr، nexthop (eg، "
-"192.168.200.0/24،10.56.1.254) (مثلا، 192.168.200.0/24، 10.56.1.254) اور فی "
-"لائن ایک اندراج."
 
 msgid "Admin"
 msgstr "ਐਡਮਿਨ"
@@ -708,11 +690,11 @@ msgstr "DNS نام سرورز"
 msgid "Decrypt Password"
 msgstr "پاس ڈكرپٹ کریں"
 
+msgid "Default Quotas"
+msgstr "ڈیفالٹ کوٹہ"
+
 msgid "Default quotas updated."
 msgstr " ڈیفالٹ کوٹہ اپ ڈیٹ."
-
-msgid "Defaults"
-msgstr "ڈیفالٹس"
 
 #, python-format
 msgid "Delete the created network \"%s\" due to subnet creation failure."
@@ -911,15 +893,6 @@ msgstr "نیچے"
 msgid "Download CSV Summary"
 msgstr "CSV خلاصہ ڈاؤن لوڈ کریں"
 
-msgid "EC2 Access Key"
-msgstr "EC2 رسائی كلید"
-
-msgid "EC2 Secret Key"
-msgstr "EC2 خفیہ كلید"
-
-msgid "EC2 URL"
-msgstr "EC2 URL"
-
 msgid "Edit"
 msgstr "مرتب كریں"
 
@@ -1079,10 +1052,6 @@ msgstr "QoS تصریح کی وابستگی طرف کرنے میں خامی ۔ "
 msgid "Error when adding or removing hosts."
 msgstr "ہوسٹ شامل کرنے یا ہٹانے میں خامی۔"
 
-#, python-format
-msgid "Error writing zipfile: %(exc)s"
-msgstr "zipfile لکھنے میں غلطی:%(exc)s"
-
 msgid "Ether Type"
 msgstr "ایتھر ٹائپ"
 
@@ -1119,14 +1088,6 @@ msgstr ""
 
 msgid "Extra Specs"
 msgstr "اضافی اسپیكس"
-
-#, python-format
-msgid ""
-"Failed to add %(users_to_add)s project members%(group_msg)s and set project "
-"quotas."
-msgstr ""
-"پروجیكٹ کے%(users_to_add)s ارکان %(group_msg)s  کو شامل اور پروجیكٹ کوٹہ "
-"مقرر کرنے میں ناکام."
 
 #, python-format
 msgid "Failed to add %s project groups and update project quotas."
@@ -1168,14 +1129,6 @@ msgstr "انسٹنس کو خالی کرنے میں ناکام:%s"
 #, python-format
 msgid "Failed to live migrate instance to host \"%s\"."
 msgstr "ہوسٹ  \"%s\" کی طرف اسٹےس کی نقل مکانی کرنے کے قابل نہیں."
-
-#, python-format
-msgid ""
-"Failed to modify %(users_to_modify)s project members%(group_msg)s and update "
-"project quotas."
-msgstr ""
-"پروجیكٹ کے%(users_to_modify)s ارکان %(group_msg)s اور اپ ڈیٹ پروجیكٹ کوٹہ "
-"نظر ثانی کرنے میں ناکام."
 
 #, python-format
 msgid "Failed to modify %s domain groups."
@@ -1364,14 +1317,6 @@ msgstr "کل ہوسٹ"
 msgid "Host Routes"
 msgstr "ہوسٹ روٹس"
 
-#, python-format
-msgid ""
-"Host Routes format error: Destination CIDR and nexthop must be specified "
-"(value=%s)"
-msgstr ""
-"ہوسٹ راستوں فارمیٹ خامی : منزل CIDR اور nexthop مخصوص کیا جانا چاہئے "
-"(value=%s)"
-
 msgid ""
 "Host aggregates divide an availability zone into logical units by grouping "
 "together hosts. Create a host aggregate then select the hosts contained in "
@@ -1553,9 +1498,6 @@ msgstr "ਇੰਸਟਾਂਸ ID"
 msgid "Instance Name"
 msgstr "ਇੰਸਟਾਸ ਨਾਂ"
 
-msgid "Instance Overview"
-msgstr "انسٹانس خلاصہ"
-
 msgid "Instance Password is not set or is not yet available"
 msgstr "انسٹانس پاس ورڈ سیٹ نہیں یا ابھی تک دستیاب نہیں ہے"
 
@@ -1670,10 +1612,6 @@ msgstr "لائیو فرار انسٹس"
 msgid "Live migrate an instance to a specific host."
 msgstr "مخصوص میزبانی کے لئے انسٹس بے گھر کر سکتے ہیں."
 
-#, python-format
-msgid "Load Balancer VIP %s"
-msgstr "بیلنسر  VIP %s لوڈ كریں"
-
 msgid "Local"
 msgstr "ਸਥਾਨਕ"
 
@@ -1762,12 +1700,6 @@ msgstr "ہجرت"
 
 msgid "Migration Policy"
 msgstr "ہجرت پالیسی"
-
-msgid "Min Disk"
-msgstr "كم سے كم ڈسك"
-
-msgid "Min RAM"
-msgstr "كم سے كم RAM"
 
 msgid "Minimum Disk (GB)"
 msgstr "کم از کم ڈسک (GB)"
@@ -2021,9 +1953,6 @@ msgstr "انسٹانس كی تعداد"
 
 msgid "Number of Snapshots"
 msgstr "اسنیپ شاٹس كی تعداد"
-
-msgid "Number of VCPUs"
-msgstr "VCPU-ਆਂ ਦੀ ਗਿਣਤੀ"
 
 msgid "Number of Volumes"
 msgstr "ولیومز كی تعداد"
@@ -2360,9 +2289,6 @@ msgid ""
 msgstr ""
 "اصول ٹریفک سیکورٹی گروپ کو تفویض انسٹانس کی اجازت ہے کی وضاحت کرتا ہے. "
 "سیکورٹی گروپ کے قواعد میں تین اہم حصے ہوتے ہیں:"
-
-msgid "S3 URL"
-msgstr "S3 URL"
 
 msgid "SSH key pairs can be generated with the ssh-keygen command:"
 msgstr "SSH کلید ssh-keygen کمانڈ کے ساتھ پیدا کیا جا سکتا ہے:"
@@ -2886,6 +2812,10 @@ msgstr "پروجیکٹ کے لئے کل ڈسک استعمال (GB * استعما
 msgid "Type"
 msgstr "قسم"
 
+#. Translators: Admin state status for router.
+msgid "UP"
+msgstr "ਉੱਤੇ"
+
 msgctxt "Admin state of a Network"
 msgid "UP"
 msgstr "ਉੱਤੇ"
@@ -3016,14 +2946,8 @@ msgstr "حجم قسم اضافی اسپیس مرتب کے قابل نہیں."
 msgid "Unable to extend volume."
 msgstr "ولیوم میں توسیع کرنے میں ناقابل۔"
 
-msgid "Unable to fetch EC2 credentials."
-msgstr "EC2 شناخت لانے کے قابل نہیں."
-
 msgid "Unable to find default role."
 msgstr "طے شدہ کردار تلاش کرنے کے قابل نہیں."
-
-msgid "Unable to get EC2 credentials"
-msgstr "EC2 اسناد حاصل کرنے کے قابل نہیں"
 
 #, python-format
 msgid "Unable to get RDP console for instance \"%s\"."
@@ -3362,9 +3286,6 @@ msgstr "ذیلی نیٹ تفصیلات حاصل کرنے میں ناقابل"
 msgid "Unable to retrieve subnet details."
 msgstr "ذیلی نیٹ تفصیلات حاصل کرنے میں ناقابل"
 
-msgid "Unable to retrieve tenant limits."
-msgstr "ٹیننٹ کی حدود کو دوبارہ حاصل کرنے میں ناقابل."
-
 msgid "Unable to retrieve the aggregate to be updated"
 msgstr "طرف ہونے والے مجموعی کو نکالنے میں غیر فعال."
 
@@ -3530,9 +3451,6 @@ msgstr "ਅਪਡੇਟ ਕਰੋ"
 msgid "Update Default Quotas"
 msgstr " ڈیفالٹ کوٹہ کو اپ ڈیٹ کریں"
 
-msgid "Update Defaults"
-msgstr "ڈیفالٹس اپ ڈیٹ کریں"
-
 msgid "Update Group"
 msgstr "گروپ كو اپ ڈیٹ كریں"
 
@@ -3655,18 +3573,6 @@ msgstr "اسم رکنیت \"%s\"  پہلے سے استعمال کیا جا رہ�
 
 msgid "Users"
 msgstr "صارفین"
-
-msgid "VCPU"
-msgstr "VCPU"
-
-msgid "VCPU Hours"
-msgstr "VCPU گھنٹے"
-
-msgid "VCPU Usage"
-msgstr "VCPU استعمال"
-
-msgid "VCPUs"
-msgstr "VCPUs"
 
 msgid "VDI - Virtual Disk Image"
 msgstr "VDI - ਵਰਚੂਅਲ ਡਿਸਕ ਇਮੇਜ"
@@ -3865,6 +3771,3 @@ msgstr "فرنٹ - اینڈ"
 
 msgid "undefined"
 msgstr "غیروضاحتی"
-
-msgid "unknown IP address"
-msgstr "نامعلوم IP ایڈریس"

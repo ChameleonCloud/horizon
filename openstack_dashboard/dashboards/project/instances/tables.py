@@ -1020,6 +1020,38 @@ class DetachInterface(policy.PolicyTargetMixin, tables.LinkAction):
         return False
 
 
+class MigrateInstance(policy.PolicyTargetMixin, tables.BatchAction):
+    name = "migrate"
+    classes = ("btn-migrate",)
+    policy_rules = (("compute", "os_compute_api:os-migrate-server:migrate"),)
+    help_text = _("Migrating instances may cause some unrecoverable results.")
+    action_type = "danger"
+
+    @staticmethod
+    def action_present(count):
+        return ngettext_lazy(
+            "Migrate Instance",
+            "Migrate Instances",
+            count
+        )
+
+    @staticmethod
+    def action_past(count):
+        return ngettext_lazy(
+            "Scheduled migration (pending confirmation) of Instance",
+            "Scheduled migration (pending confirmation) of Instances",
+            count
+        )
+
+    def allowed(self, request, instance):
+        return ((instance.status in ACTIVE_STATES or
+                 instance.status == 'SHUTOFF') and
+                not is_deleting(instance))
+
+    def action(self, request, obj_id):
+        api.nova.server_migrate(request, obj_id)
+
+
 def get_ips(instance):
     template_name = 'project/instances/_instance_ips.html'
     ip_groups = {}
@@ -1370,6 +1402,7 @@ class InstancesTable(tables.DataTable):
                        TogglePause, ToggleSuspend, ToggleShelve,
                        ResizeLink, LockInstance, UnlockInstance,
                        SoftRebootInstance, RebootInstance,
+                       MigrateInstance,
                        StopInstance, RebuildInstance, DeleteInstance)
 
     def get_row_actions(self, datum):

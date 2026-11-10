@@ -63,9 +63,11 @@ class UpdateSubnet(proj_tables.SubnetPolicyTargetMixin, tables.LinkAction):
 def subnet_ip_availability(availability):
     subnet_availability = availability.get("free_ips")
     if not subnet_availability:
-        return "Not Available"
+        # Translators: When there are no free IPs in the subnet.
+        return _("Not Available")
     if subnet_availability > 10000:
-        return ">10000"
+        # Translators: When the number of free IPs exceeds 10000.
+        return _("10,000+ free IPs")
     return str(subnet_availability)
 
 

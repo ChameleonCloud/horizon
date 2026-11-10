@@ -1,16 +1,17 @@
 - job:
     name: horizon-openstack-tox-base
-    parent: openstack-tox
+    parent: openstack-tox-py313
     irrelevant-files:
       - ^.*\.rst$
       - ^doc/.*$
       - ^releasenotes/.*$
       - ^.*/locale/.*$
+      - ^plugin-registry\.csv$
 
 - job:
     name: horizon-selenium-headless
     parent: horizon-openstack-tox-base
-    nodeset: debian-bookworm
+    nodeset: debian-trixie-8GB
     pre-run: playbooks/horizon-selenium-headless/pre.yaml
     vars:
       tox_envlist: selenium-headless
@@ -29,3 +30,4 @@
       - ^releasenotes/.*$
       - ^setup.cfg$
       - ^tools/.*$
+      - ^plugin-registry\.csv$

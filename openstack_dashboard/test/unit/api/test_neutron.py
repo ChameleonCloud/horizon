@@ -13,6 +13,7 @@
 #    under the License.
 import copy
 from unittest import mock
+import uuid
 
 import netaddr
 from neutronclient.common import exceptions as neutron_exc
@@ -1174,11 +1175,13 @@ class NeutronApiTests(test.APIMockTestCase):
         network_client = mock_networkclient.return_value
         network_client.ports.return_value = ports
 
-        ret_val = api.neutron.port_list(self.request)
+        tenant_id = str(uuid.uuid4())
+
+        ret_val = api.neutron.port_list(self.request, tenant_id=tenant_id)
 
         for p in ret_val:
             self.assertIsInstance(p, api.neutron.Port)
-        network_client.ports.assert_called_once_with()
+        network_client.ports.assert_called_once_with(project_id=tenant_id)
 
     @mock.patch.object(api.neutron, 'is_extension_supported')
     @mock.patch.object(api.neutron, 'networkclient')
@@ -1562,19 +1565,50 @@ class NeutronApiTests(test.APIMockTestCase):
         networkclient.remove_interface_from_router.assert_called_once_with(
             router=router_id, port_id=fake_port, subnet_id=None)
 
-    # Mocking neutronclient() does not work because api.neutron.list_extensions
-    # is decorated with memoized_with_request, so we need to mock
-    # neutronclient.v2_0.client directly.
-    @mock.patch('neutronclient.v2_0.client.Client.list_extensions')
-    def test_is_extension_supported(self, mock_list_extensions):
-        extensions = self.api_extensions.list()
-        mock_list_extensions.return_value = {'extensions': extensions}
+    @mock.patch.object(api.neutron, 'networkclient')
+    def test_is_extension_supported(self, mock_networkclient):
+        extensions = self.api_extensions_sdk
+
+        networkclient = mock_networkclient.return_value
+        networkclient.extensions.return_value = extensions
         self.assertTrue(
             api.neutron.is_extension_supported(self.request, 'quotas'))
         self.assertFalse(
             api.neutron.is_extension_supported(self.request, 'doesntexist'))
 
-        mock_list_extensions.assert_called_once_with()
+        networkclient.extensions.assert_called_once_with()
+
+    @mock.patch.object(api.neutron, 'networkclient')
+    def test_list_availability_zones_with_resource_and_state_filters(
+            self, mock_networkclient):
+        class AvailabilityZone(object):
+            def __init__(self, **kwargs):
+                self.az = kwargs
+
+            def __getitem__(self, key):
+                return self.az[key]
+
+            def to_dict(self):
+                return dict(self.az)
+
+        zones = [
+            AvailabilityZone(name='nova', resource='router',
+                             state='available'),
+            AvailabilityZone(name='internal', resource='network',
+                             state='available'),
+            AvailabilityZone(name='nova-unavailable', resource='router',
+                             state='unavailable'),
+        ]
+        networkclient = mock_networkclient.return_value
+        networkclient.availability_zones.return_value = zones
+
+        ret_val = api.neutron.list_availability_zones(
+            self.request, 'router', 'available')
+
+        self.assertEqual(
+            [{'name': 'nova', 'resource': 'router', 'state': 'available'}],
+            ret_val)
+        networkclient.availability_zones.assert_called_once_with()
 
     @mock.patch.object(api.neutron, 'networkclient')
     def test_router_static_route_list(self, mock_networkclient):
@@ -1775,74 +1809,65 @@ class NeutronApiTests(test.APIMockTestCase):
             expected_calls.append(mock.call(id=tuple(port_ids[i:i + 4])))
         network_client.ports.assert_has_calls(expected_calls)
 
-    @mock.patch.object(api.neutron, 'neutronclient')
-    def test_qos_policies_list(self, mock_neutronclient):
+    @mock.patch.object(api.neutron, 'networkclient')
+    def test_qos_policies_list(self, mock_networkclient):
         exp_policies = self.qos_policies.list()
-        api_qos_policies = {'policies': self.api_qos_policies.list()}
+        api_qos_policies = self.api_qos_policies_sdk
 
-        neutronclient = mock_neutronclient.return_value
-        neutronclient.list_qos_policies.return_value = api_qos_policies
+        networkclient = mock_networkclient.return_value
+        networkclient.qos_policies.return_value = api_qos_policies
 
         ret_val = api.neutron.policy_list(self.request)
 
         self.assertEqual(len(ret_val), len(exp_policies))
         self.assertIsInstance(ret_val[0], api.neutron.QoSPolicy)
         self.assertEqual(exp_policies[0].name, ret_val[0].name)
-        neutronclient.list_qos_policies.assert_called_once_with()
+        networkclient.qos_policies.assert_called_once_with()
 
-    @mock.patch.object(api.neutron, 'neutronclient')
-    def test_qos_policy_create(self, mock_neutronclient):
-        qos_policy = self.api_qos_policies.first()
-        post_data = {'policy': {'name': qos_policy['name']}}
+    @mock.patch.object(api.neutron, 'networkclient')
+    def test_qos_policy_create(self, mock_networkclient):
+        qos_policy = self.api_qos_policies_sdk[0]
+        post_data = {'name': qos_policy['name']}
 
-        neutronclient = mock_neutronclient.return_value
-        neutronclient.create_qos_policy.return_value = {'policy': qos_policy}
+        networkclient = mock_networkclient.return_value
+        networkclient.create_qos_policy.return_value = qos_policy
 
         ret_val = api.neutron.policy_create(self.request,
                                             name=qos_policy['name'])
 
         self.assertIsInstance(ret_val, api.neutron.QoSPolicy)
         self.assertEqual(qos_policy['name'], ret_val.name)
-        neutronclient.create_qos_policy.assert_called_once_with(body=post_data)
+        networkclient.create_qos_policy.assert_called_once_with(**post_data)
 
-    @mock.patch.object(api.neutron, 'neutronclient')
-    def test_dscp_mark_rule_create(self, mock_neutronclient):
-        qos_policy = self.api_qos_policies.first()
-        dscp_mark_rule = self.api_dscp_mark_rule.first()
-        post_data = {'dscp_marking_rule': {
-            "dscp_mark": dscp_mark_rule["dscp_mark"]}
-        }
+    @mock.patch.object(api.neutron, 'networkclient')
+    def test_dscp_mark_rule_create(self, mock_networkclient):
+        qos_policy = self.api_qos_policies_sdk[0]
+        dscp_mark_rule = self.api_dscp_mark_rule_sdk[0]
+        post_data = {'dscp_mark': dscp_mark_rule['dscp_mark']}
 
-        neutronclient = mock_neutronclient.return_value
+        nclient = mock_networkclient.return_value
 
-        neutronclient.create_dscp_marking_rule.return_value = {
-            'dscp_marking_rule': dscp_mark_rule
-        }
+        nclient.create_qos_dscp_marking_rule.return_value = dscp_mark_rule
 
         ret_val = api.neutron.dscp_marking_rule_create(
             self.request,
-            policy_id=qos_policy['id'],
-            dscp_mark=dscp_mark_rule['dscp_mark'])
+            policy_id=qos_policy['id'], dscp_mark=dscp_mark_rule['dscp_mark'])
 
         self.assertIsInstance(ret_val, api.neutron.DSCPMarkingRule)
-        self.assertEqual(dscp_mark_rule['dscp_mark'], ret_val.dscp_mark)
-        neutronclient.create_dscp_marking_rule.assert_called_once_with(
-            qos_policy['id'], post_data)
+        self.assertEqual(dscp_mark_rule.dscp_mark, ret_val.dscp_mark)
+        nclient.create_qos_dscp_marking_rule.assert_called_once_with(
+            qos_policy['id'], **post_data)
 
-    @mock.patch.object(api.neutron, 'neutronclient')
-    def test_dscp_mark_rule_update(self, mock_neutronclient):
-        qos_policy = self.api_qos_policies.first()
-        dscp_mark_rule = self.api_dscp_mark_rule.first()
+    @mock.patch.object(api.neutron, 'networkclient')
+    def test_dscp_mark_rule_update(self, mock_networkclient):
+        qos_policy = self.api_qos_policies_sdk[0]
+        dscp_mark_rule = self.api_dscp_mark_rule_sdk[0]
         dscp_mark_rule["dscp_mark"] = 28
-        post_data = {'dscp_marking_rule': {
-            "dscp_mark": 28}
-        }
+        post_data = {"dscp_mark": 28}
 
-        neutronclient = mock_neutronclient.return_value
+        nclient = mock_networkclient.return_value
 
-        neutronclient.update_dscp_marking_rule.return_value = {
-            'dscp_marking_rule': dscp_mark_rule
-        }
+        nclient.update_qos_dscp_marking_rule.return_value = dscp_mark_rule
 
         ret_val = api.neutron.dscp_marking_rule_update(
             self.request,
@@ -1852,39 +1877,34 @@ class NeutronApiTests(test.APIMockTestCase):
 
         self.assertIsInstance(ret_val, api.neutron.DSCPMarkingRule)
         self.assertEqual(
-            dscp_mark_rule['dscp_mark'], ret_val.dscp_mark)
-        neutronclient.update_dscp_marking_rule.assert_called_once_with(
-            dscp_mark_rule['id'], qos_policy['id'], post_data)
+            dscp_mark_rule.dscp_mark, ret_val.dscp_mark)
+        nclient.update_qos_dscp_marking_rule.assert_called_once_with(
+            dscp_mark_rule['id'], qos_policy['id'], **post_data)
 
-    @mock.patch.object(api.neutron, 'neutronclient')
-    def test_dscp_mark_rule_delete(self, mock_neutronclient):
-        qos_policy = self.api_qos_policies.first()
-        dscp_mark_rule = self.api_dscp_mark_rule.first()
+    @mock.patch.object(api.neutron, 'networkclient')
+    def test_dscp_mark_rule_delete(self, mock_networkclient):
+        qos_policy = self.api_qos_policies_sdk[0]
+        dscp_mark_rule = self.api_dscp_mark_rule_sdk[0]
 
-        neutronclient = mock_neutronclient.return_value
+        networkclient = mock_networkclient.return_value
 
-        neutronclient.delete_dscp_marking_rule.return_value = None
+        networkclient.delete_dscp_marking_rule.return_value = None
 
         api.neutron.dscp_marking_rule_delete(
             self.request, qos_policy['id'], dscp_mark_rule['id'])
 
-        neutronclient.delete_dscp_marking_rule.assert_called_once_with(
+        networkclient.delete_qos_dscp_marking_rule.assert_called_once_with(
             dscp_mark_rule['id'], qos_policy['id'])
 
-    @mock.patch.object(api.neutron, 'neutronclient')
-    def test_bandwidth_limit_rule_create(self, mock_neutronclient):
-        qos_policy = self.api_qos_policies.first()
-        bwd_limit_rule = self.api_bandwidth_limit_rule.first()
-        post_data = {
-            'bandwidth_limit_rule': {
-                "max_kbps": bwd_limit_rule["max_kbps"]
-            }
-        }
+    @mock.patch.object(api.neutron, 'networkclient')
+    def test_bandwidth_limit_rule_create(self, mock_networkclient):
+        qos_policy = self.api_qos_policies_sdk[0]
+        bwd_limit_rule = self.api_bandwidth_limit_rule_sdk[0]
+        post_data = {"max_kbps": bwd_limit_rule["max_kbps"]}
 
-        neutronclient = mock_neutronclient.return_value
+        nclient = mock_networkclient.return_value
 
-        neutronclient.create_bandwidth_limit_rule.return_value = {
-            'bandwidth_limit_rule': bwd_limit_rule}
+        nclient.create_qos_bandwidth_limit_rule.return_value = bwd_limit_rule
 
         ret_val = api.neutron.bandwidth_limit_rule_create(
             self.request,
@@ -1893,24 +1913,19 @@ class NeutronApiTests(test.APIMockTestCase):
 
         self.assertIsInstance(ret_val, api.neutron.BandwidthLimitRule)
         self.assertEqual(bwd_limit_rule["max_kbps"], ret_val.max_kbps)
-        neutronclient.create_bandwidth_limit_rule.assert_called_once_with(
-            qos_policy['id'], post_data)
+        nclient.create_qos_bandwidth_limit_rule.assert_called_once_with(
+            qos_policy['id'], **post_data)
 
-    @mock.patch.object(api.neutron, 'neutronclient')
-    def test_bandwidth_limit_rule_update(self, mock_neutronclient):
-        qos_policy = self.api_qos_policies.first()
-        bwd_limit_rule = self.api_bandwidth_limit_rule.first()
+    @mock.patch.object(api.neutron, 'networkclient')
+    def test_bandwidth_limit_rule_update(self, mock_networkclient):
+        qos_policy = self.api_qos_policies_sdk[0]
+        bwd_limit_rule = self.api_bandwidth_limit_rule_sdk[0]
         bwd_limit_rule["max_kbps"] = 20000
-        post_data = {
-            "bandwidth_limit_rule": {
-                "max_kbps": 20000
-            }
-        }
+        post_data = {"max_kbps": 20000}
 
-        neutronclient = mock_neutronclient.return_value
+        nclient = mock_networkclient.return_value
 
-        neutronclient.update_bandwidth_limit_rule.return_value = {
-            'bandwidth_limit_rule': bwd_limit_rule}
+        nclient.update_qos_bandwidth_limit_rule.return_value = bwd_limit_rule
 
         ret_val = api.neutron.bandwidth_limit_rule_update(
             self.request,
@@ -1920,35 +1935,33 @@ class NeutronApiTests(test.APIMockTestCase):
 
         self.assertIsInstance(ret_val, api.neutron.BandwidthLimitRule)
         self.assertEqual(bwd_limit_rule["max_kbps"], ret_val.max_kbps)
-        neutronclient.update_bandwidth_limit_rule.assert_called_once_with(
-            bwd_limit_rule['id'], qos_policy['id'], post_data)
+        nclient.update_qos_bandwidth_limit_rule.assert_called_once_with(
+            bwd_limit_rule['id'], qos_policy['id'], **post_data)
 
-    @mock.patch.object(api.neutron, 'neutronclient')
-    def test_bandwidth_limit_rule_delete(self, mock_neutronclient):
-        qos_policy = self.api_qos_policies.first()
-        bandwidth_limit_rule = self.api_bandwidth_limit_rule.first()
+    @mock.patch.object(api.neutron, 'networkclient')
+    def test_bandwidth_limit_rule_delete(self, mock_networkclient):
+        qos_policy = self.api_qos_policies_sdk[0]
+        bandwidth_limit_rule = self.api_bandwidth_limit_rule_sdk[0]
 
-        neutronclient = mock_neutronclient.return_value
+        nclient = mock_networkclient.return_value
 
-        neutronclient.delete_bandwidth_limit_rule.return_value = None
+        nclient.delete_qos_bandwidth_limit_rule.return_value = None
 
         api.neutron.bandwidth_limit_rule_delete(
             self.request, qos_policy['id'], bandwidth_limit_rule['id'])
 
-        neutronclient.delete_bandwidth_limit_rule.assert_called_once_with(
+        nclient.delete_qos_bandwidth_limit_rule.assert_called_once_with(
             bandwidth_limit_rule['id'], qos_policy['id'])
 
-    @mock.patch.object(api.neutron, 'neutronclient')
-    def test_minimum_bandwidth_rule_create(self, mock_neutronclient):
-        qos_policy = self.api_qos_policies.first()
-        min_bwd_rule = self.api_minimum_bandwidth_rule.first()
-        post_data = {'minimum_bandwidth_rule': {
-            "min_kbps": min_bwd_rule["min_kbps"]}}
+    @mock.patch.object(api.neutron, 'networkclient')
+    def test_minimum_bandwidth_rule_create(self, mock_networkclient):
+        qos_policy = self.api_qos_policies_sdk[0]
+        min_bwd_rule = self.api_minimum_bandwidth_rule_sdk[0]
+        post_data = {"min_kbps": min_bwd_rule["min_kbps"]}
 
-        neutronclient = mock_neutronclient.return_value
+        nclient = mock_networkclient.return_value
 
-        neutronclient.create_minimum_bandwidth_rule.return_value = {
-            'minimum_bandwidth_rule': min_bwd_rule}
+        nclient.create_qos_minimum_bandwidth_rule.return_value = min_bwd_rule
 
         ret_val = api.neutron.minimum_bandwidth_rule_create(
             self.request,
@@ -1957,21 +1970,19 @@ class NeutronApiTests(test.APIMockTestCase):
 
         self.assertIsInstance(ret_val, api.neutron.MinimumBandwidthRule)
         self.assertEqual(min_bwd_rule["min_kbps"], ret_val.min_kbps)
-        neutronclient.create_minimum_bandwidth_rule.assert_called_once_with(
-            qos_policy['id'], post_data)
+        nclient.create_qos_minimum_bandwidth_rule.assert_called_once_with(
+            qos_policy['id'], **post_data)
 
-    @mock.patch.object(api.neutron, 'neutronclient')
-    def test_minimum_bandwidth_rule_update(self, mock_neutronclient):
-        qos_policy = self.api_qos_policies.first()
-        min_bwd_rule = self.api_minimum_bandwidth_rule.first()
+    @mock.patch.object(api.neutron, 'networkclient')
+    def test_minimum_bandwidth_rule_update(self, mock_networkclient):
+        qos_policy = self.api_qos_policies_sdk[0]
+        min_bwd_rule = self.api_minimum_bandwidth_rule_sdk[0]
         min_bwd_rule['min_kbps'] = 20000
-        post_data = {'minimum_bandwidth_rule': {
-            "min_kbps": 20000}}
+        post_data = {"min_kbps": 20000}
 
-        neutronclient = mock_neutronclient.return_value
+        nclient = mock_networkclient.return_value
 
-        neutronclient.update_minimum_bandwidth_rule.return_value = {
-            'minimum_bandwidth_rule': min_bwd_rule}
+        nclient.update_qos_minimum_bandwidth_rule.return_value = min_bwd_rule
 
         ret_val = api.neutron.minimum_bandwidth_rule_update(
             self.request,
@@ -1981,35 +1992,34 @@ class NeutronApiTests(test.APIMockTestCase):
 
         self.assertIsInstance(ret_val, api.neutron.MinimumBandwidthRule)
         self.assertEqual(min_bwd_rule["min_kbps"], ret_val.min_kbps)
-        neutronclient.update_minimum_bandwidth_rule.assert_called_once_with(
-            min_bwd_rule['id'], qos_policy['id'], post_data)
+        nclient.update_qos_minimum_bandwidth_rule.assert_called_once_with(
+            min_bwd_rule['id'], qos_policy['id'], **post_data)
 
-    @mock.patch.object(api.neutron, 'neutronclient')
-    def test_minimum_bandwidth_rule_delete(self, mock_neutronclient):
-        qos_policy = self.api_qos_policies.first()
-        min_bwd_rule = self.api_minimum_bandwidth_rule.first()
+    @mock.patch.object(api.neutron, 'networkclient')
+    def test_minimum_bandwidth_rule_delete(self, mock_networkclient):
+        qos_policy = self.api_qos_policies_sdk[0]
+        min_bwd_rule = self.api_minimum_bandwidth_rule_sdk[0]
 
-        neutronclient = mock_neutronclient.return_value
+        nclient = mock_networkclient.return_value
 
-        neutronclient.delete_minimum_bandwidth_rule.return_value = None
+        nclient.delete_qos_minimum_bandwidth_rule.return_value = None
 
         api.neutron.minimum_bandwidth_rule_delete(
             self.request, qos_policy['id'], min_bwd_rule['id'])
 
-        neutronclient.delete_minimum_bandwidth_rule.assert_called_once_with(
+        nclient.delete_qos_minimum_bandwidth_rule.assert_called_once_with(
             min_bwd_rule['id'], qos_policy['id'])
 
-    @mock.patch.object(api.neutron, 'neutronclient')
-    def test_minimum_packer_rate_rule_create(self, mock_neutronclient):
-        qos_policy = self.api_qos_policies.first()
-        min_pckt_rt_rule = self.api_minimum_packet_rate_rule.first()
-        post_data = {'minimum_packet_rate_rule': {
-            "min_kpps": min_pckt_rt_rule["min_kpps"]}}
+    @mock.patch.object(api.neutron, 'networkclient')
+    def test_minimum_packer_rate_rule_create(self, mock_networkclient):
+        qos_policy = self.api_qos_policies_sdk[0]
+        min_pckt_rt_rule = self.api_minimum_packet_rate_rule_sdk[0]
+        post_data = {"min_kpps": min_pckt_rt_rule["min_kpps"]}
 
-        neutronclient = mock_neutronclient.return_value
+        nclient = mock_networkclient.return_value
 
-        neutronclient.create_minimum_packet_rate_rule.return_value = {
-            'minimum_packet_rate_rule': min_pckt_rt_rule}
+        nclient.create_qos_minimum_packet_rate_rule.return_value = \
+            min_pckt_rt_rule
 
         ret_val = api.neutron.minimum_packet_rate_rule_create(
             self.request,
@@ -2018,21 +2028,20 @@ class NeutronApiTests(test.APIMockTestCase):
 
         self.assertIsInstance(ret_val, api.neutron.MinimumPacketRateRule)
         self.assertEqual(min_pckt_rt_rule['min_kpps'], ret_val.min_kpps)
-        neutronclient.create_minimum_packet_rate_rule.assert_called_once_with(
-            qos_policy['id'], post_data)
+        nclient.create_qos_minimum_packet_rate_rule.assert_called_once_with(
+            qos_policy['id'], **post_data)
 
-    @mock.patch.object(api.neutron, 'neutronclient')
-    def test_minimum_packer_rate_rule_update(self, mock_neutronclient):
-        qos_policy = self.api_qos_policies.first()
-        min_pckt_rt_rule = self.api_minimum_packet_rate_rule.first()
+    @mock.patch.object(api.neutron, 'networkclient')
+    def test_minimum_packer_rate_rule_update(self, mock_networkclient):
+        qos_policy = self.api_qos_policies_sdk[0]
+        min_pckt_rt_rule = self.api_minimum_packet_rate_rule_sdk[0]
         min_pckt_rt_rule['min_kpps'] = 11000
-        post_data = {'minimum_packet_rate_rule': {
-            "min_kpps": 11000}}
+        post_data = {"min_kpps": 11000}
 
-        neutronclient = mock_neutronclient.return_value
+        nclient = mock_networkclient.return_value
 
-        neutronclient.update_minimum_packet_rate_rule.return_value = {
-            'minimum_packet_rate_rule': min_pckt_rt_rule}
+        nclient.update_qos_minimum_packet_rate_rule.return_value = \
+            min_pckt_rt_rule
 
         ret_val = api.neutron.minimum_packet_rate_rule_update(
             self.request,
@@ -2042,22 +2051,22 @@ class NeutronApiTests(test.APIMockTestCase):
 
         self.assertIsInstance(ret_val, api.neutron.MinimumPacketRateRule)
         self.assertEqual(min_pckt_rt_rule["min_kpps"], ret_val.min_kpps)
-        neutronclient.update_minimum_packet_rate_rule.assert_called_once_with(
-            min_pckt_rt_rule['id'], qos_policy['id'], post_data)
+        nclient.update_qos_minimum_packet_rate_rule.assert_called_once_with(
+            min_pckt_rt_rule['id'], qos_policy['id'], **post_data)
 
-    @mock.patch.object(api.neutron, 'neutronclient')
-    def test_minimum_packet_rate_rule_delete(self, mock_neutronclient):
-        qos_policy = self.api_qos_policies.first()
-        min_pckt_rt_rule = self.api_minimum_packet_rate_rule.first()
+    @mock.patch.object(api.neutron, 'networkclient')
+    def test_minimum_packet_rate_rule_delete(self, mock_networkclient):
+        qos_policy = self.api_qos_policies_sdk[0]
+        min_pckt_rt_rule = self.api_minimum_packet_rate_rule_sdk[0]
 
-        neutronclient = mock_neutronclient.return_value
+        nclient = mock_networkclient.return_value
 
-        neutronclient.delete_minimum_packet_rate_rule.return_value = None
+        nclient.delete_qos_minimum_packet_rate_rule.return_value = None
 
         api.neutron.minimum_packet_rate_rule_delete(
             self.request, qos_policy['id'], min_pckt_rt_rule['id'])
 
-        neutronclient.delete_minimum_packet_rate_rule.assert_called_once_with(
+        nclient.delete_qos_minimum_packet_rate_rule.assert_called_once_with(
             min_pckt_rt_rule['id'], qos_policy['id'])
 
 
@@ -2070,7 +2079,7 @@ class NeutronApiSecurityGroupTests(test.APIMockTestCase):
         self.qclient = neutronclient.return_value
         self.netclient = networkclient.return_value
         self.sg_dict = dict([(sg['id'], sg['name']) for sg
-                             in self.api_security_groups.list()])
+                             in self.api_security_groups_sdk])
 
     def _cmp_sg_rule(self, exprule, retrule):
         self.assertEqual(exprule['id'], retrule.id)
@@ -2099,7 +2108,7 @@ class NeutronApiSecurityGroupTests(test.APIMockTestCase):
         self.assertEqual(exp_sg['name'], ret_sg.name)
         # When a SG has no rules, neutron API does not contain
         # 'security_group_rules' field, so .get() method needs to be used.
-        exp_rules = exp_sg.get('security_group_rules', [])
+        exp_rules = exp_sg['security_group_rules']
         self.assertEqual(len(exp_rules), len(ret_sg.rules))
         for (exprule, retrule) in zip(exp_rules, ret_sg.rules):
             self._cmp_sg_rule(exprule, retrule)
@@ -2107,33 +2116,32 @@ class NeutronApiSecurityGroupTests(test.APIMockTestCase):
     @mock.patch.object(api.neutron, 'is_extension_supported')
     def _test_security_group_list(self, mock_is_extension_supported,
                                   is_ext_supported=True, **params):
-        sgs = self.api_security_groups.list()
+        sgs = self.api_security_groups_sdk
         mock_is_extension_supported.return_value = is_ext_supported
         if is_ext_supported:
             # First call to get the tenant owned SGs
             q_params_1 = {'tenant_id': self.request.user.tenant_id,
-                          'shared': False}
+                          'is_shared': False}
             # if tenant_id is specified, the passed tenant_id should be sent.
             q_params_1.update(params)
             # Second call to get shared SGs
             q_params_2 = q_params_1.copy()
             q_params_2.pop('tenant_id')
-            q_params_2['shared'] = True
+            q_params_2['is_shared'] = True
             # use deepcopy to ensure self.api_security_groups is not modified.
-            self.qclient.list_security_groups.side_effect = [
-                {'security_groups': copy.deepcopy(sgs[:4])},
-                {'security_groups': copy.deepcopy(sgs[-1:])},
+            self.netclient.security_groups.side_effect = [
+                copy.deepcopy(sgs[:4]),
+                copy.deepcopy(sgs[-1:]),
             ]
             rets = api.neutron.security_group_list(self.request, **params)
-            self.qclient.list_security_groups.assert_has_calls(
+            self.netclient.security_groups.assert_has_calls(
                 [mock.call(**q_params_1), mock.call(**q_params_2)])
         else:
             q_params = {'tenant_id': self.request.user.tenant_id}
             # if tenant_id is specified, the passed tenant_id should be sent.
             q_params.update(params)
             # use deepcopy to ensure self.api_security_groups is not modified.
-            self.qclient.list_security_groups.return_value = {
-                'security_groups': copy.deepcopy(sgs)}
+            self.netclient.security_groups.return_value = copy.deepcopy(sgs)
             rets = api.neutron.security_group_list(self.request, **params)
 
         mock_is_extension_supported.assert_called_once_with(
@@ -2156,68 +2164,65 @@ class NeutronApiSecurityGroupTests(test.APIMockTestCase):
         self._test_security_group_list(tenant_id='tenant1', name='sg1')
 
     def test_security_group_get(self):
-        secgroup = self.api_security_groups.first()
+        secgroup = self.api_security_groups_sdk[0]
+        secgroup_dict = secgroup.to_dict()
         sg_ids = set([secgroup['id']] +
                      [rule['remote_group_id'] for rule
-                      in secgroup['security_group_rules']
+                      in secgroup_dict['security_group_rules']
                       if rule['remote_group_id']])
-        related_sgs = [sg for sg in self.api_security_groups.list()
-                       if sg['id'] in sg_ids]
+        related_sgs = [sg for sg in self.api_security_groups_sdk
+                       if sg.to_dict()['id'] in sg_ids]
         # use deepcopy to ensure self.api_security_groups is not modified.
-        self.qclient.show_security_group.return_value = \
-            {'security_group': copy.deepcopy(secgroup)}
-        self.qclient.list_security_groups.return_value = \
-            {'security_groups': related_sgs}
+        self.netclient.get_security_group.return_value = \
+            copy.deepcopy(secgroup)
+        self.netclient.security_groups.return_value = related_sgs
 
         ret = api.neutron.security_group_get(self.request, secgroup['id'])
 
         self._cmp_sg(secgroup, ret)
-        self.qclient.show_security_group.assert_called_once_with(
+        self.netclient.get_security_group.assert_called_once_with(
             secgroup['id'])
-        self.qclient.list_security_groups.assert_called_once_with(
+        self.netclient.security_groups.assert_called_once_with(
             id=sg_ids, fields=['id', 'name'])
 
     def test_security_group_create(self):
-        secgroup = self.api_security_groups.list()[1]
-        body = {'security_group':
-                {'name': secgroup['name'],
-                 'description': secgroup['description'],
-                 'tenant_id': self.request.user.project_id}}
-        self.qclient.create_security_group.return_value = \
-            {'security_group': copy.deepcopy(secgroup)}
+        secgroup = self.api_security_groups_sdk[1]
+        body = {'name': secgroup['name'],
+                'description': secgroup['description'],
+                'tenant_id': self.request.user.project_id}
+        self.netclient.create_security_group.return_value = \
+            copy.deepcopy(secgroup)
 
         ret = api.neutron.security_group_create(self.request, secgroup['name'],
                                                 secgroup['description'])
 
         self._cmp_sg(secgroup, ret)
-        self.qclient.create_security_group.assert_called_once_with(body)
+        self.netclient.create_security_group.assert_called_once_with(**body)
 
     def test_security_group_update(self):
-        secgroup = self.api_security_groups.list()[1]
+        secgroup = self.api_security_groups_sdk[1]
         secgroup = copy.deepcopy(secgroup)
         secgroup['name'] = 'newname'
         secgroup['description'] = 'new description'
-        body = {'security_group':
-                {'name': secgroup['name'],
-                 'description': secgroup['description']}}
-        self.qclient.update_security_group.return_value = {'security_group':
-                                                           secgroup}
+        body = {'name': secgroup['name'],
+                'description': secgroup['description']}
+        self.netclient.update_security_group.return_value = secgroup
 
         ret = api.neutron.security_group_update(self.request,
                                                 secgroup['id'],
                                                 secgroup['name'],
                                                 secgroup['description'])
         self._cmp_sg(secgroup, ret)
-        self.qclient.update_security_group.assert_called_once_with(
-            secgroup['id'], body)
+        self.netclient.update_security_group.assert_called_once_with(
+            secgroup['id'], **body)
 
     def test_security_group_delete(self):
-        secgroup = self.api_security_groups.first()
-        self.qclient.delete_security_group.return_value = None
+        secgroup = self.api_security_groups_sdk[0]
+        self.netclient.delete_security_group.return_value = None
 
         api.neutron.security_group_delete(self.request, secgroup['id'])
 
-        self.qclient.delete_security_group.assert_called_once_with(
+        self.netclient.delete_security_group.assert_called_once_with(
             secgroup['id'])
 
     def test_security_group_rule_create(self):
@@ -2232,13 +2237,13 @@ class NeutronApiSecurityGroupTests(test.APIMockTestCase):
     def _test_security_group_rule_create(self, with_desc=False,
                                          custom_ip_proto=False):
         if custom_ip_proto:
-            sg_rule = [r for r in self.api_security_group_rules.list()
+            sg_rule = [r for r in self.api_security_group_rules_sdk
                        if r['protocol'] == '99'][0]
         else:
-            sg_rule = [r for r in self.api_security_group_rules.list()
+            sg_rule = [r for r in self.api_security_group_rules_sdk
                        if r['protocol'] == 'tcp' and r['remote_ip_prefix']][0]
         sg_id = sg_rule['security_group_id']
-        secgroup = [sg for sg in self.api_security_groups.list()
+        secgroup = [sg for sg in self.api_security_groups_sdk
                     if sg['id'] == sg_id][0]
 
         post_rule = copy.deepcopy(sg_rule)
@@ -2246,11 +2251,11 @@ class NeutronApiSecurityGroupTests(test.APIMockTestCase):
         del post_rule['tenant_id']
         if not with_desc:
             del post_rule['description']
-        post_body = {'security_group_rule': post_rule}
-        self.qclient.create_security_group_rule.return_value = \
-            {'security_group_rule': copy.deepcopy(sg_rule)}
-        self.qclient.list_security_groups.return_value = \
-            {'security_groups': [copy.deepcopy(secgroup)]}
+        post_body = post_rule
+        self.netclient.create_security_group_rule.return_value = \
+            copy.deepcopy(sg_rule)
+        self.netclient.security_groups.return_value = \
+            [copy.deepcopy(secgroup)]
 
         if with_desc:
             description = sg_rule['description']
@@ -2265,18 +2270,24 @@ class NeutronApiSecurityGroupTests(test.APIMockTestCase):
             description)
 
         self._cmp_sg_rule(sg_rule, ret)
-        self.qclient.create_security_group_rule.assert_called_once_with(
-            post_body)
-        self.qclient.list_security_groups.assert_called_once_with(
+        call_name, call_args, call_kwargs = \
+            self.netclient.create_security_group_rule.mock_calls[0]
+        post_body_dict = post_body.to_dict()
+        for param, value in call_kwargs.items():
+            if param == 'ethertype':
+                self.assertEqual(post_body_dict['ether_type'], value)
+            else:
+                self.assertEqual(post_body_dict[param], value)
+        self.netclient.security_groups.assert_called_once_with(
             id=set([sg_id]), fields=['id', 'name'])
 
     def test_security_group_rule_delete(self):
-        sg_rule = self.api_security_group_rules.first()
-        self.qclient.delete_security_group_rule.return_value = None
+        sg_rule = self.api_security_group_rules_sdk[0]
+        self.netclient.delete_security_group_rule.return_value = None
 
         api.neutron.security_group_rule_delete(self.request, sg_rule['id'])
 
-        self.qclient.delete_security_group_rule.assert_called_once_with(
+        self.netclient.delete_security_group_rule.assert_called_once_with(
             sg_rule['id'])
 
     def _get_instance(self, cur_sg_ids):
@@ -2293,22 +2304,21 @@ class NeutronApiSecurityGroupTests(test.APIMockTestCase):
         return (instance_id, instance_ports)
 
     def test_server_security_groups(self):
-        cur_sg_ids = [sg['id'] for sg in self.api_security_groups.list()[:2]]
+        cur_sg_ids = [sg['id'] for sg in self.api_security_groups_sdk[:2]]
         instance_id, instance_ports = self._get_instance(cur_sg_ids)
         self.netclient.ports.return_value = instance_ports
-        secgroups = copy.deepcopy(self.api_security_groups.list())
-        self.qclient.list_security_groups.return_value = \
-            {'security_groups': secgroups}
+        secgroups = copy.deepcopy(self.api_security_groups_sdk)
+        self.netclient.security_groups.return_value = secgroups
 
         api.neutron.server_security_groups(self.request, instance_id)
 
         self.netclient.ports.assert_called_once_with(device_id=instance_id)
-        self.qclient.list_security_groups.assert_called_once_with(
+        self.netclient.security_groups.assert_called_once_with(
             id=set(cur_sg_ids))
 
     def test_server_update_security_groups(self):
-        cur_sg_ids = [self.api_security_groups.first()['id']]
-        new_sg_ids = [sg['id'] for sg in self.api_security_groups.list()[:2]]
+        cur_sg_ids = [self.api_security_groups_sdk[0]['id']]
+        new_sg_ids = [sg['id'] for sg in self.api_security_groups_sdk[:2]]
         instance_id, instance_ports = self._get_instance(cur_sg_ids)
 
         self.netclient.ports.return_value = instance_ports
@@ -2355,7 +2365,7 @@ class NeutronApiFloatingIpPortForwardingTest(test.APIMockTestCase):
         for attr in response.to_dict():
             self.assertEqual(getattr(response, attr), pfw[attr])
         self.client_mock.get_port_forwarding.assert_called_once_with(
-            fip_id, pfw_id)
+            pfw_id, fip_id)
 
     def test_port_forwarding_create(self):
         pfw_resp_mock = self.api_port_forwardings_sdk[0]
@@ -2375,7 +2385,7 @@ class NeutronApiFloatingIpPortForwardingTest(test.APIMockTestCase):
         for attr in response.to_dict():
             self.assertEqual(getattr(response, attr), pfw_expected[attr])
         self.client_mock.create_port_forwarding.assert_called_once_with(
-            fip_id, **pfw)
+            floatingip_id=fip_id, **pfw)
 
     def test_port_forwarding_update(self):
         pfw_resp_mock = self.api_port_forwardings_sdk[0]
@@ -2393,7 +2403,7 @@ class NeutronApiFloatingIpPortForwardingTest(test.APIMockTestCase):
         for attr in response.to_dict():
             self.assertEqual(getattr(response, attr), pfw_expected[attr])
         self.client_mock.update_port_forwarding.assert_called_once_with(
-            fip_id, pfw_id, **pfw)
+            pfw_id, fip_id, **pfw)
 
     def test_port_forwarding_delete(self):
         pfw_id = self.api_port_forwardings_sdk[0]['id']
@@ -2433,7 +2443,7 @@ class NeutronApiFloatingIpTests(test.APIMockTestCase):
 
     def test_floating_ip_list(self):
         fips = self.api_floating_ips_sdk
-        filters = {'tenant_id': self.request.user.tenant_id}
+        filters = {'project_id': self.request.user.tenant_id}
 
         self.netclient.ips.return_value = fips
         self.netclient.ports.return_value = self.api_ports_sdk
@@ -2509,13 +2519,6 @@ class NeutronApiFloatingIpTests(test.APIMockTestCase):
     def test_floating_ip_get_associated(self):
         assoc_port = self.api_ports_sdk[1]
         self._test_floating_ip_get_associated(assoc_port, 'compute')
-
-    def test_floating_ip_get_associated_with_loadbalancer_vip(self):
-        assoc_port = copy.deepcopy(self.api_ports_sdk[1])
-        assoc_port['device_owner'] = 'neutron:LOADBALANCER'
-        assoc_port['device_id'] = uuidutils.generate_uuid()
-        assoc_port['name'] = 'vip-' + uuidutils.generate_uuid()
-        self._test_floating_ip_get_associated(assoc_port, 'loadbalancer')
 
     def test_floating_ip_get_unassociated(self):
         fip = self.api_floating_ips_sdk[0]
@@ -2621,7 +2624,7 @@ class NeutronApiFloatingIpTests(test.APIMockTestCase):
                 target_ports.append((
                     self._get_target_id(p, ip['ip_address']),
                     self._get_target_name(p, ip['ip_address'])))
-        filters = {'tenant_id': self.request.user.tenant_id}
+        filters = {'project_id': self.request.user.tenant_id}
         self.netclient.ports.return_value = ports
         servers = self.servers.list()
         novaclient = mock_novaclient.return_value

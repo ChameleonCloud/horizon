@@ -12,6 +12,7 @@
 
 from oslo_utils import uuidutils
 import pytest
+from selenium.webdriver.common.by import By
 
 from openstack_dashboard.test.selenium import widgets
 
@@ -74,12 +75,12 @@ def test_create_project(login, driver, project_name, openstack_admin,
         'identity',
     ))
     driver.get(url)
-    driver.find_element_by_link_text("Create Project").click()
-    project_form = driver.find_element_by_css_selector("form .modal-content")
-    project_form.find_element_by_id("id_name").send_keys(project_name)
-    project_form.find_element_by_css_selector(
-        ".btn-primary[value='Create Project']").click()
-    messages = widgets.get_and_dismiss_messages(driver)
+    driver.find_element(By.LINK_TEXT, "Create Project").click()
+    project_form = driver.find_element(By.CSS_SELECTOR, "form .modal-content")
+    project_form.find_element(By.ID, "id_name").send_keys(project_name)
+    project_form.find_element(
+        By.CSS_SELECTOR, ".btn-primary[value='Create Project']").click()
+    messages = widgets.get_and_dismiss_messages(driver, config)
     assert f'Success: Created new project "{project_name}".' in messages
     assert openstack_admin.identity.find_project(project_name) is not None
 
@@ -92,13 +93,13 @@ def test_delete_project(login, driver, project_name, openstack_admin,
         'identity',
     ))
     driver.get(url)
-    rows = driver.find_elements_by_css_selector(
-        f"table#tenants tr[data-display='{project_name}']")
+    rows = driver.find_elements(
+        By.CSS_SELECTOR, f"table#tenants tr[data-display='{project_name}']")
     assert len(rows) == 1
-    actions_column = rows[0].find_element_by_css_selector("td.actions_column")
+    actions_column = rows[0].find_element(By.CSS_SELECTOR, "td.actions_column")
     widgets.select_from_dropdown(actions_column, "Delete Project")
     widgets.confirm_modal(driver)
-    messages = widgets.get_and_dismiss_messages(driver)
+    messages = widgets.get_and_dismiss_messages(driver, config)
     assert f"Success: Deleted Project: {project_name}" in messages
     assert openstack_admin.identity.find_project(project_name) is None
 
@@ -114,19 +115,19 @@ def test_add_member_to_project(login, driver, project_name, openstack_admin,
         'identity',
     ))
     driver.get(url)
-    rows = driver.find_elements_by_css_selector(
-        f"table#tenants tr[data-display='{project_name}']")
+    rows = driver.find_elements(
+        By.CSS_SELECTOR, f"table#tenants tr[data-display='{project_name}']")
     assert len(rows) == 1
-    rows[0].find_element_by_css_selector(".data-table-action").click()
-    project_form = driver.find_element_by_css_selector("form .modal-content")
-    project_form.find_element_by_xpath(
-        f".//*[text()='{admin_name}']//ancestor::li"  # noqa: E231
+    rows[0].find_element(By.CSS_SELECTOR, ".data-table-action").click()
+    project_form = driver.find_element(By.CSS_SELECTOR, "form .modal-content")
+    project_form.find_element(
+        By.XPATH, f".//*[text()='{admin_name}']//ancestor::li"  # noqa: E231
         f"/following-sibling::li/a[@href='#add_remove']").click()  # noqa: E231
-    project_form.find_element_by_css_selector(
-        ".btn-primary[value='Save']").click()
-    messages = widgets.get_and_dismiss_messages(driver)
+    project_form.find_element(
+        By.CSS_SELECTOR, ".btn-primary[value='Save']").click()
+    messages = widgets.get_and_dismiss_messages(driver, config)
     assert f'Success: Modified project "{project_name}".' in messages
-    assert(openstack_admin.identity.validate_user_has_project_role(
+    assert (openstack_admin.identity.validate_user_has_project_role(
         project=new_project,
         user=openstack_admin.identity.find_user(admin_name).id,
         role=openstack_admin.identity.find_role(regular_role_name).id,)
@@ -145,21 +146,22 @@ def test_add_role_to_project_member(login, driver, openstack_admin, config,
         'identity',
     ))
     driver.get(url)
-    rows = driver.find_elements_by_css_selector(
+    rows = driver.find_elements(
+        By.CSS_SELECTOR,
         f"table#tenants tr[data-display={new_project_with_admin.name}]")
     assert len(rows) == 1
-    rows[0].find_element_by_css_selector(".data-table-action").click()
-    project_form = driver.find_element_by_css_selector("form .modal-content")
-    select_roles_dropdown = project_form.find_element_by_xpath(
-        f".//*[text()='{admin_name}']//ancestor::li"  # noqa: E231
+    rows[0].find_element(By.CSS_SELECTOR, ".data-table-action").click()
+    project_form = driver.find_element(By.CSS_SELECTOR, "form .modal-content")
+    select_roles_dropdown = project_form.find_element(
+        By.XPATH, f".//*[text()='{admin_name}']//ancestor::li"  # noqa: E231
         f"/following-sibling::li[@class='dropdown role_options']")  # noqa: E231
     widgets.select_from_dropdown(select_roles_dropdown, admin_role_name)
-    project_form.find_element_by_css_selector(
-        ".btn-primary[value='Save']").click()
-    messages = widgets.get_and_dismiss_messages(driver)
-    assert(f'Success: Modified project '
-           f'"{new_project_with_admin.name}".' in messages)
-    assert(openstack_admin.identity.validate_user_has_project_role(
+    project_form.find_element(
+        By.CSS_SELECTOR, ".btn-primary[value='Save']").click()
+    messages = widgets.get_and_dismiss_messages(driver, config)
+    assert (f'Success: Modified project '
+            f'"{new_project_with_admin.name}".' in messages)
+    assert (openstack_admin.identity.validate_user_has_project_role(
         project=new_project_with_admin,
         user=openstack_admin.identity.find_user(admin_name).id,
         role=openstack_admin.identity.find_role(regular_role_name).id,) and
@@ -181,20 +183,20 @@ def test_add_group_to_project(login, driver, openstack_admin,
         'identity',
     ))
     driver.get(url)
-    rows = driver.find_elements_by_css_selector(
-        f"table#tenants tr[data-display='{new_project.name}']")
+    rows = driver.find_elements(
+        By.CSS_SELECTOR, f"table#tenants tr[data-display='{new_project.name}']")
     assert len(rows) == 1
-    actions_column = rows[0].find_element_by_css_selector("td.actions_column")
+    actions_column = rows[0].find_element(By.CSS_SELECTOR, "td.actions_column")
     widgets.select_from_dropdown(actions_column, "Modify Groups")
-    project_form = driver.find_element_by_css_selector("form .modal-content")
-    project_form.find_element_by_xpath(
-        f".//*[text()='{group_name}']//ancestor::li"  # noqa: E231
+    project_form = driver.find_element(By.CSS_SELECTOR, "form .modal-content")
+    project_form.find_element(
+        By.XPATH, f".//*[text()='{group_name}']//ancestor::li"  # noqa: E231
         f"/following-sibling::li/a[@href='#add_remove']").click()  # noqa: E231
-    project_form.find_element_by_css_selector(
-        ".btn-primary[value='Save']").click()
-    messages = widgets.get_and_dismiss_messages(driver)
+    project_form.find_element(
+        By.CSS_SELECTOR, ".btn-primary[value='Save']").click()
+    messages = widgets.get_and_dismiss_messages(driver, config)
     assert f'Success: Modified project "{new_project.name}".' in messages
-    assert(openstack_admin.identity.validate_group_has_project_role(
+    assert (openstack_admin.identity.validate_group_has_project_role(
         project=new_project,
         group=openstack_admin.identity.find_group(group_name).id,
         role=openstack_admin.identity.find_role(regular_role_name).id,)
@@ -213,22 +215,23 @@ def test_add_role_to_project_group(login, driver, openstack_admin, config,
         'identity',
     ))
     driver.get(url)
-    rows = driver.find_elements_by_css_selector(
+    rows = driver.find_elements(
+        By.CSS_SELECTOR,
         f"table#tenants tr[data-display='{new_project_with_group.name}']")
     assert len(rows) == 1
-    actions_column = rows[0].find_element_by_css_selector("td.actions_column")
+    actions_column = rows[0].find_element(By.CSS_SELECTOR, "td.actions_column")
     widgets.select_from_dropdown(actions_column, "Modify Groups")
-    project_form = driver.find_element_by_css_selector("form .modal-content")
-    select_roles_dropdown = project_form.find_element_by_xpath(
-        f".//*[text()='{group_name}']//ancestor::li"  # noqa: E231
+    project_form = driver.find_element(By.CSS_SELECTOR, "form .modal-content")
+    select_roles_dropdown = project_form.find_element(
+        By.XPATH, f".//*[text()='{group_name}']//ancestor::li"  # noqa: E231
         f"/following-sibling::li[@class='dropdown role_options']")  # noqa: E231
     widgets.select_from_dropdown(select_roles_dropdown, admin_role_name)
-    project_form.find_element_by_css_selector(
-        ".btn-primary[value='Save']").click()
-    messages = widgets.get_and_dismiss_messages(driver)
-    assert(f'Success: Modified project '
-           f'"{new_project_with_group.name}".' in messages)
-    assert(openstack_admin.identity.validate_group_has_project_role(
+    project_form.find_element(
+        By.CSS_SELECTOR, ".btn-primary[value='Save']").click()
+    messages = widgets.get_and_dismiss_messages(driver, config)
+    assert (f'Success: Modified project '
+            f'"{new_project_with_group.name}".' in messages)
+    assert (openstack_admin.identity.validate_group_has_project_role(
         project=new_project_with_group,
         group=openstack_admin.identity.find_group(group_name).id,
         role=openstack_admin.identity.find_role(regular_role_name).id,) and

@@ -33,7 +33,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: horizon VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
-"POT-Creation-Date: 2025-07-08 23:51+0000\n"
+"POT-Creation-Date: 2026-04-24 08:10+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -86,12 +86,6 @@ msgstr ""
 "  (对象存储服务, Ceph, NFS, 等……)存储。\n"
 "  为了创建备份您需要启用上述的某个服务。\n"
 "  "
-
-msgid " - End"
-msgstr " - 结束"
-
-msgid " : Next hop"
-msgstr "：下一跳"
 
 msgid ""
 " A protocol entry contains information that dictates which mapping rules to "
@@ -271,10 +265,6 @@ msgstr "不能创建%(req)iGiB的卷，因为您的可用配置只有%(avail)iGi
 msgid "AKI - Amazon Kernel Image"
 msgstr "AKI - Amazon Kernel 镜像"
 
-#, python-format
-msgid "ALLOW %(ethertype)s %(proto_port)s %(direction)s %(remote)s"
-msgstr "允许 %(ethertype)s %(proto_port)s %(direction)s %(remote)s"
-
 msgid "AMI - Amazon Machine Image"
 msgstr "AMI - Amazon  Machine 镜像"
 
@@ -286,9 +276,6 @@ msgstr "API端点"
 
 msgid "ARI - Amazon Ramdisk Image"
 msgstr "ARI - Amazon Ramdisk 镜像"
-
-msgid "Accept Transfer"
-msgstr "接受转让"
 
 msgid "Accept Volume Transfer"
 msgstr "接受卷转让"
@@ -445,13 +432,6 @@ msgstr[0] "已添加的用户"
 
 msgid "Additional Routes"
 msgstr "额外路由"
-
-msgid ""
-"Additional routes announced to the hosts. Each entry is: destination_cidr,"
-"nexthop (e.g., 192.168.200.0/24,10.56.1.254) and one entry per line."
-msgstr ""
-"主机增加额外的路由. 记录格式是：目的CIDR, 下一跳(例如"
-"192.168.200.0/24,10.56.1.254) ，每行一条记录。"
 
 msgid ""
 "Additionally, some resource types may require a prefix to be used when "
@@ -857,9 +837,6 @@ msgstr "镜像的CPU架构"
 msgid "Cancel"
 msgstr "取消"
 
-msgid "Cancel Transfer"
-msgstr "取消转让"
-
 #, python-format
 msgid "Cannot find instance %s."
 msgstr "无法找到实例 %s。"
@@ -1091,9 +1068,6 @@ msgctxt "Action log of an instance"
 msgid "Create"
 msgstr "已创建"
 
-msgid "Create A RBAC Policy"
-msgstr "创建一个 RBAC 策略"
-
 msgid "Create An Image"
 msgstr "创建镜像"
 
@@ -1196,9 +1170,6 @@ msgstr "创建子网"
 
 msgid "Create Subnet (Quota exceeded)"
 msgstr "创建子网 (配额用尽)"
-
-msgid "Create Transfer"
-msgstr "创建转让"
 
 msgid "Create User"
 msgstr "创建用户"
@@ -1460,6 +1431,9 @@ msgstr "DNS 名称"
 msgid "DNS Name Servers"
 msgstr "DNS服务器"
 
+msgid "DOWN"
+msgstr "DOWN"
+
 msgctxt "Admin state of a Network"
 msgid "DOWN"
 msgstr "DOWN"
@@ -1483,11 +1457,11 @@ msgctxt "Default style theme"
 msgid "Default"
 msgstr "默认"
 
+msgid "Default Quotas"
+msgstr "默认配额"
+
 msgid "Default quotas updated."
 msgstr "默认配额已更新."
-
-msgid "Defaults"
-msgstr "默认值"
 
 msgid "Delete"
 msgid_plural "Delete"
@@ -2080,18 +2054,6 @@ msgstr "下载 openrc 文件"
 msgid "Download transfer credentials"
 msgstr "下载转让凭证"
 
-msgid "EC2 Access Key"
-msgstr "EC2访问码"
-
-msgid "EC2 Credentials"
-msgstr "EC2 证书"
-
-msgid "EC2 Secret Key"
-msgstr "EC2密钥"
-
-msgid "EC2 URL"
-msgstr "EC2 URL"
-
 msgid ""
 "Each QoS Specs entity will have a \"Consumer\" value which indicates where "
 "the administrator would like the QoS policy to be enforced. This value can "
@@ -2427,10 +2389,6 @@ msgstr "更新命名空间%s的资源类型出错。"
 msgid "Error when adding or removing hosts."
 msgstr "增加或删除主机时出错"
 
-#, python-format
-msgid "Error writing zipfile: %(exc)s"
-msgstr "zip文件写入出错：%(exc)s"
-
 msgid "Errors occurred in deleting group."
 msgstr "删除组时出错。"
 
@@ -2525,12 +2483,6 @@ msgid "Failed"
 msgstr "失败"
 
 #, python-format
-msgid ""
-"Failed to add %(users_to_add)s project members%(group_msg)s and set project "
-"quotas."
-msgstr "无法添加 %(users_to_add)s 项目成员%(group_msg)s 并设定项目配额。"
-
-#, python-format
 msgid "Failed to add %s project groups and update project quotas."
 msgstr "无法添加 %s 项目组并更新项目配额。"
 
@@ -2623,12 +2575,6 @@ msgstr "实例迁移失败： %s"
 
 msgid "Failed to migrate volume."
 msgstr "迁移卷失败"
-
-#, python-format
-msgid ""
-"Failed to modify %(users_to_modify)s project members%(group_msg)s and update "
-"project quotas."
-msgstr "无法修改 %(users_to_modify)s 项目成员%(group_msg)s 并更新项目配额。"
 
 #, python-format
 msgid "Failed to modify %s domain groups."
@@ -3013,12 +2959,6 @@ msgstr "主机名 ="
 msgid "Host Routes"
 msgstr "主机路由"
 
-#, python-format
-msgid ""
-"Host Routes format error: Destination CIDR and nexthop must be specified "
-"(value=%s)"
-msgstr "主机路由错误: 必须指定目的CIDR 和下一跳。(值为 %s)"
-
 msgid ""
 "Host aggregates divide an availability zone into logical units by grouping "
 "together hosts. Create a host aggregate then select the hosts contained in "
@@ -3331,9 +3271,6 @@ msgstr "实例名称"
 msgid "Instance Name ="
 msgstr "云主机名字 ="
 
-msgid "Instance Overview"
-msgstr "实例概况"
-
 msgid "Instance Password is not set or is not yet available"
 msgstr "实例密码没有设置或是无效"
 
@@ -3523,10 +3460,6 @@ msgstr "实例热迁移"
 
 msgid "Live migrate an instance to a specific host."
 msgstr "热迁移一个实例到指定主机"
-
-#, python-format
-msgid "Load Balancer VIP %s"
-msgstr "负载均衡 VIP %s"
 
 msgid "Local"
 msgstr "Local"
@@ -3753,12 +3686,6 @@ msgstr "迁移实例可能会引起一些不可恢复的结果。"
 
 msgid "Migration Policy"
 msgstr "迁移策略"
-
-msgid "Min Disk"
-msgstr "最小磁盘"
-
-msgid "Min RAM"
-msgstr "最小内存"
 
 msgid "Min. Size (MB) ="
 msgstr "容量最小值 (MB) ="
@@ -4219,9 +4146,6 @@ msgstr "实例数量"
 msgid "Number of Snapshots"
 msgstr "快照数量"
 
-msgid "Number of VCPUs"
-msgstr "VCPU数量"
-
 msgid "Number of Volumes"
 msgstr "卷数量"
 
@@ -4567,9 +4491,6 @@ msgstr "公共域"
 msgid "QCOW2 - QEMU Emulator"
 msgstr "QCOW2 - QEMU 模拟器"
 
-msgid "QOS Policy ID"
-msgstr "QOS 策略 ID"
-
 msgid "QoS Policy"
 msgstr "QoS 策略"
 
@@ -4642,12 +4563,6 @@ msgstr "RBAC 策略详情"
 msgid "RBAC Policy was successfully created."
 msgstr "RBAC 策略被成功创建。"
 
-msgid "RX/TX Factor"
-msgstr "RX/TX 因子"
-
-msgid "RX/TX factor"
-msgstr "RX/TX 因子"
-
 msgid "Ramdisk"
 msgstr "内存盘"
 
@@ -4717,9 +4632,6 @@ msgstr "正在重建"
 #, python-format
 msgid "Rebuilding instance %s."
 msgstr "重建实例  %s。"
-
-msgid "Recreate EC2 Credentials"
-msgstr "重新创建EC2凭据"
 
 #, python-format
 msgid "Regenerate and download Key Pair &quot;%(keypair_name)s&quot;"
@@ -5036,9 +4948,6 @@ msgstr "运行中"
 
 msgid "Running Instance Migration Type"
 msgstr "运行实例迁移类型"
-
-msgid "S3 URL"
-msgstr "S3 URL"
 
 msgid "SLAAC: Address discovered from OpenStack Router"
 msgstr "SLAAC: 地址从OpenStack路由器中发现"
@@ -5715,9 +5624,6 @@ msgstr "成功导入公钥：%s"
 msgid "Successfully modified QoS Spec consumer."
 msgstr "成功更改QoS规格消费者。"
 
-msgid "Successfully recreated ec2 credentials."
-msgstr "重新创建EC2凭据成功。"
-
 msgid "Successfully rescued instance"
 msgstr "云主机成功进入救援模式"
 
@@ -5817,9 +5723,6 @@ msgstr "目标主机"
 
 msgid "Target Project"
 msgstr "目标项目"
-
-msgid "Target Tenant"
-msgstr "目标租户"
 
 msgid "Task"
 msgstr "任务"
@@ -6272,13 +6175,6 @@ msgstr "卷及快照总大小 (GiB)"
 msgid "Total Size of Volumes and Snapshots (GiB) of Type %(type)s"
 msgstr "%(type)s 类型的卷和快照总大小 (GiB)"
 
-msgid "Total VCPU Usage (Hours):"
-msgstr "VCPU总用量(小时):"
-
-msgid ""
-"Total VCPU usage (Number of VCPU in instance * Hours Used) for the project"
-msgstr "项目总VCPU用量 (实例的VCPU数*小时)"
-
 msgid "Total Volume Storage"
 msgstr "总计卷存储"
 
@@ -6304,8 +6200,15 @@ msgstr "中继"
 msgid "Type"
 msgstr "类型"
 
+msgid "Type ="
+msgstr "类型 ="
+
 msgid "Type of backend device identifier provided"
 msgstr "提供的后端设备标识类型"
+
+#. Translators: Admin state status for router.
+msgid "UP"
+msgstr "UP"
 
 msgctxt "Admin state of a Network"
 msgid "UP"
@@ -6577,9 +6480,6 @@ msgstr "无法编辑卷类型扩展规格。"
 msgid "Unable to extend volume."
 msgstr "无法扩展卷"
 
-msgid "Unable to fetch EC2 credentials."
-msgstr "无法获得 EC2 凭据。"
-
 msgid "Unable to fetch snapshot"
 msgstr "无法获取快照"
 
@@ -6588,9 +6488,6 @@ msgstr "无法获取快照"
 
 msgid "Unable to find default role."
 msgstr "无法获取默认角色"
-
-msgid "Unable to get EC2 credentials"
-msgstr "无法获取EC2凭据"
 
 #, python-format
 msgid "Unable to get MKS console for instance \"%s\"."
@@ -6716,12 +6613,6 @@ msgstr "无法解析IP地址 %s."
 
 msgid "Unable to rebuild instance."
 msgstr "无法重建实例。"
-
-msgid "Unable to recreate ec2 credentials. Failed to create ec2 credentials."
-msgstr "无法重新创建EC2凭据，创建EC2凭据失败。"
-
-msgid "Unable to recreate ec2 credentials. Failed to delete ec2 credentials."
-msgstr "无法重新创建EC2凭据，删除EC2凭据失败。"
 
 msgid "Unable to register identity provider."
 msgstr "无法注册身份提供者（identity provider）"
@@ -7131,9 +7022,6 @@ msgstr "无法获取子网详情"
 msgid "Unable to retrieve subnet details."
 msgstr "无法获取子网详情"
 
-msgid "Unable to retrieve tenant limits."
-msgstr "无法获取租户范围"
-
 msgid "Unable to retrieve the aggregate to be updated"
 msgstr "无法获取要更新的主机聚合"
 
@@ -7500,9 +7388,6 @@ msgstr "更新关联"
 msgid "Update Default Quotas"
 msgstr "更新默认配额"
 
-msgid "Update Defaults"
-msgstr "更新默认值"
-
 msgid "Update Encrypted Volume Type"
 msgstr "更新加密的卷类型"
 
@@ -7712,18 +7597,6 @@ msgstr "用户定义的唯一标识来识别映射。"
 
 msgid "Users"
 msgstr "用户"
-
-msgid "VCPU"
-msgstr "VCPU"
-
-msgid "VCPU Hours"
-msgstr "VCPU小时数"
-
-msgid "VCPU Usage"
-msgstr "VCPU使用量"
-
-msgid "VCPUs"
-msgstr "VCPU数量"
 
 msgid "VDI - Virtual Disk Image"
 msgstr "VDI - VirtualBox 虚拟磁盘镜像"
@@ -8163,9 +8036,6 @@ msgstr "否"
 
 msgid "undefined"
 msgstr "未定义"
-
-msgid "unknown IP address"
-msgstr "未知的IP地址"
 
 msgid "up"
 msgstr "启动"

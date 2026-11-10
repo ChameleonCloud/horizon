@@ -1,3 +1,5 @@
+.. _create-and-manage-volumes:
+
 =========================
 Create and manage volumes
 =========================
@@ -130,7 +132,8 @@ Create a snapshot from a volume
 
 #. Confirm your changes.
 
-   The dashboard shows the new volume snapshot in Volume Snapshots tab.
+   The dashboard shows the new volume snapshot in
+   :guilabel:`Volume Snapshots` tab.
 
 Edit a volume
 ~~~~~~~~~~~~~
@@ -161,7 +164,8 @@ Delete a volume
 ~~~~~~~~~~~~~~~
 
 When you delete an instance, the data in its attached volumes is not
-deleted.
+deleted (unless you chose delete volume on instance delete when creating an
+instance).
 
 #. Log in to the dashboard.
 

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: horizon VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
-"POT-Creation-Date: 2025-07-08 23:51+0000\n"
+"POT-Creation-Date: 2026-04-24 08:10+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -36,12 +36,6 @@ msgstr ""
 "\n"
 "      გამოყენებულია %(used)s %(quota)s-დან\n"
 "      "
-
-msgid " - End"
-msgstr " - დასასრ"
-
-msgid " : Next hop"
-msgstr " : შემდეგი რაუტერი"
 
 #, python-format
 msgid "%(field_name)s: Invalid IP address (value=%(ip)s)"
@@ -143,10 +137,6 @@ msgstr "სწორი MAC მისამართი"
 msgid "AKI - Amazon Kernel Image"
 msgstr "AKI - Amazon Kernel-ის გამოსახულება"
 
-#, python-format
-msgid "ALLOW %(ethertype)s %(proto_port)s %(direction)s %(remote)s"
-msgstr "%(ethertype)s %(proto_port)s %(direction)s %(remote)s ნების დართვა"
-
 msgid "AMI - Amazon Machine Image"
 msgstr "AMI - Amazon Machine-ის გამოსახულება"
 
@@ -158,9 +148,6 @@ msgstr "API-ის ბოლოწერტილი"
 
 msgid "ARI - Amazon Ramdisk Image"
 msgstr "ARI - Amazon Ramdisk-ის გამოსახულება"
-
-msgid "Accept Transfer"
-msgstr "გადაცემის დასტური"
 
 msgid "Accept Volume Transfer"
 msgstr "ტომის გადაცემის მიღება"
@@ -605,9 +592,6 @@ msgstr "ასლის CPU-ის არქიტექტურა."
 msgid "Cancel"
 msgstr "გაუქმება"
 
-msgid "Cancel Transfer"
-msgstr "გადაცემის გაუქმება"
-
 #, python-format
 msgid "Cannot find instance %s."
 msgstr "ვერ ვიპოვე გაშვებული ასლი %s."
@@ -788,9 +772,6 @@ msgctxt "Action log of an instance"
 msgid "Create"
 msgstr "შექმნა"
 
-msgid "Create A RBAC Policy"
-msgstr "RBAC პოლიტიკის შექმნა"
-
 msgid "Create An Image"
 msgstr "ასლის შექმნა"
 
@@ -884,9 +865,6 @@ msgstr "საბნეტის შექმნა"
 
 msgid "Create Subnet (Quota exceeded)"
 msgstr "ქვექსელის შექმნა (კვოტა გადაცილებულია)"
-
-msgid "Create Transfer"
-msgstr "გადაცემის შექმნა"
 
 msgid "Create User"
 msgstr "მომხმარებლის შექმნა"
@@ -1102,9 +1080,6 @@ msgstr "ნაგულისხმები"
 
 msgid "Default quotas updated."
 msgstr "ნაგულისხმევი კვოტები განახლდა."
-
-msgid "Defaults"
-msgstr "ნაგულისხმები მნიშვნელობები"
 
 msgid "Delete"
 msgid_plural "Delete"
@@ -1659,18 +1634,6 @@ msgstr "'openrc' ფაილის გადმოწერა"
 msgid "Download transfer credentials"
 msgstr "გადაცემის შესვლის დეტალების გადმოწერა"
 
-msgid "EC2 Access Key"
-msgstr "EC2-ის წვდომის გასაღები"
-
-msgid "EC2 Credentials"
-msgstr "EC2-ის ავტორიზაციის დეტალები"
-
-msgid "EC2 Secret Key"
-msgstr "EC2-ის საიდუმლო გასაღები"
-
-msgid "EC2 URL"
-msgstr "EC2 URL"
-
 msgid "Edit"
 msgstr "რედაქტირება"
 
@@ -1955,10 +1918,6 @@ msgstr "შეცდომა რესურსის ტიპების გ
 
 msgid "Error when adding or removing hosts."
 msgstr "ჰოსტების დამატების ა წაშლის შეცდომა."
-
-#, python-format
-msgid "Error writing zipfile: %(exc)s"
-msgstr "შეცდომა zip ფაილის ჩაწერისას: %(exc)s"
 
 msgid "Errors occurred in deleting group."
 msgstr "შეცდომა ჯგუფის წაშლისას."
@@ -2708,9 +2667,6 @@ msgstr "ეგზემპლარის სახელი"
 msgid "Instance Name ="
 msgstr "გაშვებული ასლის სახელი ="
 
-msgid "Instance Overview"
-msgstr "ეგზემპლარის მიმოხილვა"
-
 msgid "Instance Password is not set or is not yet available"
 msgstr "გაშვებული ასლის პაროლი დაყენებული არაა ან ჯერ ხელმიუწვდომელია"
 
@@ -2855,10 +2811,6 @@ msgstr "გაშვებული ასლის ცოცხალი მი
 
 msgid "Live migrate an instance to a specific host."
 msgstr "გაშვებული ასლის ცოცხალი მიგრაცია მითითებულ ჰოსტზე."
-
-#, python-format
-msgid "Load Balancer VIP %s"
-msgstr "დატვირთვის მათანაბრებლის VIP %s"
 
 msgid "Local"
 msgstr "ლოკალური"
@@ -3062,12 +3014,6 @@ msgstr "გაშვებული ასლების მიგრაცი�
 
 msgid "Migration Policy"
 msgstr "მიგრაციის პოლიტიკა"
-
-msgid "Min Disk"
-msgstr "მინ. დისკი"
-
-msgid "Min RAM"
-msgstr "მინ. RAM"
 
 msgid "Min. Size (MB) ="
 msgstr "მინ. ზომა (მბ) ="
@@ -3477,9 +3423,6 @@ msgstr "ეგზემპლარების რაოდენობა"
 msgid "Number of Snapshots"
 msgstr "სწრაფი ასლების რაოდენობა"
 
-msgid "Number of VCPUs"
-msgstr "VCPU-ების რაოდენობა"
-
 msgid "Number of Volumes"
 msgstr "მოცულობების რეოდენობა"
 
@@ -3543,21 +3486,6 @@ msgstr "მეპატრონე"
 
 msgid "Owner of the device attached to the port"
 msgstr "პორტზე მიერთებული მოწყობილობის მფლობელი"
-
-msgid "PCPU Usage"
-msgstr "PCPU გამოყენება"
-
-msgid "PCPUs allocation ratio"
-msgstr "PCPU-ების გამოყოფის ფარდობა"
-
-msgid "PCPUs reserved"
-msgstr "დაცული PCPU"
-
-msgid "PCPUs total"
-msgstr "სულ PCPU"
-
-msgid "PCPUs used"
-msgstr "გამოყენებული PCPU"
 
 msgid "PLOOP - Virtuozzo/Parallels Loopback Disk"
 msgstr "PLOOP - Virtuozzo/Parallels-ის მარყუჟის დისკი"
@@ -3797,9 +3725,6 @@ msgstr "საჯარო:"
 msgid "QCOW2 - QEMU Emulator"
 msgstr "QCOW2 - ემულატორი QEMU"
 
-msgid "QOS Policy ID"
-msgstr "QOS პოლიტიკის ID"
-
 msgid "QoS Policy"
 msgstr "QoS პოლიტიკა"
 
@@ -3866,12 +3791,6 @@ msgstr "RBAC პოლიტიკის დეტალები"
 msgid "RBAC Policy was successfully created."
 msgstr "RBAC პოლიტიკა წარმატებით შეიქმნა."
 
-msgid "RX/TX Factor"
-msgstr "RX/TX ფაქტორი"
-
-msgid "RX/TX factor"
-msgstr "RX/TX ფაქტორი"
-
 msgid "Ramdisk"
 msgstr "Ramdisk"
 
@@ -3937,9 +3856,6 @@ msgstr "გაჩენის თავიდან აგება"
 msgctxt "Task status of an Instance"
 msgid "Rebuilding"
 msgstr "მიმდინარეობს თავიდან აგება"
-
-msgid "Recreate EC2 Credentials"
-msgstr "EC2-ის ავტორიზაციის დეტალების თავიდან შექმნა"
 
 msgid "Region"
 msgstr "რაიონი"
@@ -4214,9 +4130,6 @@ msgstr "მიმდინარეობს შესრულება"
 
 msgid "Running Instance Migration Type"
 msgstr "გაშვებული გაშვებული ასლის მიგრაციის ტიპი"
-
-msgid "S3 URL"
-msgstr "S3 URL"
 
 msgid "SLAAC: Address discovered from OpenStack Router"
 msgstr "SLAAC: OpenStack-ის რაუტერიდან აღმოჩენილი მისამართები"
@@ -5052,9 +4965,6 @@ msgstr "ტომებისა და სწრაფი ასლების
 msgid "Total Size of Volumes and Snapshots (GiB) of Type %(type)s"
 msgstr "%(type)s ტიპის მქონე ტომებისა და სწრაფი ასლების ჯამური ზომა (გიბ)"
 
-msgid "Total VCPU Usage (Hours):"
-msgstr "სულ VPU-ის გამოყენება (საათები):"
-
 msgid "Total Volume Storage"
 msgstr "ტომის საცავი სულ"
 
@@ -5276,9 +5186,6 @@ msgstr "სპეცის ჩასწორება შეუძლებე�
 
 msgid "Unable to extend volume."
 msgstr "ტომის გაფართოება შეუძლებელია."
-
-msgid "Unable to fetch EC2 credentials."
-msgstr "EC2-ის ავტორიზაციის დეტალების გამოთხოვა შეუძლებელია."
 
 msgid "Unable to fetch snapshot"
 msgstr "სწრაფი ასლის გამოთხოვა შეუძლებელია"
@@ -6058,9 +5965,6 @@ msgstr "ასოცირებების განახლება"
 msgid "Update Default Quotas"
 msgstr "ნაგულისხმევი კვოტების განახლება"
 
-msgid "Update Defaults"
-msgstr "ნაგულისხმები მნიშვნელობების განახლება"
-
 msgid "Update Encrypted Volume Type"
 msgstr "დაშიფრული ტომის ტიპის განახლება"
 
@@ -6236,30 +6140,6 @@ msgstr "მომხმარებლის პაროლი წარმა�
 
 msgid "Users"
 msgstr "მომხმარებლები"
-
-msgid "VCPU"
-msgstr "VCPU"
-
-msgid "VCPU Hours"
-msgstr "VCPU საათი"
-
-msgid "VCPU Usage"
-msgstr "VCPU-ის გამოყენება"
-
-msgid "VCPUs"
-msgstr "VCPU-ები"
-
-msgid "VCPUs allocation ratio"
-msgstr "VCPU-ების გამოყოფის ფარდობა"
-
-msgid "VCPUs reserved"
-msgstr "დაცული VCPU"
-
-msgid "VCPUs total"
-msgstr "სულ VCPU"
-
-msgid "VCPUs used"
-msgstr "გამოყენებული VCPU"
 
 msgid "VDI - Virtual Disk Image"
 msgstr "VDI - დისკის ვირტუალური გამოსახულება"
@@ -6503,13 +6383,6 @@ msgstr "მაგ: Yes(დიახ)/No(არა)"
 msgid "e.g. Yes/No"
 msgstr "მაგ: Yes(დიახ)/No(არა)"
 
-msgid ""
-"flavor id can only contain alphanumeric characters, underscores, periods, "
-"hyphens, spaces. Use 'auto' to automatically generate id"
-msgstr ""
-"ტიპის ID შეიძლება, მხოლოდ, შეიცავდეს ალფარიცხვით სიმბოლოებს, ქვედა ტირეებს, "
-"გამოტოვებებს, ტირეებს. მისი ავტომატური შექმნისთვის გამოიყენეთ 'auto'"
-
 msgid "floating_ip_id"
 msgstr "floating_ip_id"
 
@@ -6532,9 +6405,6 @@ msgstr "სისტემის დიაპაზონი"
 
 msgid "undefined"
 msgstr "გაურკვეველი"
-
-msgid "unknown IP address"
-msgstr "უცნობი IP მისამართი"
 
 msgid "up"
 msgstr "მაღლა"

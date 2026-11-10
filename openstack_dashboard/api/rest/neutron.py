@@ -46,7 +46,7 @@ class Networks(generic.View):
         result = api.neutron.network_list_for_tenant(
             request, tenant_id,
             include_pre_auto_allocate=True)
-        return{'items': [n.to_dict() for n in result]}
+        return {'items': [n.to_dict() for n in result]}
 
     @rest_utils.ajax(data_required=True)
     def post(self, request):
@@ -92,7 +92,7 @@ class Subnets(generic.View):
 
         """
         result = api.neutron.subnet_list(request, **request.GET.dict())
-        return{'items': [n.to_dict() for n in result]}
+        return {'items': [n.to_dict() for n in result]}
 
     @rest_utils.ajax(data_required=True)
     def post(self, request):
@@ -137,8 +137,7 @@ class Ports(generic.View):
         The listing result is an object with property "items".  Each item is
         a port.
         """
-        # see
-        # https://github.com/openstack/neutron/blob/master/neutron/api/v2/attributes.py
+        # https://opendev.org/openstack/neutron/src/branch/master/neutron/tests/unit/extensions/v2attributes.py
         params = request.GET.dict()
         params.setdefault("project_id", request.user.project_id)
         result = api.neutron.port_list_with_trunk_types(request, **params)

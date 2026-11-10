@@ -60,7 +60,7 @@ function Server(data) {
     }
   }
   this.iconType = 'text';
-  this.icon = '\uf108'; // Server
+  this.icon = '\uf390'; // Server (desktop)
   this.networks = [];
   this.type = 'instance';
   this.ip_addresses = [];
@@ -472,7 +472,7 @@ horizon.network_topology = {
       case 'text':
         nodeEnter.append('text')
           .style('fill', 'black')
-          .style('font', '20px FontAwesome')
+          .style('font', '900 20px "Font Awesome 6 Free"')
           .attr('text-anchor', 'middle')
           .attr('dominant-baseline', 'central')
           .text(function(d) { return d.data.icon; })
@@ -1056,6 +1056,7 @@ horizon.network_topology = {
       htmlData.console_id = d.id;
       htmlData.ips = d.ip_addresses;
       htmlData.console = d.console;
+      htmlData.allow_delete = d.allow_delete_server;
       html = balloonTmpl.render(htmlData,{
         table1:deviceTmpl,
         table2:instanceTmpl
@@ -1067,6 +1068,7 @@ horizon.network_topology = {
       htmlData.subnet = subnets;
       if (d instanceof Network) {
         htmlData.delete_label = gettext('Delete Network');
+        htmlData.allow_delete = d.allow_delete_network;
         if (d.allow_delete_subnet){
           htmlData.allow_delete_subnet = d.allow_delete_subnet;
         }

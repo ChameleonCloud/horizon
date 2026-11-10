@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: horizon VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
-"POT-Creation-Date: 2025-07-08 23:51+0000\n"
+"POT-Creation-Date: 2026-04-24 08:10+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -66,12 +66,6 @@ msgstr ""
 "Backup Volume disimpan menggunakan salah satu driver cinder-backup\n"
 "    (object storage service, Ceph, NFS, dll ...).\n"
 "   Anda harus mengaktifkan salah satu layanan ini untuk membuat backup."
-
-msgid " - End"
-msgstr "Akhir"
-
-msgid " : Next hop"
-msgstr " : Next hop"
 
 msgid ""
 " A protocol entry contains information that dictates which mapping rules to "
@@ -332,10 +326,6 @@ msgstr ""
 msgid "AKI - Amazon Kernel Image"
 msgstr "AKI - Amazon Kernel Image"
 
-#, python-format
-msgid "ALLOW %(ethertype)s %(proto_port)s %(direction)s %(remote)s"
-msgstr "ALLOW %(ethertype)s %(proto_port)s %(direction)s %(remote)s"
-
 msgid "AMI - Amazon Machine Image"
 msgstr "AMI - Amazon Machine Image"
 
@@ -347,9 +337,6 @@ msgstr "API Endpoints (titk akhir API)"
 
 msgid "ARI - Amazon Ramdisk Image"
 msgstr "ARI - Amazon Ramdisk Image"
-
-msgid "Accept Transfer"
-msgstr "Accept Transfer"
 
 msgid "Accept Volume Transfer"
 msgstr "Accept Volume Transfer"
@@ -526,13 +513,6 @@ msgstr[0] "Added User"
 
 msgid "Additional Routes"
 msgstr "Additional Routes (route tambahan)"
-
-msgid ""
-"Additional routes announced to the hosts. Each entry is: destination_cidr,"
-"nexthop (e.g., 192.168.200.0/24,10.56.1.254) and one entry per line."
-msgstr ""
-"Rute tambahan mengumumkan untuk host. Setiap entri adalah: destination_cidr, "
-"nexthop (misalnya, 192.168.200.0/24,10.56.1.254) dan satu entri per baris."
 
 msgid ""
 "Additionally, some resource types may require a prefix to be used when "
@@ -953,9 +933,6 @@ msgstr "Arsitektur CPU image."
 msgid "Cancel"
 msgstr "Cancel (batal)"
 
-msgid "Cancel Transfer"
-msgstr "Membatalkan transfer"
-
 #, python-format
 msgid "Cannot find instance %s."
 msgstr "Tidak dapat menemukan instance %s."
@@ -1204,9 +1181,6 @@ msgctxt "Action log of an instance"
 msgid "Create"
 msgstr "Create (membuat)"
 
-msgid "Create A RBAC Policy"
-msgstr "Buat Kebijakan RBAC"
-
 msgid "Create An Image"
 msgstr "Membuat image"
 
@@ -1310,9 +1284,6 @@ msgstr "Membuat Subnet"
 
 msgid "Create Subnet (Quota exceeded)"
 msgstr "Buat subnet (quota terlampaui)"
-
-msgid "Create Transfer"
-msgstr "Membuat transfer"
 
 msgid "Create User"
 msgstr "Membuat user"
@@ -1593,6 +1564,9 @@ msgstr "DNS Name"
 msgid "DNS Name Servers"
 msgstr "DNS Name Servers (nameserver DNS)"
 
+msgid "DOWN"
+msgstr "DOWN (turun)"
+
 msgctxt "Admin state of a Network"
 msgid "DOWN"
 msgstr "DOWN (turun)"
@@ -1616,11 +1590,11 @@ msgctxt "Default style theme"
 msgid "Default"
 msgstr "Baku"
 
+msgid "Default Quotas"
+msgstr "Default Quotas"
+
 msgid "Default quotas updated."
 msgstr "Kuota default diperbarui."
-
-msgid "Defaults"
-msgstr "Defaults (bawaan)"
 
 msgid "Delete"
 msgid_plural "Delete"
@@ -2222,18 +2196,6 @@ msgstr "Unduh file openrc"
 msgid "Download transfer credentials"
 msgstr "Lakukan download credential transfer"
 
-msgid "EC2 Access Key"
-msgstr "EC2 Access Key"
-
-msgid "EC2 Credentials"
-msgstr "EC2 Credentials"
-
-msgid "EC2 Secret Key"
-msgstr "EC2 Secret Key"
-
-msgid "EC2 URL"
-msgstr "EC2 URL (URL EC2)"
-
 msgid ""
 "Each QoS Specs entity will have a \"Consumer\" value which indicates where "
 "the administrator would like the QoS policy to be enforced. This value can "
@@ -2574,10 +2536,6 @@ msgstr "Tipe kesalahan memperbarui sumber daya untuk namespace %s."
 msgid "Error when adding or removing hosts."
 msgstr "Terjadi kesalahan saat menambahkan atau menghapus hosts."
 
-#, python-format
-msgid "Error writing zipfile: %(exc)s"
-msgstr "Kesalahan penulisan zipfile:  %(exc)s"
-
 msgid "Errors occurred in deleting group."
 msgstr "Kesalahan terjadi dalam menghapus grup."
 
@@ -2676,14 +2634,6 @@ msgstr "FQDN"
 msgctxt "Power state of an Instance"
 msgid "Failed"
 msgstr "Failed"
-
-#, python-format
-msgid ""
-"Failed to add %(users_to_add)s project members%(group_msg)s and set project "
-"quotas."
-msgstr ""
-"Gagal menambahkan %(users_to_add)s project members%(group_msg)s dan "
-"menetapkan kuota proyek."
 
 #, python-format
 msgid "Failed to add %s project groups and update project quotas."
@@ -2796,14 +2746,6 @@ msgstr "Gagal untuk bermigrasi instances: %s"
 
 msgid "Failed to migrate volume."
 msgstr "Gagal untuk bermigrasi volume."
-
-#, python-format
-msgid ""
-"Failed to modify %(users_to_modify)s project members%(group_msg)s and update "
-"project quotas."
-msgstr ""
-"Gagal untuk memodifikasi %(users_to_modify)s project members%(group_msg)s "
-"dan memperbarui kuota proyek."
 
 #, python-format
 msgid "Failed to modify %s domain groups."
@@ -3217,14 +3159,6 @@ msgstr "Host Name ="
 msgid "Host Routes"
 msgstr "Host Routes"
 
-#, python-format
-msgid ""
-"Host Routes format error: Destination CIDR and nexthop must be specified "
-"(value=%s)"
-msgstr ""
-" Kesalahan format Host Routes: Destination CIDR dan nexthop harus ditentukan "
-"(value=%s)"
-
 msgid ""
 "Host aggregates divide an availability zone into logical units by grouping "
 "together hosts. Create a host aggregate then select the hosts contained in "
@@ -3555,9 +3489,6 @@ msgstr "Nama Instance"
 msgid "Instance Name ="
 msgstr "Instance Name ="
 
-msgid "Instance Overview"
-msgstr "Instance Overview"
-
 msgid "Instance Password is not set or is not yet available"
 msgstr "Password instance tidak diatur atau belum tersedia"
 
@@ -3763,10 +3694,6 @@ msgstr "Live Migrate Instance (migrasi instance secara live)"
 
 msgid "Live migrate an instance to a specific host."
 msgstr "Live migrate suatu instance ke suatu host spesifik."
-
-#, python-format
-msgid "Load Balancer VIP %s"
-msgstr "Load Balancer VIP %s"
 
 msgid "Local"
 msgstr "Lokal"
@@ -4007,12 +3934,6 @@ msgstr ""
 
 msgid "Migration Policy"
 msgstr "Migration Policy"
-
-msgid "Min Disk"
-msgstr "Min Disk"
-
-msgid "Min RAM"
-msgstr "Min RAM"
 
 msgid "Min. Size (MB) ="
 msgstr "Min. Size (MB) ="
@@ -4479,9 +4400,6 @@ msgstr "Number of Instances"
 msgid "Number of Snapshots"
 msgstr "Number of Snapshots"
 
-msgid "Number of VCPUs"
-msgstr "Jumlah VCPU"
-
 msgid "Number of Volumes"
 msgstr "Number of Volumes"
 
@@ -4841,9 +4759,6 @@ msgstr "Public (public):"
 msgid "QCOW2 - QEMU Emulator"
 msgstr "QCOW2 - QEMU Emulator"
 
-msgid "QOS Policy ID"
-msgstr "QOS Policy ID"
-
 msgid "QoS Policy"
 msgstr "Kebijakan QoS"
 
@@ -4924,12 +4839,6 @@ msgstr "Detail Kebijakan RBAC"
 msgid "RBAC Policy was successfully created."
 msgstr "Kebijakan RBAC berhasil dibuat."
 
-msgid "RX/TX Factor"
-msgstr "RX/TX Factor (faktor RX/TX)"
-
-msgid "RX/TX factor"
-msgstr "RX/TX factor (faktor RX/TX)"
-
 msgid "Ramdisk"
 msgstr "Ramdisk"
 
@@ -4999,9 +4908,6 @@ msgstr "Rebuilding"
 #, python-format
 msgid "Rebuilding instance %s."
 msgstr "Pembangunan kembali instance %s."
-
-msgid "Recreate EC2 Credentials"
-msgstr "Recreate EC2 Credentials (membuat lags EC2 Credential)"
 
 #, python-format
 msgid "Regenerate and download Key Pair &quot;%(keypair_name)s&quot;"
@@ -5334,9 +5240,6 @@ msgstr "Running"
 
 msgid "Running Instance Migration Type"
 msgstr "Running Instance Migration Type (menjalankan tipe migrasi Instance)"
-
-msgid "S3 URL"
-msgstr "S3 URL (URL S3)"
 
 msgid "SLAAC: Address discovered from OpenStack Router"
 msgstr "SLAAC: Alamat ditemukan dari OpenStack Router"
@@ -6032,9 +5935,6 @@ msgstr "Berhasil diimpor kunci publik: %s"
 msgid "Successfully modified QoS Spec consumer."
 msgstr "Berhasil diubah konsumen QoS Spec."
 
-msgid "Successfully recreated ec2 credentials."
-msgstr "Berhasil diciptakan kepercayaan ec2."
-
 msgid "Successfully rescued instance"
 msgstr "Instance yang berhasil diselamatkan"
 
@@ -6138,9 +6038,6 @@ msgstr "Target Host"
 
 msgid "Target Project"
 msgstr "Proyek Target"
-
-msgid "Target Tenant"
-msgstr "Tenant target"
 
 msgid "Task"
 msgstr "Tugas"
@@ -6638,15 +6535,6 @@ msgstr "Total Size of Volumes and Snapshots (GiB)"
 msgid "Total Size of Volumes and Snapshots (GiB) of Type %(type)s"
 msgstr "Total Ukuran Volume dan Snapshots (GIB) Tipe %(type)s"
 
-msgid "Total VCPU Usage (Hours):"
-msgstr "Total VCPU Usage (Hours):"
-
-msgid ""
-"Total VCPU usage (Number of VCPU in instance * Hours Used) for the project"
-msgstr ""
-"Total penggunaan VCPU (Jumlah VCPU dalam instance * Jam Digunakan) untuk  "
-"proyek"
-
 msgid "Total Volume Storage"
 msgstr "Total Volume Storage"
 
@@ -6672,8 +6560,15 @@ msgstr "Trunks"
 msgid "Type"
 msgstr "Tipe"
 
+msgid "Type ="
+msgstr "Type =    (tipe=)"
+
 msgid "Type of backend device identifier provided"
 msgstr "Tipe identifier perangkat backend yang tersedia"
+
+#. Translators: Admin state status for router.
+msgid "UP"
+msgstr "UP (naik)"
 
 msgctxt "Admin state of a Network"
 msgid "UP"
@@ -6952,9 +6847,6 @@ msgstr "Tidak dapat mengedit tipe volume spesifikasi tambahan."
 msgid "Unable to extend volume."
 msgstr "Tidak dapat memperbesar volume."
 
-msgid "Unable to fetch EC2 credentials."
-msgstr "Tidak dapat mengambil mandat EC2."
-
 msgid "Unable to fetch snapshot"
 msgstr "Tidak dapat mengambil snapshot"
 
@@ -6963,9 +6855,6 @@ msgstr "Tidak dapat mengambil snapshots"
 
 msgid "Unable to find default role."
 msgstr "Tidak dapat menemukan peran default."
-
-msgid "Unable to get EC2 credentials"
-msgstr "Tidak dapat mendapatkan mandat EC2"
 
 #, python-format
 msgid "Unable to get MKS console for instance \"%s\"."
@@ -7091,15 +6980,6 @@ msgstr "Alamat IP %s tidak dimengerti."
 
 msgid "Unable to rebuild instance."
 msgstr "Tidak mampu untuk membangun kembali instance."
-
-msgid "Unable to recreate ec2 credentials. Failed to create ec2 credentials."
-msgstr ""
-"Tidak dapat membuat kembali kredensial ec2. Gagal membuat kredensial ec2."
-
-msgid "Unable to recreate ec2 credentials. Failed to delete ec2 credentials."
-msgstr ""
-"Tidak dapat membuat kembali kredensial ec2 (ec2 credentials)  Gagal "
-"menghapus kredensial ec2."
 
 msgid "Unable to register identity provider."
 msgstr "Tidak dapat mendaftar penyedia identitas."
@@ -7527,9 +7407,6 @@ msgstr "Tidak dapat mengambil rincian subnet"
 msgid "Unable to retrieve subnet details."
 msgstr "Tidak dapat mengambil rincian subnet."
 
-msgid "Unable to retrieve tenant limits."
-msgstr "Tidak dapat mengambil batas penyewa (tenant)."
-
 msgid "Unable to retrieve the aggregate to be updated"
 msgstr "Tidak dapat mengambil daftar kelompok yang akan di perbaharui."
 
@@ -7906,9 +7783,6 @@ msgstr "Update Associations (asosiasi pembaruan)"
 msgid "Update Default Quotas"
 msgstr "Update Default Quotas"
 
-msgid "Update Defaults"
-msgstr "Update Defaults "
-
 msgid "Update Encrypted Volume Type"
 msgstr "Update Encrypted Volume Type"
 
@@ -8129,18 +8003,6 @@ msgstr " ID unik user-defined untuk mengidentifikasi pemetaan."
 
 msgid "Users"
 msgstr "Users"
-
-msgid "VCPU"
-msgstr "VCPUs"
-
-msgid "VCPU Hours"
-msgstr "VCPU Hours"
-
-msgid "VCPU Usage"
-msgstr "Penggunaan VCPU"
-
-msgid "VCPUs"
-msgstr "VCPUs"
 
 msgid "VDI - Virtual Disk Image"
 msgstr "VDI - Virtual Disk Image"
@@ -8614,9 +8476,6 @@ msgstr "no (tidak)"
 
 msgid "undefined"
 msgstr "Tidak terdefinisi"
-
-msgid "unknown IP address"
-msgstr "alamat IP yang tidak diketahui"
 
 msgid "up"
 msgstr "up (naik)"

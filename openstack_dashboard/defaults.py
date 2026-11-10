@@ -63,15 +63,9 @@ STATIC_URL = None
 POLICY_FILES_PATH = os.path.join(_get_root_path(), "conf")
 
 # Map of local copy of service policy files.
-# Please insure that your identity policy file matches the one being used on
-# your keystone servers. There is an alternate policy file that may be used
-# in the Keystone v3 multi-domain case, policy.v3cloudsample.json.
-# This file is not included in the Horizon repository by default but can be
-# found at
-# http://git.openstack.org/cgit/openstack/keystone/tree/etc/ \
-# policy.v3cloudsample.json
 # Having matching policy files on the Horizon and Keystone servers is essential
-# for normal operation. This holds true for all services and their policy files.
+# for normal operation. This holds true for all services and their policy
+# files.
 POLICY_FILES = {
     'identity': 'keystone_policy.yaml',
     'compute': 'nova_policy.yaml',
@@ -328,6 +322,14 @@ SWIFT_FILE_TRANSFER_CHUNK_SIZE = 512 * 1024
 # name to be rendered.
 SWIFT_STORAGE_POLICY_DISPLAY_NAMES = {}
 
+# Perform full listing of containers and objects in the Swift
+# panel. Defaults to True.
+#
+# Note that the Swift panel does client side pagination and retrieves
+# all containers and objects from the API that can have an negative
+# effect on Horizon's resource consumption if this is True.
+SWIFT_PANEL_FULL_LISTING = True
+
 # NOTE: The default value of USER_MENU_LINKS will be set after loading
 # local_settings if it is not configured.
 USER_MENU_LINKS = None
@@ -398,6 +400,11 @@ OPENSTACK_KEYSTONE_BACKEND = {
 # will require the user to enter the Domain name in addition to the username
 # for login.
 OPENSTACK_KEYSTONE_MULTIDOMAIN_SUPPORT = False
+# When multidomain support is enabled and user has any roles in a domain,
+# Horizon will mostly attempt to use domain scope for calls to Keystone.
+# This behavior does not work properly with some policy combinations,
+# and can be disabled here.
+OPENSTACK_KEYSTONE_PREFER_DOMAIN_TOKEN = True
 # Set this to True to enable panels that provide the ability for users to
 # manage Identity Providers (IdPs) and establish a set of rules to map
 # federation protocol attributes to Identity API attributes.

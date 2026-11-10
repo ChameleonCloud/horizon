@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: horizon VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
-"POT-Creation-Date: 2025-07-08 23:51+0000\n"
+"POT-Creation-Date: 2026-04-24 08:10+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -67,12 +67,6 @@ msgstr ""
 "(objektmemorila servo, Ceph, NFS, ktp ...). Vi devas havi unu el ĉi tiuj "
 "servoj aktivigitaj por krei sekurkopion.\n"
 "  "
-
-msgid " - End"
-msgstr "- Fino"
-
-msgid " : Next hop"
-msgstr ": Sevanta staciono"
 
 msgid ""
 " A protocol entry contains information that dictates which mapping rules to "
@@ -282,12 +276,6 @@ msgstr ""
 "kaj aplikas malsamajn sekurecajn grupojn per pordo, anstataŭe uzu \"Redaktu "
 "Pordo Sekurecajn Grupojn\"."
 
-#, python-format
-msgid ""
-"<span class=&quot;word-wrap&quot;>Flavor Details: %(name)s</span>\">%(name)s"
-msgstr ""
-"<span class=&quot;word-wrap&quot;>Flavor Details: %(name)s</span>\">%(name)s"
-
 msgid "A brief description of the security group rule you are adding"
 msgstr "Mallonga priskribo de la regularo de sekureco grupo vi aldonas"
 
@@ -336,10 +324,6 @@ msgstr ""
 msgid "AKI - Amazon Kernel Image"
 msgstr "AKI - Amazon Kerna Imago"
 
-#, python-format
-msgid "ALLOW %(ethertype)s %(proto_port)s %(direction)s %(remote)s"
-msgstr "PERMESU %(ethertype)s %(proto_port)s %(direction)s %(remote)s"
-
 msgid "AMI - Amazon Machine Image"
 msgstr "AMI - Amazon Maŝina Imago"
 
@@ -351,9 +335,6 @@ msgstr "API Finpuntoj"
 
 msgid "ARI - Amazon Ramdisk Image"
 msgstr "ARI - Amazon Ramdiska Imago"
-
-msgid "Accept Transfer"
-msgstr "Akceptu Transigon"
 
 msgid "Accept Volume Transfer"
 msgstr "Akceptu Volumo Transigon"
@@ -533,14 +514,6 @@ msgstr[1] "Aldonitaj Uzantoj"
 
 msgid "Additional Routes"
 msgstr "Aldonaj Kursoj"
-
-msgid ""
-"Additional routes announced to the hosts. Each entry is: destination_cidr,"
-"nexthop (e.g., 192.168.200.0/24,10.56.1.254) and one entry per line."
-msgstr ""
-"Aldonaj kursoj anoncita al la gastigantoj. Ĉiu enigo estas:  "
-"destination_cidr,nexthop (ekz., 192.168.200.0/24,10.56.1.254) kaj unu enigo "
-"po linio."
 
 msgid ""
 "Additionally, some resource types may require a prefix to be used when "
@@ -970,9 +943,6 @@ msgstr "CPU arkitekturo de la bildo."
 msgid "Cancel"
 msgstr "Malfaru"
 
-msgid "Cancel Transfer"
-msgstr "Malfari Transigon"
-
 #, python-format
 msgid "Cannot find instance %s."
 msgstr "Neeblas trovi apero %s."
@@ -1235,9 +1205,6 @@ msgctxt "Action log of an instance"
 msgid "Create"
 msgstr "Kreu"
 
-msgid "Create A RBAC Policy"
-msgstr "Kreu RBAC Regularo"
-
 msgid "Create An Image"
 msgstr "Kreu Bildigon"
 
@@ -1340,9 +1307,6 @@ msgstr "Kreu Subreton"
 
 msgid "Create Subnet (Quota exceeded)"
 msgstr "Kreu Sunreton (Kvota transpasita)"
-
-msgid "Create Transfer"
-msgstr "Krei Transigon"
 
 msgid "Create User"
 msgstr "Kreu Uzantojn"
@@ -1646,11 +1610,11 @@ msgctxt "Default style theme"
 msgid "Default"
 msgstr "Defaŭlto"
 
+msgid "Default Quotas"
+msgstr "Defaŭltaj Kvotoj"
+
 msgid "Default quotas updated."
 msgstr "Defaŭlt kvotoj ĝisdatigita."
-
-msgid "Defaults"
-msgstr "Defaŭltojn"
 
 msgid "Delete"
 msgid_plural "Delete"
@@ -2356,18 +2320,6 @@ msgstr "Elŝuti openrc dosieron"
 msgid "Download transfer credentials"
 msgstr "Elŝuti transigo legitimaĵojn"
 
-msgid "EC2 Access Key"
-msgstr "EC2 Aliro Klavo"
-
-msgid "EC2 Credentials"
-msgstr "EC2 legitimaĵojn"
-
-msgid "EC2 Secret Key"
-msgstr "EC2 Sekreto Klavo"
-
-msgid "EC2 URL"
-msgstr "EC2 URL"
-
 msgid ""
 "Each QoS Specs entity will have a \"Consumer\" value which indicates where "
 "the administrator would like the QoS policy to be enforced. This value can "
@@ -2717,10 +2669,6 @@ msgstr "Eraro ĝisdatigi risurco tipojnpor nomspaco %s."
 msgid "Error when adding or removing hosts."
 msgstr "Eraro kiam aldoni au forigi Gastigojn."
 
-#, python-format
-msgid "Error writing zipfile: %(exc)s"
-msgstr "Eraro skribi zipdosiero: %(exc)s"
-
 msgid "Errors occurred in deleting group."
 msgstr "Eraroj okazis forigante grupo."
 
@@ -2830,14 +2778,6 @@ msgstr "Kialo Malsukceso"
 msgctxt "Power state of an Instance"
 msgid "Failed"
 msgstr "Malsukcesita"
-
-#, python-format
-msgid ""
-"Failed to add %(users_to_add)s project members%(group_msg)s and set project "
-"quotas."
-msgstr ""
-"Malsukcesis aldoni %(users_to_add)s projekto membrojn %(group_msg)s kaj "
-"agordi projekto kvotojn."
 
 #, python-format
 msgid "Failed to add %s project groups and update project quotas."
@@ -2953,14 +2893,6 @@ msgstr "Malsukcesis migradi instancojn: %s"
 
 msgid "Failed to migrate volume."
 msgstr "Malsukcesis migri volumon."
-
-#, python-format
-msgid ""
-"Failed to modify %(users_to_modify)s project members%(group_msg)s and update "
-"project quotas."
-msgstr ""
-"Malsukcesis modifi %(users_to_modify)s projekto membrojn%(group_msg)s kaj "
-"ĝisdatigi projekto kvotojn."
 
 #, python-format
 msgid "Failed to modify %s domain groups."
@@ -3400,14 +3332,6 @@ msgstr "Gastiganto Nomo  ="
 msgid "Host Routes"
 msgstr "Gastiganto Kursoj"
 
-#, python-format
-msgid ""
-"Host Routes format error: Destination CIDR and nexthop must be specified "
-"(value=%s)"
-msgstr ""
-"Gastiganto Kurso formato eraro: Destono CIDR kaj 'nexthop' devas esti "
-"difinita (value=%s)"
-
 msgid ""
 "Host aggregates divide an availability zone into logical units by grouping "
 "together hosts. Create a host aggregate then select the hosts contained in "
@@ -3743,9 +3667,6 @@ msgstr "Apero Nomo"
 msgid "Instance Name ="
 msgstr "Apero Nomo ="
 
-msgid "Instance Overview"
-msgstr "Apero Superrigardo"
-
 msgid "Instance Password is not set or is not yet available"
 msgstr "Apero Pasvorto ne estas agordita aŭ ankoraŭ ne estas disponebla "
 
@@ -3956,10 +3877,6 @@ msgstr "Tujtuje Transmeti Aperon"
 
 msgid "Live migrate an instance to a specific host."
 msgstr "Tuja transmeto  de apero al specifa gastiganto."
-
-#, python-format
-msgid "Load Balancer VIP %s"
-msgstr "Ŝarĝodistribuilo  VIP %s "
 
 msgid "Local"
 msgstr "Lokala"
@@ -4215,12 +4132,6 @@ msgstr "Transmeti aperojn povus kaŭzi iajn nekorekteblajn rezultojn."
 
 msgid "Migration Policy"
 msgstr "Migrado Reĝimo"
-
-msgid "Min Disk"
-msgstr "Min Disko"
-
-msgid "Min RAM"
-msgstr "Min RAM"
 
 msgid "Min. Size (MB) ="
 msgstr "Min. Grando (MB) ="
@@ -4685,9 +4596,6 @@ msgstr "Kvanto de Aperoj"
 msgid "Number of Snapshots"
 msgstr "Kvanto de Savkopioj"
 
-msgid "Number of VCPUs"
-msgstr "Kvanto de VCPUs"
-
 msgid "Number of Volumes"
 msgstr "Kvanto de Volumoj"
 
@@ -4800,21 +4708,6 @@ msgstr ""
 "volumo transigon estas kreita en donacinta projekto, ĝi  povas esti "
 "\"akceptita\" de ricevinta projketo. Tiu estas ekvilalenta al <tt>openstack "
 "volume transfer create</tt> komando."
-
-msgid "PCPU Usage"
-msgstr "PCPU Uzado"
-
-msgid "PCPUs allocation ratio"
-msgstr "PCPUs atribua proporcio"
-
-msgid "PCPUs reserved"
-msgstr "PCPUs reservitaj"
-
-msgid "PCPUs total"
-msgstr "PCPUs entute"
-
-msgid "PCPUs used"
-msgstr "PCPUs uzitaj"
 
 msgid "PLOOP - Virtuozzo/Parallels Loopback Disk"
 msgstr "PLOOP - Virtuozzo/Parallels Inverscicla Disko"
@@ -5063,9 +4956,6 @@ msgstr "Publika:"
 msgid "QCOW2 - QEMU Emulator"
 msgstr "QCOW2 - QEMU Imitilo"
 
-msgid "QOS Policy ID"
-msgstr "QOS Regularo ID"
-
 msgid "QoS Policy"
 msgstr "QOS Regularo"
 
@@ -5159,12 +5049,6 @@ msgstr "RBAC Regularo Detajloj"
 msgid "RBAC Policy was successfully created."
 msgstr "RBAC Regularo estis sukcese kreita."
 
-msgid "RX/TX Factor"
-msgstr "RX/TX Faktoro"
-
-msgid "RX/TX factor"
-msgstr "RX/TX faktoro"
-
 msgid "Ramdisk"
 msgstr "RAM-disko"
 
@@ -5234,9 +5118,6 @@ msgstr "Rekonstruanta"
 #, python-format
 msgid "Rebuilding instance %s."
 msgstr "Rekonstrui apero %s."
-
-msgid "Recreate EC2 Credentials"
-msgstr "Rekrei EC2 legitimaĵojn"
 
 #, python-format
 msgid "Regenerate and download Key Pair &quot;%(keypair_name)s&quot;"
@@ -5583,9 +5464,6 @@ msgstr "Funkcianta"
 
 msgid "Running Instance Migration Type"
 msgstr "Funkcianta apero transmeta tipo    "
-
-msgid "S3 URL"
-msgstr "S3 URL"
 
 msgid "SLAAC: Address discovered from OpenStack Router"
 msgstr "SLAAC: Adreso malkovrita de OpenStack Enkursigilo"
@@ -6313,9 +6191,6 @@ msgstr "Sukcese importita publikan ŝlosilon : %s"
 msgid "Successfully modified QoS Spec consumer."
 msgstr "Sukcese modikita QoS Spec konsumanto."
 
-msgid "Successfully recreated ec2 credentials."
-msgstr "Sukcese rekreita  ec2 legitimaĵojn."
-
 msgid "Successfully redirected"
 msgid_plural "Successfully redirected"
 msgstr[0] "Sukcese redirektita"
@@ -6431,9 +6306,6 @@ msgstr "Celo Gastiganto"
 
 msgid "Target Project"
 msgstr "Celo Projekto"
-
-msgid "Target Tenant"
-msgstr "Celgastiganto"
 
 msgid "Task"
 msgstr "Tasko"
@@ -6955,14 +6827,6 @@ msgstr "Totala Grando de Volumoj kaj Savkopioj (GiB)"
 msgid "Total Size of Volumes and Snapshots (GiB) of Type %(type)s"
 msgstr "Totala Grando de Volumoj kaj Savkopioj (GiB) de Tipo %(type)s"
 
-msgid "Total VCPU Usage (Hours):"
-msgstr "Totala VCPU Uzado (Horoj):"
-
-msgid ""
-"Total VCPU usage (Number of VCPU in instance * Hours Used) for the project"
-msgstr ""
-"Tuta VCPU Uzado (Nombro da VCPU en aperoj * Horoj Uzota) por la projekto"
-
 msgid "Total Volume Storage"
 msgstr "Totala Volumo Memorilo"
 
@@ -7269,9 +7133,6 @@ msgstr "Neeblas redakti volumo tipo ekstra specifon."
 msgid "Unable to extend volume."
 msgstr "Neeblas etendi volumon."
 
-msgid "Unable to fetch EC2 credentials."
-msgstr "Neeblas venigi EC2 legitimaĵojn."
-
 msgid "Unable to fetch snapshot"
 msgstr "Neeblas venigi la savkopion."
 
@@ -7283,9 +7144,6 @@ msgstr "Neeblas trovi glitan IP."
 
 msgid "Unable to find default role."
 msgstr "Neeblas trovi defaŭltan rolon."
-
-msgid "Unable to get EC2 credentials"
-msgstr "Neeblas ricevi EC2 legitimaĵojn"
 
 #, python-format
 msgid "Unable to get MKS console for instance \"%s\"."
@@ -7411,12 +7269,6 @@ msgstr "Neebla sintakse analizi IP adreso %s."
 
 msgid "Unable to rebuild instance."
 msgstr "Neeblas rekonstrui aperon."
-
-msgid "Unable to recreate ec2 credentials. Failed to create ec2 credentials."
-msgstr "Neeblas rekrei ec2 legitimaĵojn. Malsukcesis krei ec2 legitimaĵojn."
-
-msgid "Unable to recreate ec2 credentials. Failed to delete ec2 credentials."
-msgstr "Neeblas rekrei ec2 legitimaĵojn. Malsukcesis forigi ec2 legitimaĵojn,"
 
 msgid "Unable to register identity provider."
 msgstr "Neeblas registri identeco provizanto."
@@ -7852,9 +7704,6 @@ msgstr "Neeblas ricevi subretaj detajlojn"
 msgid "Unable to retrieve subnet details."
 msgstr "Neeblas ricevi subretaj detajlojn."
 
-msgid "Unable to retrieve tenant limits."
-msgstr "Neeblas ricevi tenanto limitojn."
-
 msgid "Unable to retrieve the aggregate to be updated"
 msgstr "Neebla trovi agregato ĝisdatiĝinda."
 
@@ -8260,9 +8109,6 @@ msgstr "Ĝisdatigu   asociigojn  "
 msgid "Update Default Quotas"
 msgstr "Ĝisdatigu Defaŭlt Kvotojn"
 
-msgid "Update Defaults"
-msgstr "Ĝisdatigu Defaŭltojn"
-
 msgid "Update Encrypted Volume Type"
 msgstr "Ĝisdatigu ĉifraditan Volumo Tipon"
 
@@ -8483,30 +8329,6 @@ msgstr "Uzanto-difinita unuopa id-on por identigi la mapigon."
 
 msgid "Users"
 msgstr "Uzantoj"
-
-msgid "VCPU"
-msgstr "VCPU"
-
-msgid "VCPU Hours"
-msgstr "VCPU Horoj"
-
-msgid "VCPU Usage"
-msgstr "VCPU Uzado"
-
-msgid "VCPUs"
-msgstr "VCPUs"
-
-msgid "VCPUs allocation ratio"
-msgstr "VCPUs atribua proporcio"
-
-msgid "VCPUs reserved"
-msgstr "VCPUs reservitaj"
-
-msgid "VCPUs total"
-msgstr "VCPUs entute"
-
-msgid "VCPUs used"
-msgstr "VCPUs uzitaj"
 
 msgid "VDI - Virtual Disk Image"
 msgstr "VDI - Virtuala Disko imago"
@@ -8961,13 +8783,6 @@ msgstr "ekz. Jes / Ne"
 msgid "e.g. Yes/No"
 msgstr "ekz. Jes/Ne"
 
-msgid ""
-"flavor id can only contain alphanumeric characters, underscores, periods, "
-"hyphens, spaces. Use 'auto' to automatically generate id"
-msgstr ""
-"speco id povas enhavi nur alfanombrajn signojn, substrekojn, punktojn, "
-"streketojn, spacojn. Uzu 'aŭto' por aŭtomate generi identigilon"
-
 msgid "floating_ip_id"
 msgstr "floating_ip_id"
 
@@ -8990,9 +8805,6 @@ msgstr "sistema amplekso"
 
 msgid "undefined"
 msgstr "nedifinita"
-
-msgid "unknown IP address"
-msgstr "nekonata IP adreso"
 
 msgid "up"
 msgstr "supren"

@@ -3,9 +3,9 @@
 # suhartono <cloudsuhartono@gmail.com>, 2020. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: horizon 25.2.0.dev70\n"
+"Project-Id-Version: horizon 25.7.2.dev3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-24 23:07+0000\n"
+"POT-Creation-Date: 2026-04-24 08:10+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -25,6 +25,9 @@ msgstr ":launchpad:`blazar`"
 msgid ":launchpad:`designate-dashboard`"
 msgstr ":launchpad:`designate-dashboard`"
 
+msgid ":launchpad:`ironic-ui`"
+msgstr ":launchpad:`ironic-ui`"
+
 msgid ":launchpad:`magnum-ui`"
 msgstr ":launchpad:`magnum-ui`"
 
@@ -37,20 +40,11 @@ msgstr ":launchpad:`masakari`"
 msgid ":launchpad:`mistral`"
 msgstr ":launchpad:`mistral`"
 
-msgid ":launchpad:`monasca`"
-msgstr ":launchpad:`monasca`"
-
-msgid ":launchpad:`murano`"
-msgstr ":launchpad:`murano`"
+msgid ":launchpad:`neutron-fwaas-dashboard`"
+msgstr ":launchpad:`neutron-fwaas-dashboard`"
 
 msgid ":launchpad:`neutron-vpnaas-dashboard`"
 msgstr ":launchpad:`neutron-vpnaas-dashboard`"
-
-msgid ":launchpad:`senlin-dashboard`"
-msgstr ":launchpad:`senlin-dashboard`"
-
-msgid ":launchpad:`solum`"
-msgstr ":launchpad:`solum`"
 
 msgid ":launchpad:`tacker`"
 msgstr ":launchpad:`tacker`"
@@ -100,29 +94,17 @@ msgstr ":opendev-repo:`openstack/masakari-dashboard`"
 msgid ":opendev-repo:`openstack/mistral-dashboard`"
 msgstr ":opendev-repo:`openstack/mistral-dashboard`"
 
-msgid ":opendev-repo:`openstack/monasca-ui`"
-msgstr ":opendev-repo:`openstack/monasca-ui`"
-
-msgid ":opendev-repo:`openstack/murano-dashboard`"
-msgstr ":opendev-repo:`openstack/murano-dashboard`"
-
 msgid ":opendev-repo:`openstack/networking-bgpvpn`"
 msgstr ":opendev-repo:`openstack/networking-bgpvpn`"
+
+msgid ":opendev-repo:`openstack/neutron-fwaas-dashboard`"
+msgstr ":opendev-repo:`openstack/neutron-fwaas-dashboard`"
 
 msgid ":opendev-repo:`openstack/neutron-vpnaas-dashboard`"
 msgstr ":opendev-repo:`openstack/neutron-vpnaas-dashboard`"
 
 msgid ":opendev-repo:`openstack/octavia-dashboard`"
 msgstr ":opendev-repo:`openstack/octavia-dashboard`"
-
-msgid ":opendev-repo:`openstack/sahara-dashboard`"
-msgstr ":opendev-repo:`openstack/sahara-dashboard`"
-
-msgid ":opendev-repo:`openstack/senlin-dashboard`"
-msgstr ":opendev-repo:`openstack/senlin-dashboard`"
-
-msgid ":opendev-repo:`openstack/solum-dashboard`"
-msgstr ":opendev-repo:`openstack/solum-dashboard`"
 
 msgid ":opendev-repo:`openstack/tacker-horizon`"
 msgstr ":opendev-repo:`openstack/tacker-horizon`"
@@ -142,32 +124,17 @@ msgstr ":opendev-repo:`openstack/zaqar-ui`"
 msgid ":opendev-repo:`openstack/zun-ui`"
 msgstr ":opendev-repo:`openstack/zun-ui`"
 
-msgid ":ref:`install-customizing` describes how to customize horizon."
-msgstr ":ref:`install-customizing` menjelaskan cara menyesuaikan horizon."
-
-msgid ":ref:`install-settings` lists the available settings for horizon."
-msgstr ":ref:`install-settings` daftar pengaturan yang tersedia untuk horizon."
-
 msgid ":storyboard:`openstack/adjutant-ui`"
 msgstr ":storyboard:`openstack/adjutant-ui`"
 
 msgid ":storyboard:`openstack/cloudkitty-dashboard`"
 msgstr ":storyboard:`openstack/cloudkitty-dashboard`"
 
-msgid ":storyboard:`openstack/freezer-web-ui`"
-msgstr ":storyboard:`openstack/freezer-web-ui`"
-
 msgid ":storyboard:`openstack/heat-dashboard`"
 msgstr ":storyboard:`openstack/heat-dashboard`"
 
-msgid ":storyboard:`openstack/ironic-ui`"
-msgstr ":storyboard:`openstack/ironic-ui`"
-
 msgid ":storyboard:`openstack/octavia-dashboard`"
 msgstr ":storyboard:`openstack/octavia-dashboard`"
-
-msgid ":storyboard:`openstack/sahara-dashboard`"
-msgstr ":storyboard:`openstack/sahara-dashboard`"
 
 msgid ":storyboard:`openstack/vitrage-dashboard`"
 msgstr ":storyboard:`openstack/vitrage-dashboard`"
@@ -182,9 +149,6 @@ msgstr ""
 "berguna untuk pekerjaan pengembangan, tetapi berpotensi tidak aman dan tidak "
 "boleh digunakan dalam produksi. Lihat https://docs.djangoproject.com/en/dev/"
 "ref/settings/#allowed-hosts untuk informasi lebih lanjut."
-
-msgid "Access the dashboard using a web browser at ``http://controller/``."
-msgstr "Akses dasbor menggunakan browser web di ``http://controller/``."
 
 msgid ""
 "Access the dashboard using a web browser at ``http://controller/dashboard``."
@@ -220,15 +184,6 @@ msgid ""
 msgstr ""
 "Setelah Anda menginstal dan mengkonfigurasi dasbor, Anda dapat menyelesaikan "
 "tugas-tugas berikut:"
-
-msgid ""
-"All other services are optional. Horizon supports the following services as "
-"of the Stein release. If the keystone endpoint for a service is configured, "
-"horizon detects it and enables its support automatically."
-msgstr ""
-"Semua layanan lain bersifat opsional. Horizon mendukung layanan berikut pada "
-"rilis Stein. Jika keystone endpoint  untuk layanan dikonfigurasi, horizon "
-"mendeteksi dan memungkinkan dukungannya secara otomatis."
 
 msgid "Allow your hosts to access the dashboard:"
 msgstr "Izinkan host Anda mengakses dasbor:"
@@ -308,9 +263,6 @@ msgstr ""
 "Konfigurasikan dasbor untuk menggunakan layanan OpenStack pada simpul "
 "``controller ``:"
 
-msgid "Configure the web server:"
-msgstr "Konfigurasikan server web:"
-
 msgid ""
 "Create ``openstack_dashboard/local/local_settings.py``. It is usually a good "
 "idea to copy ``openstack_dashboard/local/local_settings.py.example`` and "
@@ -382,13 +334,6 @@ msgstr ""
 "Edit file ``/etc/openstack-dashboard/local_settings`` dan selesaikan "
 "tindakan berikut:"
 
-msgid ""
-"Edit the ``/srv/www/openstack-dashboard/openstack_dashboard/local/"
-"local_settings.py`` file and complete the following actions:"
-msgstr ""
-"Edit file  ``/srv/www/openstack-dashboard/openstack_dashboard/local/"
-"local_settings.py`` dan selesaikan tindakan berikut:"
-
 msgid "Enable support for domains:"
 msgstr "Aktifkan dukungan untuk domain:"
 
@@ -440,16 +385,6 @@ msgstr ""
 "Horizon juga mendukung banyak layanan OpenStack lainnya melalui plugin. "
 "Untuk informasi lebih lanjut, lihat the :ref:`install-plugin-registry`."
 
-msgid ""
-"Horizon also uses a number of 3rd-party clients which log separately. The "
-"log level for these can still be controlled through Horizon's ``LOGGING`` "
-"config, however behaviors may vary beyond Horizon's control."
-msgstr ""
-"Horizon juga menggunakan sejumlah klien pihak ketiga yang masuk secara "
-"terpisah. Tingkat log untuk ini masih dapat dikontrol melalui konfigurasi "
-"``LOGGING``  Horizon, namun perilaku dapat bervariasi di luar kendali "
-"Horizon."
-
 msgid "Horizon plugins"
 msgstr "Horizon plugins"
 
@@ -461,15 +396,6 @@ msgstr ""
 "Horizon menggunakan `Django's sessions framework`_ untuk menangani data "
 "sesi. Ada banyak sesi backend yang tersedia, yang dipilih melalui pengaturan "
 "``SESSION_ENGINE`` di file ``local_settings.py`` Anda."
-
-msgid ""
-"Horizons uses Django's logging configuration mechanism, which can be "
-"customized by altering the ``LOGGING`` dictionary in ``local_settings.py``. "
-"By default, Horizon's logging example sets the log level to ``INFO``."
-msgstr ""
-"Horizons menggunakan mekanisme konfigurasi Django's logging, yang dapat "
-"dikustomisasi dengan mengubah kamus ``LOGGING`` di ``local_settings.py``. "
-"Secara default, contoh Horizon's logging menyetel tingkat log ke `` INFO``."
 
 msgid ""
 "If you chose networking option 1, disable support for layer-3 networking "
@@ -507,12 +433,6 @@ msgstr "Instal dan konfigurasikan untuk Red Hat Enterprise Linux dan CentOS"
 
 msgid "Install and configure for Ubuntu"
 msgstr "Instal dan konfigurasikan untuk Ubuntu"
-
-msgid "Install and configure for openSUSE and SUSE Linux Enterprise"
-msgstr "Instal dan konfigurasikan untuk openSUSE dan SUSE Linux Enterprise"
-
-msgid "Install the horizon python module into your system"
-msgstr "Instal modul horizon python ke dalam sistem Anda"
 
 msgid "Install the packages:"
 msgstr "Instal paket:"
@@ -712,27 +632,11 @@ msgstr ""
 "resmi."
 
 msgid ""
-"This page covers the basic installation of horizon in a production "
-"environment. If you are looking for a developer environment, see :ref:"
-"`quickstart`."
-msgstr ""
-"Halaman ini mencakup pemasangan horizon dasar dalam lingkungan produksi. "
-"Jika Anda mencari lingkungan pengembang, lihat :ref:`quickstart`."
-
-msgid ""
 "This section assumes proper installation, configuration, and operation of "
 "the Identity service using the Apache HTTP server and Memcached service."
 msgstr ""
 "Bagian ini mengasumsikan instalasi, konfigurasi, dan pengoperasian layanan "
 "Identity yang benar menggunakan server HTTP Apache dan layanan Memcache."
-
-msgid ""
-"This section contains a small summary of the critical settings required to "
-"run horizon. For more details, please refer to :ref:`install-settings`."
-msgstr ""
-"Bagian ini berisi ringkasan kecil dari pengaturan kritis yang diperlukan "
-"untuk menjalankan horizon. Untuk lebih jelasnya, silakan merujuk :ref:"
-"`install-settings`."
 
 msgid ""
 "This section describes how to install and configure the dashboard on the "
@@ -774,9 +678,6 @@ msgstr "Verifikasi operasi untuk Red Hat Enterprise Linux dan CentOS"
 msgid "Verify operation for Ubuntu"
 msgstr "Verifikasi operasi untuk Ubuntu"
 
-msgid "Verify operation for openSUSE and SUSE Linux Enterprise"
-msgstr "Verifikasi operasi untuk openSUSE dan SUSE Linux Enterprise"
-
 msgid "Verify operation of the dashboard."
 msgstr "Verifikasi pengoperasian dasbor."
 
@@ -796,18 +697,6 @@ msgstr "Lingkungan OpenStack Anda sekarang termasuk dasbor."
 
 msgid "``ALLOWED_HOSTS``"
 msgstr "``ALLOWED_HOSTS``"
-
-msgid ""
-"``ALLOWED_HOSTS`` can also be ``['*']`` to accept all hosts. This may be "
-"useful for development work, but is potentially insecure and should not be "
-"used in production. See `Django documentation <https://docs.djangoproject."
-"com/en/dev/ref/settings/#allowed-hosts>`_ for further information."
-msgstr ""
-"``ALLOWED_HOSTS`` juga bisa ``['*']`` menerima semua host. Ini mungkin "
-"berguna untuk pekerjaan pengembangan, tetapi berpotensi tidak aman dan tidak "
-"boleh digunakan dalam produksi. Lihat `Django documentation <https://docs."
-"djangoproject.com/en/dev/ref/settings/#allowed-hosts>`_ untuk informasi "
-"lebih lanjut."
 
 msgid ""
 "``ALLOWED_HOSTS`` can also be ``['*']`` to accept all hosts. This may be "
@@ -877,29 +766,17 @@ msgstr "masakari-dashboard"
 msgid "mistral-dashboard"
 msgstr "mistral-dashboard"
 
-msgid "monasca-ui"
-msgstr "monasca-ui"
-
-msgid "murano-dashboard"
-msgstr "murano-dashboard"
-
 msgid "networking-bgpvpn"
 msgstr "networking-bgpvpn"
+
+msgid "neutron-fwaas-dashboard"
+msgstr "neutron-fwaas-dashboard"
 
 msgid "neutron-vpnaas-dashboard"
 msgstr "neutron-vpnaas-dashboard"
 
 msgid "octavia-dashboard"
 msgstr "octavia-dashboard"
-
-msgid "sahara-dashboard"
-msgstr "sahara-dashboard"
-
-msgid "senlin-dashboard"
-msgstr "senlin-dashboard"
-
-msgid "solum-dashboard"
-msgstr "solum-dashboard"
 
 msgid "tacker-horizon"
 msgstr "tacker-horizon"

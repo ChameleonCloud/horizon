@@ -472,6 +472,40 @@ This can be either a literal URL path (such as the default), or Python's
 dotted string notation representing a function which will evaluate what URL
 a user should be redirected to based on the attributes of that user.
 
+
+LANGUAGE
+--------
+
+Default: ``all languages with translation catalogs are enabled``
+
+If you would like to enable a specific set of languages, you can do this
+by setting LANGUAGES list below. Each entry is a tuple of language code
+and language name.
+
+.. code-block:: python
+
+    LANGUAGES = (
+      ('cs', 'Czech'),
+      ('de', 'German'),
+      ('en', 'English'),
+      ('en-au', 'Australian English'),
+      ('en-gb', 'British English'),
+      ('eo', 'Esperanto'),
+      ('es', 'Spanish'),
+      ('fr', 'French'),
+      ('id', 'Indonesian'),
+      ('it', 'Italian'),
+      ('ja', 'Japanese'),
+      ('ko', 'Korean (Korea)'),
+      ('pl', 'Polish'),
+      ('pt-br', 'Portuguese (Brazil)'),
+      ('ru', 'Russian'),
+      ('tr', 'Turkish'),
+      ('zh-hans', 'Simplified Chinese'),
+      ('zh-hant', 'Traditional Chinese'),
+    )
+
+
 MESSAGES_PATH
 -------------
 
@@ -903,7 +937,7 @@ by operator. So ``REST_API_REQUIRED_SETTINGS`` is not set by default.
 Please refer ``local_settings.py.example`` and confirm your ``local_settings.py``.
 
 SELECTABLE_THEMES
----------------------
+-----------------
 
 .. versionadded:: 12.0.0(Pike)
 
@@ -1020,7 +1054,7 @@ This setting tells Horizon in which cookie key to store the currently
 set theme.  The cookie expiration is currently set to a year.
 
 USER_MENU_LINKS
------------------
+---------------
 
 .. versionadded:: 13.0.0(Queens)
 
@@ -1099,8 +1133,6 @@ For example, if you're accessing the Dashboard via
     Apache also requires changing your WSGIScriptAlias to reflect the desired
     path.  For example, you'd replace ``/`` with ``/dashboard`` for the
     alias.
-
-
 
 Service-specific Settings
 =========================
@@ -1286,7 +1318,6 @@ expired or when it is required to be changed on first use. Disabling it will
 force such users to either use the command line interface to change their
 password, or contact the system administrator.
 
-
 AUTHENTICATION_PLUGINS
 ~~~~~~~~~~~~~~~~~~~~~~
 
@@ -1315,7 +1346,6 @@ like this:
         'openstack_auth.plugin.token.TokenPlugin'
     ]
 
-
 AUTHENTICATION_URLS
 ~~~~~~~~~~~~~~~~~~~
 
@@ -1342,7 +1372,6 @@ the site header when logged in.
 
 You should also define `OPENSTACK_KEYSTONE_URL`_ to indicate which of
 the regions is the default one.
-
 
 DEFAULT_SERVICE_REGIONS
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -1541,6 +1570,20 @@ Default: ``False``
 Set this to True if running on multi-domain model. When this is enabled, it
 will require user to enter the Domain name in addition to username for login.
 
+OPENSTACK_KEYSTONE_PREFER_DOMAIN_TOKEN
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. versionadded:: 2026.1(Gazpacho)
+
+Default: ``True``
+
+When ``OPENSTACK_KEYSTONE_MULTIDOMAIN_SUPPORT`` is enabled,
+for certain users (that are for example both project and domain admins),
+Horizon prefers using domain scoped token when dealing with Keystone resources.
+This however may not work properly with some specific combinations of custom
+policies in Keystone, so this option allows operators to opt out of such
+token scope swap.
+
 OPENSTACK_KEYSTONE_URL
 ~~~~~~~~~~~~~~~~~~~~~~
 
@@ -1662,14 +1705,16 @@ WEBSSO_CHOICES
 
 .. versionadded:: 2015.1(Kilo)
 
+.. versionchanged:: 2026.1(Gazpacho)
+
+   The default value has been updated to include the credentials mechanism.
+
 Default:
 
 .. code-block:: python
 
     (
         ("credentials", _("Keystone Credentials")),
-        ("oidc", _("OpenID Connect")),
-        ("saml2", _("Security Assertion Markup Language"))
     )
 
 This is the list of authentication mechanisms available to the user. It
@@ -1679,6 +1724,16 @@ combinations (as defined in `WEBSSO_IDP_MAPPING`_). The list of choices is
 completely configurable, so as long as the id remains intact. Do not remove
 the credentials mechanism unless you are sure. Once removed, even admins will
 have no way to log into the system via the dashboard.
+
+For example:
+
+.. code-block:: python
+
+    WEBSSO_CHOICES = (
+        ("credentials", _("Keystone Credentials")),
+        ("oidc", _("OpenID Connect")),
+        ("saml2", _("Security Assertion Markup Language"))
+    )
 
 WEBSSO_ENABLED
 ~~~~~~~~~~~~~~
@@ -1709,7 +1764,7 @@ Example:
 
 .. code-block:: python
 
-    WEBSSO_CHOICES =  (
+    WEBSSO_CHOICES = (
         ("credentials", _("Keystone Credentials")),
         ("oidc", _("OpenID Connect")),
         ("saml2", _("Security Assertion Markup Language")),
@@ -2154,12 +2209,12 @@ Default:
 
 When launching a new instance the default flavor is sorted by RAM usage in
 ascending order.
-You can customize the sort order by: id, name, ram, disk and vcpus.
+You can customize the sort order by: id, name, ram, disk and vCPUs.
 Additionally, you can insert any custom callback function. You can also
 provide a flag for reverse sort.
 See the description in local_settings.py.example for more information.
 
-This example sorts flavors by vcpus in descending order:
+This example sorts flavors by vCPUs in descending order:
 
 .. code-block:: python
 
@@ -2242,6 +2297,10 @@ LAUNCH_INSTANCE_DEFAULTS
 
     Added the ``enable_metadata``, ``enable_net_ports`` options.
 
+.. versionchanged:: 2025.2(Flamingo)
+
+    Added the ``vol_delete_on_instance_delete`` option.
+
 Default:
 
 .. code-block:: python
@@ -2258,6 +2317,7 @@ Default:
         "enable_metadata": True,
         "enable_net_ports": True,
         "default_availability_zone": "Any",
+        "vol_delete_on_instance_delete": False
     }
 
 A dictionary of settings which can be used to provide the default values for
@@ -2379,6 +2439,18 @@ availability zone is used as the default availability zone. If a value
 specified in this setting is not found in the availability zone list,
 the setting will be ignored and the behavior will be same as when ``Any``
 is specified.
+
+vol_delete_on_instance_delete
+#############################
+
+.. versionadded:: 2025.2(Flamingo)
+
+Default: ``False``
+
+This option controls the default behavior of the 'Delete Volume on Instance
+Delete' setting in the web interface. If set to ``True``, the default is 'Yes',
+meaning volumes will be deleted when the instance is deleted. If set to
+``False`` (default), the setting remains 'No', and volumes are preserved.
 
 OPENSTACK_SERVER_DEFAULT_USER_DATA
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2511,6 +2583,19 @@ A dictionary mapping from the swift storage policy name to an alternate,
 user friendly display name which will be rendered on the dashboard. If
 no display is specified for a storage policy, the storage
 policy name will be used verbatim.
+
+SWIFT_PANEL_FULL_LISTING
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. versionadded:: 2026.1(Gazpacho)
+
+Perform full listing of containers and objects in the Swift panel.
+
+Default: ``True``
+
+Note that the Swift panel does client side pagination and retrieves
+all containers and objects from the API that can have an negative
+effect on Horizon's resource consumption if this is True.
 
 Django Settings
 ===============

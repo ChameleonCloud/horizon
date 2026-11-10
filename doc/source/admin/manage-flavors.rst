@@ -11,7 +11,7 @@ As of Newton, there are no default flavors.  The following table
 lists the default flavors for Mitaka and earlier.
 
 ============  =========  ===============  =============
- Flavor         VCPUs      Disk (in GB)     RAM (in MB)
+ Flavor         vCPUs      Disk (in GB)     RAM (in MB)
 ============  =========  ===============  =============
  m1.tiny        1          1                512
  m1.small       1          20               2048
@@ -40,7 +40,7 @@ Create flavors
     **ID**                     Unique ID (integer or UUID) for the
                                new flavor. If specifying 'auto', a
                                UUID will be automatically generated.
-    **VCPUs**                  Enter the number of virtual CPUs to
+    **vCPUs**                  Enter the number of virtual CPUs to
                                use.
     **RAM (MB)**               Enter the amount of RAM to use, in
                                megabytes.
@@ -61,12 +61,6 @@ Create flavors
     **Swap Disk (MB)**         Enter the amount of swap space (in
                                megabytes) to use. If unspecified,
                                the default is 0.
-    **RX/TX Factor**           Optional property allows servers with
-                               a different bandwidth to be created
-                               with the RX/TX Factor. The default
-                               value is 1. That is, the new bandwidth
-                               is the same as that of the attached
-                               network.
    =========================  =======================================
 
 #. In the :guilabel:`Flavor Access` tab, you can control access to

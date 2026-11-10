@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: horizon VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
-"POT-Creation-Date: 2025-07-08 23:51+0000\n"
+"POT-Creation-Date: 2026-04-24 08:10+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -13,12 +13,6 @@ msgstr ""
 "Language: brx\n"
 "X-Generator: Zanata 4.3.3\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-
-msgid " - End"
-msgstr " - जोबनाय"
-
-msgid " : Next hop"
-msgstr " : उननि हप"
 
 #, python-format
 msgid "%(field_name)s: Invalid IP address (value=%(ip)s)"
@@ -80,10 +74,6 @@ msgstr "आपल'ड खालामनो मोनसे जायगान�
 
 msgid "AKI - Amazon Kernel Image"
 msgstr "AKI - एमेजन कार्नल मुसुखा"
-
-#, python-format
-msgid "ALLOW %(ethertype)s %(proto_port)s %(direction)s %(remote)s"
-msgstr "ALLOW %(ethertype)s %(proto_port)s %(direction)s %(remote)s"
 
 msgid "AMI - Amazon Machine Image"
 msgstr "AMI - एमेजन मेसिन मुसुखा"
@@ -171,13 +161,6 @@ msgstr "हस्टखौ बे एग्रिगेटजों दाजा
 
 msgid "Add/Remove Hosts to Aggregate"
 msgstr "हस्टखौ एग्रिगेटजों दाजाबदेर/बोखार"
-
-msgid ""
-"Additional routes announced to the hosts. Each entry is: destination_cidr,"
-"nexthop (e.g., 192.168.200.0/24,10.56.1.254) and one entry per line."
-msgstr ""
-"बांद्राय रुटआ हस्टआव फोसावबाय। मोनफा हाबहोनाया: destination_cidr,nexthop (जेरै-, "
-"192.168.200.0/24,10.56.1.254) आरो मोनफा सारियाव मोनसे हाबहोनाय।"
 
 msgid "Admin"
 msgstr "एडमिन"
@@ -749,11 +732,11 @@ msgstr "DNS मुं सार्भार"
 msgid "Decrypt Password"
 msgstr "पासवार्डखौ डिक्राइप्ट खालाम"
 
+msgid "Default Quotas"
+msgstr "डिफल्ट क'टा"
+
 msgid "Default quotas updated."
 msgstr "डिफल्ट क'टाखौ आपडेट खालामबाय।"
-
-msgid "Defaults"
-msgstr "डिफल्ट"
 
 #, python-format
 msgid "Delete the created network \"%s\" due to subnet creation failure."
@@ -946,15 +929,6 @@ msgstr "गाहाय"
 msgid "Download CSV Summary"
 msgstr "CSV सारबाहागोखौ डाउनल'ड खालाम"
 
-msgid "EC2 Access Key"
-msgstr "EC2 हाबनाय साबि"
-
-msgid "EC2 Secret Key"
-msgstr "EC2 गुमुर साबि"
-
-msgid "EC2 URL"
-msgstr "EC2 URL"
-
 msgid "Edit"
 msgstr "सुजु"
 
@@ -1114,10 +1088,6 @@ msgstr "QoS Spec गौथुमखौ आपडेट खालामनाय�
 msgid "Error when adding or removing hosts."
 msgstr "हस्ट दाजाबदेरनाय एबा बोखारनाय समाव जानाय गोरोन्थि।"
 
-#, python-format
-msgid "Error writing zipfile: %(exc)s"
-msgstr "जिपफाइलखौ लिरनायाव जानाय गोरोन्थि: %(exc)s"
-
 msgid "Ether Type"
 msgstr "इथार रोखोम"
 
@@ -1160,14 +1130,6 @@ msgid "Failed"
 msgstr "फेलें जाबाय"
 
 #, python-format
-msgid ""
-"Failed to add %(users_to_add)s project members%(group_msg)s and set project "
-"quotas."
-msgstr ""
-"%(users_to_add)s प्रजेक्ट सोन्दोमाs%(group_msg)s खौ दाजाबदेरनो फेलें जाबाय आरो प्रजेक्ट "
-"क'टाखौ फज।"
-
-#, python-format
 msgid "Failed to add %s project groups and update project quotas."
 msgstr "%s प्रजेक्ट हानजाखौ दाजाबदेरनो फेलें जाबाय आरो प्रजेक्ट क'टाखौ आपडेट खालाम"
 
@@ -1206,14 +1168,6 @@ msgstr "बिदिन्थिखौ लांदां खालामनो 
 #, python-format
 msgid "Failed to live migrate instance to host \"%s\"."
 msgstr "माइग्रेट बिदिन्थिखौ हस्ट \"%s\"आव लाइभ खालामनो फेलें जाबाय।"
-
-#, python-format
-msgid ""
-"Failed to modify %(users_to_modify)s project members%(group_msg)s and update "
-"project quotas."
-msgstr ""
-"%(users_to_modify)s प्रजेक्ट सोद्रोमा%(group_msg)s खौ सुद्रायनो फेलें जाबाय आरो प्रजेक्ट "
-"क'टाखौ आपडेट खालाम।"
 
 #, python-format
 msgid "Failed to modify %s domain groups."
@@ -1412,13 +1366,6 @@ msgstr "हस्ट एग्रिगेट"
 msgid "Host Routes"
 msgstr "हस्ट रुटार"
 
-#, python-format
-msgid ""
-"Host Routes format error: Destination CIDR and nexthop must be specified "
-"(value=%s)"
-msgstr ""
-"हस्ट रुट फरमेट गोरोन्थि: थांखि CIDR आरो nexthop खौ थिक खालामथारनांगोन (बेसेन=%s)"
-
 msgid ""
 "Host aggregates divide an availability zone into logical units by grouping "
 "together hosts. Create a host aggregate then select the hosts contained in "
@@ -1614,9 +1561,6 @@ msgstr "बिदिन्थि ID"
 msgid "Instance Name"
 msgstr "बिदिन्थि मुं"
 
-msgid "Instance Overview"
-msgstr "बिदिन्थि अभारभिउ"
-
 msgid "Instance Password is not set or is not yet available"
 msgstr "बिदिन्थि पासवार्डखौ फजआखै एबा दासिमबो मोननो हाथाव नङा"
 
@@ -1729,10 +1673,6 @@ msgstr "लाइभ माइग्रेट बिदिन्थि"
 msgid "Live migrate an instance to a specific host."
 msgstr "बिदिन्थिखौ जरखा हस्टआव लाइभ माइग्रेट खालाम"
 
-#, python-format
-msgid "Load Balancer VIP %s"
-msgstr "ल'ड बेसेन्सार VIP %s"
-
 msgid "Local"
 msgstr "जायगानि"
 
@@ -1818,12 +1758,6 @@ msgstr "जायगा सोलायगासिनो दं"
 
 msgid "Migration Policy"
 msgstr "जायगा सोलायहोनाय पलिसि"
-
-msgid "Min Disk"
-msgstr "खमसिन डिस्क"
-
-msgid "Min RAM"
-msgstr "खमसिन रेम"
 
 msgid "Minimum Disk (GB)"
 msgstr "खमसिन डिस्क (GB)"
@@ -2081,9 +2015,6 @@ msgstr "बिदिन्थिनि अनजिमा"
 
 msgid "Number of Snapshots"
 msgstr "स्नेपसटनि अनजिमा"
-
-msgid "Number of VCPUs"
-msgstr "VCPU नि अनजिमा"
 
 msgid "Number of Volumes"
 msgstr "भलिउमनि अनजिमा"
@@ -2505,9 +2436,6 @@ msgstr ""
 msgctxt "Power state of an Instance"
 msgid "Running"
 msgstr "सालायगासिनो दं"
-
-msgid "S3 URL"
-msgstr "S3 URL"
 
 msgid "SSH key pairs can be generated with the ssh-keygen command:"
 msgstr "SSH साबि जराखौ ssh-keygen बिथोनजों दिहुननो हायो:"
@@ -3200,14 +3128,8 @@ msgstr "भलिउम रोखोम बांद्राय spec खौ स
 msgid "Unable to extend volume."
 msgstr "भलिउमखौ फेहेरनो हायाखै।"
 
-msgid "Unable to fetch EC2 credentials."
-msgstr "EC2 फोथायथावखौ लाबोनो हायाखै।"
-
 msgid "Unable to find default role."
 msgstr "डिफल्ट बिफावखौ नागिरना दिहुननो हायाखै।"
-
-msgid "Unable to get EC2 credentials"
-msgstr "EC2 फोथायथावखौ मोननो हायाखै"
 
 #, python-format
 msgid "Unable to get RDP console for instance \"%s\"."
@@ -3543,9 +3465,6 @@ msgstr "साबनेट गुवारैखौ मोनफिननो ह
 msgid "Unable to retrieve subnet details."
 msgstr "साबनेट गुवारैखौ मोनफिननो हायाखै"
 
-msgid "Unable to retrieve tenant limits."
-msgstr "टेनेन्ट सिमाखौ मोनफिननो हायाखै।"
-
 msgid "Unable to retrieve the aggregate to be updated"
 msgstr "आपडेट खालामनो गोनां एग्रिगेटखौ मोनफिननो हायाखै"
 
@@ -3718,9 +3637,6 @@ msgstr "आपडेट खालाम"
 msgid "Update Default Quotas"
 msgstr "आपडेट डिफल्ट क'टा"
 
-msgid "Update Defaults"
-msgstr "आपडेट डिफल्ट"
-
 msgid "Update Group"
 msgstr "हानजाखौ आपडेट खालाम"
 
@@ -3847,18 +3763,6 @@ msgstr "बाहायग्रा मुं \"%s\" खौ सिगाङा�
 
 msgid "Users"
 msgstr "बाहायग्राफोर"
-
-msgid "VCPU"
-msgstr "VCPU"
-
-msgid "VCPU Hours"
-msgstr "VCPU घन्टा"
-
-msgid "VCPU Usage"
-msgstr "VCPU बाहायथि"
-
-msgid "VCPUs"
-msgstr "VCPUs"
 
 msgid "VLAN"
 msgstr "VLAN"
@@ -4047,6 +3951,3 @@ msgstr "फ्रन्ट-एन्ड"
 
 msgid "undefined"
 msgstr "थि खालामै"
-
-msgid "unknown IP address"
-msgstr "मोनथिमोनै IP थं"

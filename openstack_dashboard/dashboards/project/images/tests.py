@@ -17,13 +17,12 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import os
 from socket import timeout as socket_timeout
 import tempfile
-import unittest
 from unittest import mock
 
 from django.urls import reverse
+from selenium.webdriver.common.by import By
 
 from horizon import exceptions
 from horizon.test import helpers as horizon_helpers
@@ -396,15 +395,15 @@ class SeleniumTests(test.SeleniumTestCase):
         driver.get("%s%s" % (self.live_server_url, INDEX_URL))
 
         # Open the modal menu
-        driver.find_element_by_id("images__action_create").click()
+        driver.find_element(By.ID, "images__action_create").click()
         wait = self.ui.WebDriverWait(self.selenium, 10,
                                      ignored_exceptions=[socket_timeout])
-        wait.until(lambda x: driver.find_element_by_id("id_disk_format"))
+        wait.until(lambda x: driver.find_element(By.ID, "id_disk_format"))
 
-        driver.find_element_by_xpath('//a[@data-select-value="url"]').click()
-        copyfrom = driver.find_element_by_id("id_image_url")
+        driver.find_element(By.XPATH, '//a[@data-select-value="url"]').click()
+        copyfrom = driver.find_element(By.ID, "id_image_url")
         copyfrom.send_keys("http://www.test.com/test.iso")
-        formats = self.ui.Select(driver.find_element_by_id("id_disk_format"))
+        formats = self.ui.Select(driver.find_element(By.ID, "id_disk_format"))
         body = formats.first_selected_option
         self.assertIn("ISO", body.text,
                       "ISO should be selected when the extension is *.iso")
@@ -417,8 +416,6 @@ class SeleniumTests(test.SeleniumTestCase):
             mock.call(test.IsHttpRequest(), filters={'disk_format': 'ari'}),
         ])
 
-    @unittest.skipIf(os.environ.get('SELENIUM_PHANTOMJS'),
-                     "PhantomJS cannot test file upload widgets.")
     @test.create_mocks({api.glance: ('image_list_detailed',)})
     def test_modal_create_image_from_file(self):
         driver = self.selenium
@@ -428,15 +425,15 @@ class SeleniumTests(test.SeleniumTestCase):
         driver.get("%s%s" % (self.live_server_url, INDEX_URL))
 
         # Open the modal menu
-        driver.find_element_by_id("images__action_create").click()
+        driver.find_element(By.ID, "images__action_create").click()
         wait = self.ui.WebDriverWait(driver, 10,
                                      ignored_exceptions=[socket_timeout])
-        wait.until(lambda x: driver.find_element_by_id("id_disk_format"))
+        wait.until(lambda x: driver.find_element(By.ID, "id_disk_format"))
 
-        driver.find_element_by_xpath('//a[@data-select-value="file"]').click()
+        driver.find_element(By.XPATH, '//a[@data-select-value="file"]').click()
         with tempfile.NamedTemporaryFile() as tmp:
-            driver.find_element_by_id("id_image_file").send_keys(tmp.name)
-        formats = self.ui.Select(driver.find_element_by_id("id_disk_format"))
+            driver.find_element(By.ID, "id_image_file").send_keys(tmp.name)
+        formats = self.ui.Select(driver.find_element(By.ID, "id_disk_format"))
         formats.select_by_visible_text('ISO - Optical Disk Image')
         body = formats.first_selected_option
         self.assertIn("ISO", body.text,
@@ -459,12 +456,12 @@ class SeleniumTests(test.SeleniumTestCase):
         driver.get("%s%s" % (self.live_server_url, CREATE_URL))
         wait = self.ui.WebDriverWait(driver, 10,
                                      ignored_exceptions=[socket_timeout])
-        wait.until(lambda x: driver.find_element_by_id("id_disk_format"))
+        wait.until(lambda x: driver.find_element(By.ID, "id_disk_format"))
 
-        driver.find_element_by_xpath('//a[@data-select-value="url"]').click()
-        copyfrom = driver.find_element_by_id("id_image_url")
+        driver.find_element(By.XPATH, '//a[@data-select-value="url"]').click()
+        copyfrom = driver.find_element(By.ID, "id_image_url")
         copyfrom.send_keys("http://www.test.com/test.iso")
-        formats = self.ui.Select(driver.find_element_by_id("id_disk_format"))
+        formats = self.ui.Select(driver.find_element(By.ID, "id_disk_format"))
         formats.select_by_visible_text('ISO - Optical Disk Image')
         body = formats.first_selected_option
         self.assertIn("ISO", body.text,
@@ -476,8 +473,6 @@ class SeleniumTests(test.SeleniumTestCase):
             mock.call(test.IsHttpRequest(), filters={'disk_format': 'ari'}),
         ])
 
-    @unittest.skipIf(os.environ.get('SELENIUM_PHANTOMJS'),
-                     "PhantomJS cannot test file upload widgets.")
     @test.create_mocks({api.glance: ('image_list_detailed',)})
     def test_create_image_from_file(self):
         driver = self.selenium
@@ -487,12 +482,12 @@ class SeleniumTests(test.SeleniumTestCase):
         driver.get("%s%s" % (self.live_server_url, CREATE_URL))
         wait = self.ui.WebDriverWait(driver, 10,
                                      ignored_exceptions=[socket_timeout])
-        wait.until(lambda x: driver.find_element_by_id("id_disk_format"))
+        wait.until(lambda x: driver.find_element(By.ID, "id_disk_format"))
 
-        driver.find_element_by_xpath('//a[@data-select-value="file"]').click()
+        driver.find_element(By.XPATH, '//a[@data-select-value="file"]').click()
         with tempfile.NamedTemporaryFile() as tmp:
-            driver.find_element_by_id("id_image_file").send_keys(tmp.name)
-        formats = self.ui.Select(driver.find_element_by_id("id_disk_format"))
+            driver.find_element(By.ID, "id_image_file").send_keys(tmp.name)
+        formats = self.ui.Select(driver.find_element(By.ID, "id_disk_format"))
         formats.select_by_visible_text('ISO - Optical Disk Image')
         body = formats.first_selected_option
 

@@ -174,7 +174,7 @@ class FlavorExtraSpec(object):
 
 class QuotaSet(base.QuotaSet):
 
-    # We don't support nova-network, so we exclude nova-network relatd
+    # We don't support nova-network, so we exclude nova-network related
     # quota fields from the response.
     ignore_quotas = {
         "floating_ips",
@@ -231,14 +231,12 @@ def server_mks_console(request, instance_id):
 
 @profiler.trace
 def flavor_create(request, name, memory, vcpu, disk, flavorid='auto',
-                  ephemeral=0, swap=0, metadata=None, is_public=True,
-                  rxtx_factor=1):
+                  ephemeral=0, swap=0, metadata=None, is_public=True):
     flavor = _nova.novaclient(request).flavors.create(name, memory, vcpu, disk,
                                                       flavorid=flavorid,
                                                       ephemeral=ephemeral,
                                                       swap=swap,
-                                                      is_public=is_public,
-                                                      rxtx_factor=rxtx_factor)
+                                                      is_public=is_public)
     if (metadata):
         flavor_extra_set(request, flavor.id, metadata)
     return flavor
@@ -416,6 +414,7 @@ def server_create(request, name, image, flavor, key_name, user_data,
                   disk_config=None, config_drive=None, meta=None,
                   scheduler_hints=None, description=None):
     microversion = get_microversion(request, ("multiattach",
+                                              "bdm2_volume_type",
                                               "instance_description",
                                               "auto_allocated_network"))
     nova_client = _nova.novaclient(request, version=microversion)

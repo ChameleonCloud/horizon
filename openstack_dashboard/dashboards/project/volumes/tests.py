@@ -101,6 +101,45 @@ class VolumeIndexViewTests(test.ResetImageAPIVersionMixin, test.TestCase):
         self._test_index(with_groups=True)
 
     @test.create_mocks({
+        api.nova: ['server_list'],
+        api.cinder: ['volume_backup_supported',
+                     'volume_snapshot_list',
+                     'volume_list_paged',
+                     'volume_get',
+                     'tenant_absolute_limits',
+                     'group_list'],
+    })
+    def test_index_filter_unnamed_volume_by_name(self):
+        volume = self.cinder_volumes.list()[1]
+        volume.attachments = []
+
+        self.mock_volume_list_paged.return_value = [[], True, True]
+        self.mock_volume_get.return_value = volume
+        self.mock_server_list.return_value = [[], False]
+        self.mock_volume_snapshot_list.return_value = []
+        self.mock_tenant_absolute_limits.return_value = \
+            self.cinder_limits['absolute']
+
+        filter_param = 'volumes__volumes_filter__q'
+        session = self.client.session
+        session[filter_param] = volume.id
+        session[filter_param + '_field'] = 'name'
+        session.save()
+
+        res = self.client.get(INDEX_URL)
+
+        self.assertEqual(res.status_code, 200)
+        self.mock_volume_list_paged.assert_called_once_with(
+            test.IsHttpRequest(), marker=None, search_opts={'name': volume.id},
+            sort_dir='desc', paginate=True)
+        self.mock_volume_get.assert_called_once_with(test.IsHttpRequest(),
+                                                     volume.id)
+        table = res.context['volumes_table']
+        self.assertEqual([volume], list(table.data))
+        self.assertFalse(table._meta.has_more_data)
+        self.assertFalse(table._meta.has_prev_data)
+
+    @test.create_mocks({
         api.nova: ['server_get', 'server_list'],
         cinder: ['tenant_absolute_limits',
                  'volume_list_paged',
@@ -653,7 +692,7 @@ class VolumeViewTests(test.ResetImageAPIVersionMixin, test.TestCase):
                                          "snapshot_id=" + str(snapshot.id)]),
                                formData, follow=True)
         self.assertEqual(res.redirect_chain, [])
-        self.assertFormError(res, 'form', None,
+        self.assertFormError(res.context['form'], None,
                              "The volume size cannot be less than the "
                              "snapshot size (40GiB)")
         self.assertEqual(3, self.mock_volume_type_list.call_count)
@@ -830,7 +869,7 @@ class VolumeViewTests(test.ResetImageAPIVersionMixin, test.TestCase):
         msg = ("The volume size cannot be less than the "
                "image size (20.0\xa0GB)")
 
-        self.assertFormError(res, 'form', None, msg)
+        self.assertFormError(res.context['form'], None, msg)
 
         self.assertEqual(3, self.mock_volume_type_list.call_count)
         self.assertEqual(2, self.mock_volume_type_default.call_count)
@@ -874,7 +913,7 @@ class VolumeViewTests(test.ResetImageAPIVersionMixin, test.TestCase):
                                          "image_id=" + str(image.id)]),
                                formData, follow=True)
         self.assertEqual(res.redirect_chain, [])
-        self.assertFormError(res, 'form', None,
+        self.assertFormError(res.context['form'], None,
                              "The volume size cannot be less than the "
                              "image minimum disk size (30GiB)")
         self.assertEqual(3, self.mock_volume_type_list.call_count)
@@ -1910,7 +1949,7 @@ class VolumeViewTests(test.ResetImageAPIVersionMixin, test.TestCase):
         url = reverse('horizon:project:volumes:extend',
                       args=[volume.id])
         res = self.client.post(url, formData)
-        self.assertFormError(res, "form", "new_size",
+        self.assertFormError(res.context["form"], "new_size",
                              "Volume cannot be extended to 1000GiB as "
                              "the maximum size it can be extended to is "
                              "120GiB.")

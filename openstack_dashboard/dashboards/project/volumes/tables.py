@@ -225,7 +225,7 @@ class CreateSnapshot(VolumePolicyTargetMixin, tables.LinkAction):
         try:
             limits = api.cinder.tenant_absolute_limits(request)
         except Exception:
-            exceptions.handle(request, _('Unable to retrieve tenant limits.'))
+            exceptions.handle(request, _('Unable to retrieve project limits.'))
             limits = {}
 
         snapshots_available = (limits.get('maxTotalSnapshots', float("inf")) -
@@ -242,7 +242,7 @@ class CreateSnapshot(VolumePolicyTargetMixin, tables.LinkAction):
 
 class CreateTransfer(VolumePolicyTargetMixin, tables.LinkAction):
     name = "create_transfer"
-    verbose_name = _("Create Transfer")
+    verbose_name = _("Create Volume Transfer")
     url = "horizon:project:volumes:create_transfer"
     classes = ("ajax-modal",)
     policy_rules = (("volume", "volume:create_transfer"),)
@@ -306,7 +306,7 @@ class RetypeVolume(VolumePolicyTargetMixin, tables.LinkAction):
 
 class AcceptTransfer(tables.LinkAction):
     name = "accept_transfer"
-    verbose_name = _("Accept Transfer")
+    verbose_name = _("Accept Volume Transfer")
     url = "horizon:project:volumes:accept_transfer"
     classes = ("ajax-modal",)
     icon = "exchange"
@@ -326,7 +326,7 @@ class AcceptTransfer(tables.LinkAction):
                     verbose_name=self.verbose_name,
                     quota_exceeded=_("(Quota exceeded)"))
         else:
-            self.verbose_name = _("Accept Transfer")
+            self.verbose_name = _("Accept Volume Transfer")
             classes = [c for c in self.classes if c != "disabled"]
             self.classes = classes
         return True
@@ -342,7 +342,7 @@ class DeleteTransfer(VolumePolicyTargetMixin, tables.Action):
     # volume to the message, e.g. "Deleted volume transfer 'volume'". But
     # we are deleting the volume *transfer*, whose name is different.
     name = "delete_transfer"
-    verbose_name = _("Cancel Transfer")
+    verbose_name = _("Cancel Volume Transfer")
     policy_rules = (("volume", "volume:delete_transfer"),)
     help_text = _("This action cannot be undone.")
     action_type = "danger"
@@ -467,12 +467,17 @@ class VolumesTableBase(tables.DataTable):
         ("in-use", True),
         ("available", True),
         ("creating", None),
+        ("downloading", None),
+        ("uploading", None),
+        ("retyping", None),
         ("error", False),
         ("error_extending", False),
         ("error_managing", False),
         ("error_restoring", False),
+        ("error_backing-up", False),
         ("maintenance", False),
     )
+    # https://opendev.org/openstack/cinder/src/branch/master/api-ref/source/v3/volumes-v3-volumes.inc
     STATUS_DISPLAY_CHOICES = (
         ("available", pgettext_lazy("Current status of a Volume",
                                     "Available")),
@@ -504,6 +509,14 @@ class VolumesTableBase(tables.DataTable):
                                    "Reserved")),
         ("awaiting-transfer", pgettext_lazy("Current status of a Volume",
                                             "Awaiting Transfer")),
+        ("error_backing-up", pgettext_lazy("Current status of a Volume",
+                                           "Error Backing Up")),
+        ("downloading", pgettext_lazy("Current status of a Volume",
+                                      "Downloading")),
+        ("uploading", pgettext_lazy("Current status of a Volume",
+                                    "Uploading")),
+        ("retyping", pgettext_lazy("Current status of a Volume",
+                                   "Retyping")),
     )
     name = tables.Column("name",
                          verbose_name=_("Name"),

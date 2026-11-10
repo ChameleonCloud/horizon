@@ -12,8 +12,9 @@
 
 from oslo_utils import uuidutils
 import pytest
-import test_credentials
+from selenium.webdriver.common.by import By
 
+from openstack_dashboard.test.selenium.integration import test_credentials
 from openstack_dashboard.test.selenium import widgets
 
 
@@ -48,18 +49,19 @@ def test_create_keypair_demo(login, driver, openstack_demo, clear_keypair_demo,
         'key_pairs',
     ))
     driver.get(url)
-    driver.find_element_by_xpath(
-        "//button[normalize-space()='Create Key Pair']").click()
-    keypair_form = driver.find_element_by_css_selector(".modal-content")
-    keypair_form.find_element_by_id("name").send_keys(keypair_name)
-    type_options = keypair_form.find_element_by_css_selector(
-        ".form-control.switchable")
+    driver.find_element(
+        By.XPATH, "//button[normalize-space()='Create Key Pair']").click()
+    keypair_form = driver.find_element(By.CSS_SELECTOR, ".modal-content")
+    keypair_form.find_element(By.ID, "name").send_keys(keypair_name)
+    type_options = keypair_form.find_element(
+        By.CSS_SELECTOR, ".form-control.switchable")
     type_options.click()
-    type_options.find_element_by_css_selector('option[label="SSH Key"]').click()
-    keypair_form.find_element_by_css_selector(".btn-primary").click()
-    messages = widgets.get_and_dismiss_messages(driver)
-    assert(f'Success: Key pair {keypair_name} was successfully created.'
-           in messages)
+    type_options.find_element(
+        By.CSS_SELECTOR, 'option[label="SSH Key"]').click()
+    keypair_form.find_element(By.CSS_SELECTOR, ".btn-primary").click()
+    messages = widgets.get_and_dismiss_messages(driver, config)
+    assert (f'Success: Key pair {keypair_name} was successfully created.'
+            in messages)
     assert openstack_demo.compute.find_keypair(keypair_name) is not None
 
 
@@ -72,12 +74,13 @@ def test_delete_keypair_demo(login, driver, openstack_demo, config,
         'key_pairs',
     ))
     driver.get(url)
-    rows = driver.find_elements_by_xpath(
-        f"//a[text()='{new_keypair_demo.name}']")
+    rows = driver.find_elements(
+        By.XPATH, f"//a[text()='{new_keypair_demo.name}']")
     assert len(rows) == 1
-    rows[0].find_element_by_xpath(
+    rows[0].find_element(
+        By.XPATH,
         ".//ancestor::tr/td[contains(@class,'actions_column')]").click()
     widgets.confirm_modal(driver)
-    messages = widgets.get_and_dismiss_messages(driver)
+    messages = widgets.get_and_dismiss_messages(driver, config)
     assert f"Success: Deleted Key Pair: {new_keypair_demo.name}." in messages
     assert openstack_demo.compute.find_keypair(new_keypair_demo.name) is None

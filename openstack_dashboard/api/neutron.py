@@ -70,6 +70,11 @@ VNIC_TYPES = [
     ('macvtap', _('MacVTap')),
     ('baremetal', _('Bare Metal')),
     ('virtio-forwarder', _('Virtio Forwarder')),
+    ('smart-nic', _('Smart NIC')),
+    ('vdpa', _('vHost vDPA')),
+    ('accelerator-direct', _('Accelerator Direct')),
+    ('accelerator-direct-physical', _('Accelerator Direct Physical')),
+    ('remote-managed', _('Remote Managed')),
 ]
 
 
@@ -302,11 +307,16 @@ class SecurityGroupRule(NeutronAPIDictWrapper):
             else:
                 sgr['remote_ip_prefix'] = '0.0.0.0/0'
 
+        ethertype = ''
+        if 'ethertype' in sgr:
+            ethertype = sgr['ethertype']
+        else:
+            ethertype = sgr['ether_type']
         rule = {
             'id': sgr['id'],
             'parent_group_id': sgr['security_group_id'],
             'direction': sgr['direction'],
-            'ethertype': sgr['ethertype'],
+            'ethertype': ethertype,
             'ip_protocol': sgr['protocol'],
             'from_port': sgr['port_range_min'],
             'to_port': sgr['port_range_max'],
@@ -344,9 +354,9 @@ class SecurityGroupRule(NeutronAPIDictWrapper):
         else:
             proto_port = ''
 
-        return (_('ALLOW %(ethertype)s %(proto_port)s '
+        return (_('ALLOW %(ether_type)s %(proto_port)s '
                   '%(direction)s %(remote)s') %
-                {'ethertype': self.ethertype,
+                {'ether_type': self.ethertype,
                  'proto_port': proto_port,
                  'remote': remote,
                  'direction': direction})
@@ -385,7 +395,7 @@ class SecurityGroupManager(object):
 
     def __init__(self, request):
         self.request = request
-        self.client = neutronclient(request)
+        self.net_client = networkclient(request)
 
     def _list(self, **filters):
         if (filters.get("tenant_id") and
@@ -393,20 +403,31 @@ class SecurityGroupManager(object):
                     self.request, 'security-groups-shared-filtering')):
             # NOTE(hangyang): First, we get the SGs owned by but not shared
             # to the requester(tenant_id)
-            filters["shared"] = False
-            secgroups_owned = self.client.list_security_groups(**filters)
+            filters["is_shared"] = False
+            secgroups_owned = self.net_client.security_groups(**filters)
             # NOTE(hangyang): Second, we get the SGs shared to the
             # requester. For a requester with an admin role, this second
             # API call also only returns SGs shared to the requester's tenant
             # instead of all the SGs shared to any tenant.
             filters.pop("tenant_id")
-            filters["shared"] = True
-            secgroups_rbac = self.client.list_security_groups(**filters)
-            return [SecurityGroup(sg) for sg in
-                    itertools.chain(secgroups_owned.get('security_groups'),
-                                    secgroups_rbac.get('security_groups'))]
-        secgroups = self.client.list_security_groups(**filters)
-        return [SecurityGroup(sg) for sg in secgroups.get('security_groups')]
+            filters["is_shared"] = True
+            secgroups_rbac = self.net_client.security_groups(**filters)
+
+            def _filter_sgs(all_sgs):
+                already_found = set()
+                for sg in all_sgs:
+                    if sg.id not in already_found:
+                        already_found.add(sg.id)
+                        yield sg
+
+            filtered_list = []
+            for sg in _filter_sgs(
+                    itertools.chain(secgroups_owned, secgroups_rbac)):
+                filtered_list.append(sg)
+            return [SecurityGroup(sg.to_dict()) for sg in filtered_list]
+
+        secgroups = self.net_client.security_groups(**filters)
+        return [SecurityGroup(sg.to_dict()) for sg in secgroups]
 
     @profiler.trace
     def list(self, **params):
@@ -425,10 +446,10 @@ class SecurityGroupManager(object):
         """Create a mapping dict from secgroup id to its name."""
         related_ids = set([sg_id])
         related_ids |= set(filter(None, [r['remote_group_id'] for r in rules]))
-        related_sgs = self.client.list_security_groups(id=related_ids,
-                                                       fields=['id', 'name'])
-        related_sgs = related_sgs.get('security_groups')
-        return dict((sg['id'], sg['name']) for sg in related_sgs)
+        related_sgs = self.net_client.security_groups(id=related_ids,
+                                                      fields=['id', 'name'])
+        return dict((sg.to_dict()['id'], sg.to_dict()['name'])
+                    for sg in related_sgs)
 
     @profiler.trace
     def get(self, sg_id):
@@ -436,7 +457,7 @@ class SecurityGroupManager(object):
 
         :returns: SecurityGroup object corresponding to sg_id
         """
-        secgroup = self.client.show_security_group(sg_id).get('security_group')
+        secgroup = self.net_client.get_security_group(sg_id).to_dict()
         sg_dict = self._sg_name_dict(sg_id, secgroup['security_group_rules'])
         return SecurityGroup(secgroup, sg_dict)
 
@@ -446,23 +467,22 @@ class SecurityGroupManager(object):
 
         :returns: SecurityGroup object created
         """
-        body = {'security_group': {'name': name,
-                                   'description': desc,
-                                   'tenant_id': self.request.user.project_id}}
-        secgroup = self.client.create_security_group(body)
-        return SecurityGroup(secgroup.get('security_group'))
+        body = {'name': name, 'description': desc,
+                'tenant_id': self.request.user.project_id}
+        secgroup = self.net_client.create_security_group(**body).to_dict()
+        return SecurityGroup(secgroup)
 
     @profiler.trace
     def update(self, sg_id, name, desc):
-        body = {'security_group': {'name': name,
-                                   'description': desc}}
-        secgroup = self.client.update_security_group(sg_id, body)
-        return SecurityGroup(secgroup.get('security_group'))
+        body = {'name': name, 'description': desc}
+        secgroup = self.net_client.update_security_group(
+            sg_id, **body).to_dict()
+        return SecurityGroup(secgroup)
 
     @profiler.trace
     def delete(self, sg_id):
         """Delete the specified security group."""
-        self.client.delete_security_group(sg_id)
+        self.net_client.delete_security_group(sg_id)
 
     @profiler.trace
     def rule_create(self, parent_group_id,
@@ -500,23 +520,22 @@ class SecurityGroupManager(object):
                   'remote_group_id': group_id}
         if description is not None:
             params['description'] = description
-        body = {'security_group_rule': params}
         try:
-            rule = self.client.create_security_group_rule(body)
+            rule = self.net_client.create_security_group_rule(
+                **params).to_dict()
         except neutron_exc.OverQuotaClient:
             raise exceptions.Conflict(
                 _('Security group rule quota exceeded.'))
         except neutron_exc.Conflict:
             raise exceptions.Conflict(
                 _('Security group rule already exists.'))
-        rule = rule.get('security_group_rule')
         sg_dict = self._sg_name_dict(parent_group_id, [rule])
         return SecurityGroupRule(rule, sg_dict)
 
     @profiler.trace
     def rule_delete(self, sgr_id):
         """Delete the specified security group rule."""
-        self.client.delete_security_group_rule(sgr_id)
+        self.net_client.delete_security_group_rule(sgr_id)
 
     @profiler.trace
     def list_by_instance(self, instance_id):
@@ -619,8 +638,8 @@ class PortForwardingManager(object):
         portforwarding_id = params['portforwarding_id']
         LOG.debug("Updating Portforwarding rule with id %s", portforwarding_id)
         pfw = self.net_client.update_port_forwarding(
-            floating_ip_id,
             portforwarding_id,
+            floating_ip_id,
             **portforwarding_dict).to_dict()
 
         return PortForwarding(pfw, floating_ip_id)
@@ -629,7 +648,7 @@ class PortForwardingManager(object):
     def create(self, floating_ip_id, **params):
         portforwarding_dict = self.create_port_forwarding_dict(**params)
         portforwarding_rule = self.net_client.create_port_forwarding(
-            floating_ip_id, **portforwarding_dict).to_dict()
+            floatingip_id=floating_ip_id, **portforwarding_dict).to_dict()
         LOG.debug("Created a Portforwarding rule to floating IP %s with id %s",
                   floating_ip_id,
                   portforwarding_rule['id'])
@@ -668,8 +687,8 @@ class PortForwardingManager(object):
             floating_ip_id, portforwarding_id)
 
     def get(self, floating_ip_id, portforwarding_id):
-        pfw = self.net_client.get_port_forwarding(floating_ip_id,
-                                                  portforwarding_id).to_dict()
+        pfw = self.net_client.get_port_forwarding(portforwarding_id,
+                                                  floating_ip_id).to_dict()
         return PortForwarding(pfw, floating_ip_id)
 
 
@@ -690,7 +709,6 @@ class FloatingIpManager(object):
 
     device_owner_map = {
         'compute:': 'compute',
-        'neutron:LOADBALANCER': 'loadbalancer',
     }
 
     def __init__(self, request):
@@ -740,12 +758,12 @@ class FloatingIpManager(object):
         :returns: List of FloatingIp object
         """
         if not all_tenants:
-            tenant_id = self.request.user.tenant_id
+            project_id = self.request.user.tenant_id
             # In Neutron, list_floatingips returns Floating IPs from
-            # all tenants when the API is called with admin role, so
-            # we need to filter them with tenant_id.
-            search_opts['tenant_id'] = tenant_id
-            port_search_opts = {'tenant_id': tenant_id}
+            # all projects when the API is called with admin role, so
+            # we need to filter them with project_id.
+            search_opts['project_id'] = project_id
+            port_search_opts = {'project_id': project_id}
         else:
             port_search_opts = {}
         fips = list(self.net_client.ips(**search_opts))
@@ -862,8 +880,7 @@ class FloatingIpManager(object):
         FloatingIpTarget.id can be passed as port_id in associate().
         FloatingIpTarget.name is displayed in Floating Ip Association Form.
         """
-        tenant_id = self.request.user.tenant_id
-        ports = port_list(self.request, tenant_id=tenant_id)
+        ports = port_list(self.request, project_id=self.request.user.tenant_id)
         try:
             servers, has_more = nova.server_list(self.request, detailed=False)
         except Exception:
@@ -894,8 +911,7 @@ class FloatingIpManager(object):
     def _target_ports_by_instance(self, instance_id):
         if not instance_id:
             return None
-        search_opts = {'device_id': instance_id}
-        return port_list(self.request, **search_opts)
+        return port_list(self.request, device_id=instance_id)
 
     @profiler.trace
     def list_targets_by_instance(self, instance_id, target_list=None):
@@ -1842,6 +1858,12 @@ def subnetpool_delete(request, subnetpool_id):
 @profiler.trace
 @memoized
 def port_list(request, **params):
+    # this is a possible fix for horizon plugins that make incorrect filtering
+    if "tenant_id" in params and "project_id" not in params:
+        params["project_id"] = params.pop("tenant_id")
+        LOG.error("port_list() is called with 'tenant_id' filter parameter. "
+                  "Use project_id instead.")
+
     LOG.debug("port_list(): params=%s", params)
     ports = networkclient(request).ports(**params)
     if not isinstance(ports, (types.GeneratorType, list)):
@@ -1892,7 +1914,7 @@ def port_list_with_trunk_types(request, **params):
             return PortTrunkSubport(port, child_ports[port['id']])
         return Port(port)
 
-    return [_get_port_info(p) for p in ports]
+    return [_get_port_info(p.to_dict()) for p in ports]
 
 
 @profiler.trace
@@ -2356,14 +2378,12 @@ def list_extensions(request):
 
     :param request: django request object
     """
-    neutron_api = neutronclient(request)
+    neutron_api = networkclient(request)
     try:
-        extensions_list = neutron_api.list_extensions()
+        extensions_list = neutron_api.extensions()
     except exceptions.ServiceCatalogException:
         return {}
-    if 'extensions' in extensions_list:
-        return tuple(extensions_list['extensions'])
-    return ()
+    return tuple(extensions_list)
 
 
 @profiler.trace
@@ -2535,30 +2555,27 @@ def policy_create(request, **kwargs):
     :param shared: boolean (true or false)
     :return: QoSPolicy object
     """
-    body = {'policy': kwargs}
-    policy = neutronclient(request).create_qos_policy(body=body).get('policy')
-    return QoSPolicy(policy)
+    policy = networkclient(request).create_qos_policy(**kwargs)
+    return QoSPolicy(policy.to_dict())
 
 
 def policy_list(request, **kwargs):
     """List of QoS Policies."""
-    policies = neutronclient(request).list_qos_policies(
-        **kwargs).get('policies')
-    return [QoSPolicy(p) for p in policies]
+    policies = networkclient(request).qos_policies(**kwargs)
+    return [QoSPolicy(p.to_dict()) for p in policies]
 
 
 @profiler.trace
 def policy_get(request, policy_id, **kwargs):
     """Get QoS policy for a given policy id."""
-    policy = neutronclient(request).show_qos_policy(
-        policy_id, **kwargs).get('policy')
-    return QoSPolicy(policy)
+    policy = networkclient(request).get_qos_policy(policy_id)
+    return QoSPolicy(policy.to_dict())
 
 
 @profiler.trace
 def policy_delete(request, policy_id):
     """Delete QoS policy for a given policy id."""
-    neutronclient(request).delete_qos_policy(policy_id)
+    networkclient(request).delete_qos_policy(policy_id)
 
 
 class DSCPMarkingRule(NeutronAPIDictWrapper):
@@ -2574,28 +2591,25 @@ def dscp_marking_rule_create(request, policy_id, **kwargs):
     :param dscp_mark: integer
     :return: A dscp_mark_rule object.
     """
-    body = {'dscp_marking_rule': kwargs}
-    rule = 'dscp_marking_rule'
-    dscp_marking_rule = neutronclient(request)\
-        .create_dscp_marking_rule(policy_id, body).get(rule)
-    return DSCPMarkingRule(dscp_marking_rule)
+    dscp_marking_rule = networkclient(request).create_qos_dscp_marking_rule(
+        policy_id, **kwargs)
+    return DSCPMarkingRule(dscp_marking_rule.to_dict())
 
 
 @profiler.trace
 def dscp_marking_rule_update(request, policy_id, rule_id, **kwargs):
     """Update a DSCP Marking Limit Rule."""
 
-    body = {'dscp_marking_rule': kwargs}
-    ruleType = 'dscp_marking_rule'
-    dscpmarking_update = neutronclient(request)\
-        .update_dscp_marking_rule(rule_id, policy_id, body).get(ruleType)
-    return DSCPMarkingRule(dscpmarking_update)
+    dscpmarking_update = networkclient(request).update_qos_dscp_marking_rule(
+        rule_id, policy_id, **kwargs)
+    return DSCPMarkingRule(dscpmarking_update.to_dict())
 
 
 def dscp_marking_rule_delete(request, policy_id, rule_id):
     """Deletes a DSCP Marking Rule."""
 
-    neutronclient(request).delete_dscp_marking_rule(rule_id, policy_id)
+    networkclient(request).delete_qos_dscp_marking_rule(
+        rule_id, policy_id)
 
 
 class MinimumBandwidthRule(NeutronAPIDictWrapper):
@@ -2612,11 +2626,10 @@ def minimum_bandwidth_rule_create(request, policy_id, **kwargs):
     :param direction: string (egress or ingress)
     :return: A minimum_bandwidth_rule object.
     """
-    body = {'minimum_bandwidth_rule': kwargs}
-    rule = 'minimum_bandwidth_rule'
-    minimum_bandwidth_rule = neutronclient(request)\
-        .create_minimum_bandwidth_rule(policy_id, body).get(rule)
-    return MinimumBandwidthRule(minimum_bandwidth_rule)
+    minimum_bandwidth_rule = networkclient(
+        request).create_qos_minimum_bandwidth_rule(
+            policy_id, **kwargs)
+    return MinimumBandwidthRule(minimum_bandwidth_rule.to_dict())
 
 
 @profiler.trace
@@ -2629,18 +2642,16 @@ def minimum_bandwidth_rule_update(request, policy_id, rule_id, **kwargs):
     :param direction: string (egress or ingress)
     :return: A minimum_bandwidth_rule object.
     """
-    body = {'minimum_bandwidth_rule': kwargs}
-    ruleType = 'minimum_bandwidth_rule'
-    minbandwidth_update = neutronclient(request)\
-        .update_minimum_bandwidth_rule(rule_id, policy_id, body)\
-        .get(ruleType)
-    return MinimumBandwidthRule(minbandwidth_update)
+    minbandwidth_update = networkclient(
+        request).update_qos_minimum_bandwidth_rule(
+            rule_id, policy_id, **kwargs)
+    return MinimumBandwidthRule(minbandwidth_update.to_dict())
 
 
 def minimum_bandwidth_rule_delete(request, policy_id, rule_id):
     """Deletes a Minimum Bandwidth Rule."""
-
-    neutronclient(request).delete_minimum_bandwidth_rule(rule_id, policy_id)
+    networkclient(request).delete_qos_minimum_bandwidth_rule(
+        rule_id, policy_id)
 
 
 class BandwidthLimitRule(NeutronAPIDictWrapper):
@@ -2658,11 +2669,9 @@ def bandwidth_limit_rule_create(request, policy_id, **kwargs):
     :param direction: string (egress or ingress)
     :return: A bandwidth_limit_rule object.
     """
-    body = {'bandwidth_limit_rule': kwargs}
-    rule = 'bandwidth_limit_rule'
-    bandwidth_limit_rule = neutronclient(request)\
-        .create_bandwidth_limit_rule(policy_id, body).get(rule)
-    return BandwidthLimitRule(bandwidth_limit_rule)
+    bandwidth_limit_rule = networkclient(
+        request).create_qos_bandwidth_limit_rule(policy_id, **kwargs)
+    return BandwidthLimitRule(bandwidth_limit_rule.to_dict())
 
 
 @profiler.trace
@@ -2676,18 +2685,15 @@ def bandwidth_limit_rule_update(request, policy_id, rule_id, **kwargs):
     :param direction: string (egress or ingress)
     :return: A bandwidth_limit_rule object.
     """
-    body = {'bandwidth_limit_rule': kwargs}
-    ruleType = 'bandwidth_limit_rule'
-    bandwidthlimit_update = neutronclient(request)\
-        .update_bandwidth_limit_rule(rule_id, policy_id, body)\
-        .get(ruleType)
-    return BandwidthLimitRule(bandwidthlimit_update)
+    bandwidthlimit_update = networkclient(
+        request).update_qos_bandwidth_limit_rule(rule_id, policy_id, **kwargs)
+    return BandwidthLimitRule(bandwidthlimit_update.to_dict())
 
 
 @profiler.trace
 def bandwidth_limit_rule_delete(request, policy_id, rule_id):
     """Deletes a Bandwidth Limit Rule."""
-    neutronclient(request).delete_bandwidth_limit_rule(rule_id, policy_id)
+    networkclient(request).delete_qos_bandwidth_limit_rule(rule_id, policy_id)
 
 
 class MinimumPacketRateRule(NeutronAPIDictWrapper):
@@ -2704,11 +2710,10 @@ def minimum_packet_rate_rule_create(request, policy_id, **kwargs):
     :param direction: string (egress or ingress)
     :return: A minimum_packet_rate_rule object.
     """
-    body = {'minimum_packet_rate_rule': kwargs}
-    rule = 'minimum_packet_rate_rule'
-    minimum_packet_rate_rule = neutronclient(request)\
-        .create_minimum_packet_rate_rule(policy_id, body).get(rule)
-    return MinimumPacketRateRule(minimum_packet_rate_rule)
+    minimum_packet_rate_rule = networkclient(
+        request).create_qos_minimum_packet_rate_rule(
+            policy_id, **kwargs)
+    return MinimumPacketRateRule(minimum_packet_rate_rule.to_dict())
 
 
 @profiler.trace
@@ -2721,23 +2726,22 @@ def minimum_packet_rate_rule_update(request, policy_id, rule_id, **kwargs):
     :param direction: string (egress or ingress)
     :return: A minimum_packet_rate_rule object.
     """
-    body = {'minimum_packet_rate_rule': kwargs}
-    ruleType = 'minimum_packet_rate_rule'
-    minpacketrate_update = neutronclient(request)\
-        .update_minimum_packet_rate_rule(rule_id, policy_id, body)\
-        .get(ruleType)
+    minpacketrate_update = networkclient(
+        request).update_qos_minimum_packet_rate_rule(
+            rule_id, policy_id, **kwargs)
     return MinimumPacketRateRule(minpacketrate_update)
 
 
 def minimum_packet_rate_rule_delete(request, policy_id, rule_id):
     """Deletes a Minimum Packet Rate Rule."""
-    neutronclient(request).delete_minimum_packet_rate_rule(rule_id, policy_id)
+    networkclient(request).delete_qos_minimum_packet_rate_rule(
+        rule_id, policy_id)
 
 
 @profiler.trace
 def list_availability_zones(request, resource=None, state=None):
-    az_list = neutronclient(request).list_availability_zones().get(
-        'availability_zones')
+    az_list = [az.to_dict()
+               for az in networkclient(request).availability_zones()]
     if resource:
         az_list = [az for az in az_list if az['resource'] == resource]
     if state:
@@ -2748,6 +2752,11 @@ def list_availability_zones(request, resource=None, state=None):
 
 class RBACPolicy(NeutronAPIDictWrapper):
     """Wrapper for neutron RBAC Policy."""
+
+    def __init__(self, apidict):
+        if 'target_project_id' in apidict:
+            apidict['target_tenant'] = apidict['target_project_id']
+        super().__init__(apidict=apidict)
 
 
 def rbac_policy_create(request, **kwargs):
@@ -2761,17 +2770,14 @@ def rbac_policy_create(request, **kwargs):
     :param action: access_as_shared or access_as_external
     :return: RBACPolicy object
     """
-    body = {'rbac_policy': kwargs}
-    rbac_policy = neutronclient(request).create_rbac_policy(
-        body=body).get('rbac_policy')
-    return RBACPolicy(rbac_policy)
+    rbac_policy = networkclient(request).create_rbac_policy(**kwargs)
+    return RBACPolicy(rbac_policy.to_dict())
 
 
 def rbac_policy_list(request, **kwargs):
     """List of RBAC Policies."""
-    policies = neutronclient(request).list_rbac_policies(
-        **kwargs).get('rbac_policies')
-    return [RBACPolicy(p) for p in policies]
+    policies = networkclient(request).rbac_policies(**kwargs)
+    return [RBACPolicy(p.to_dict()) for p in policies]
 
 
 def rbac_policy_update(request, policy_id, **kwargs):
@@ -2782,21 +2788,19 @@ def rbac_policy_update(request, policy_id, **kwargs):
     :param target_tenant: target tenant of the policy
     :return: RBACPolicy object
     """
-    body = {'rbac_policy': kwargs}
-    rbac_policy = neutronclient(request).update_rbac_policy(
-        policy_id, body=body).get('rbac_policy')
-    return RBACPolicy(rbac_policy)
+    rbac_policy = networkclient(request).update_rbac_policy(
+        policy_id, **kwargs)
+    return RBACPolicy(rbac_policy.to_dict())
 
 
 @profiler.trace
-def rbac_policy_get(request, policy_id, **kwargs):
+def rbac_policy_get(request, policy_id):
     """Get RBAC policy for a given policy id."""
-    policy = neutronclient(request).show_rbac_policy(
-        policy_id, **kwargs).get('rbac_policy')
-    return RBACPolicy(policy)
+    policy = networkclient(request).get_rbac_policy(policy_id)
+    return RBACPolicy(policy.to_dict())
 
 
 @profiler.trace
 def rbac_policy_delete(request, policy_id):
     """Delete RBAC policy for a given policy id."""
-    neutronclient(request).delete_rbac_policy(policy_id)
+    networkclient(request).delete_rbac_policy(policy_id)

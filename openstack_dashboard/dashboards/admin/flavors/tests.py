@@ -219,7 +219,6 @@ class BaseFlavorWorkflowTests(test.BaseAdminViewTests):
                        "memory": flavor.ram,
                        "disk": flavor.disk,
                        "swap": flavor.swap,
-                       "rxtx_factor": flavor.rxtx_factor,
                        "ephemeral": eph,
                        "is_public": flavor.is_public}
         if id:
@@ -233,7 +232,6 @@ class BaseFlavorWorkflowTests(test.BaseAdminViewTests):
                        "memory_mb": flavor.ram,
                        "disk_gb": flavor.disk,
                        "swap_mb": flavor.swap,
-                       "rxtx_factor": flavor.rxtx_factor,
                        "eph_gb": eph}
         self._get_access_field(flavor_info, access)
         if id:
@@ -261,7 +259,7 @@ class CreateFlavorWorkflowTests(BaseFlavorWorkflowTests):
         workflow = res.context['workflow']
         expected_name = workflows.CreateFlavor.name
         self.assertEqual(res.context['workflow'].name, expected_name)
-        self.assertQuerysetEqual(
+        self.assertQuerySetEqual(
             workflow.steps,
             ['<CreateFlavorInfo: createflavorinfoaction>',
              '<CreateFlavorAccess: flavor_access>'],
@@ -362,6 +360,29 @@ class CreateFlavorWorkflowTests(BaseFlavorWorkflowTests):
         workflow_data['name'] = 'newflavorname'
         # Flavor id already exists.
         workflow_data['flavor_id'] = flavor.id
+
+        url = reverse(constants.FLAVORS_CREATE_URL)
+        res = self.client.post(url, workflow_data)
+
+        self.assertFormErrors(res)
+        self.mock_tenant_list.assert_called_once_with(test.IsHttpRequest())
+        self.mock_flavor_list.assert_called_once_with(test.IsHttpRequest(),
+                                                      None)
+
+    @test.create_mocks({api.keystone: ('tenant_list',),
+                        api.nova: ('flavor_list',)})
+    def test_create_existing_flavor_id_ignore_case(self):
+        flavor = self.flavors.first()
+        projects = self.tenants.list()
+
+        self.mock_tenant_list.return_value = [projects, False]
+        self.mock_flavor_list.return_value = self.flavors.list()
+
+        workflow_data = self._get_workflow_data(flavor)
+        # Name is okay.
+        workflow_data['name'] = 'newflavorname'
+        # Convert flavor.id to uppercase
+        workflow_data['flavor_id'] = flavor.id.upper()
 
         url = reverse(constants.FLAVORS_CREATE_URL)
         res = self.client.post(url, workflow_data)
@@ -480,7 +501,7 @@ class UpdateFlavorWorkflowTests(BaseFlavorWorkflowTests):
         expected_name = workflows.UpdateFlavor.name
         self.assertEqual(res.context['workflow'].name, expected_name)
 
-        self.assertQuerysetEqual(
+        self.assertQuerySetEqual(
             workflow.steps,
             ['<UpdateFlavorAccess: flavor_access>'],
             transform=repr)

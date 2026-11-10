@@ -14,8 +14,9 @@ import time
 
 from oslo_utils import uuidutils
 import pytest
-import test_volumes
+from selenium.webdriver.common.by import By
 
+from openstack_dashboard.test.selenium.integration import test_volumes
 from openstack_dashboard.test.selenium import widgets
 
 
@@ -154,18 +155,18 @@ def test_create_volume_snapshot_demo(login, driver, volume_name,
         'volumes',
     ))
     driver.get(volumes_url)
-    row = driver.find_element_by_css_selector(
-        f"table#volumes tr[data-display='{volume_name}']")
-    actions_column = row.find_element_by_css_selector("td.actions_column")
+    row = driver.find_element(
+        By.CSS_SELECTOR, f"table#volumes tr[data-display='{volume_name}']")
+    actions_column = row.find_element(By.CSS_SELECTOR, "td.actions_column")
     widgets.select_from_dropdown(actions_column, "Create Snapshot")
-    create_snap_form = driver.find_element_by_css_selector(
-        "form[action*='create_snapshot']")
-    create_snap_form.find_element_by_id("id_name").send_keys(
+    create_snap_form = driver.find_element(
+        By.CSS_SELECTOR, "form[action*='create_snapshot']")
+    create_snap_form.find_element(By.ID, "id_name").send_keys(
         volume_snapshot_name)
-    create_snap_form.find_element_by_css_selector(".btn-primary").click()
-    messages = widgets.get_and_dismiss_messages(driver)
-    assert(f'Info: Creating volume snapshot "{volume_snapshot_name}".'
-           in messages)
+    create_snap_form.find_element(By.CSS_SELECTOR, ".btn-primary").click()
+    messages = widgets.get_and_dismiss_messages(driver, config)
+    assert (f'Info: Creating volume snapshot "{volume_snapshot_name}".'
+            in messages)
     assert (openstack_demo.block_storage.find_snapshot(volume_snapshot_name)
             is not None)
 
@@ -181,15 +182,16 @@ def test_delete_volume_snapshot_demo(login, driver, volume_snapshot_names,
         'snapshots',
     ))
     driver.get(url)
-    rows = driver.find_elements_by_css_selector(
+    rows = driver.find_elements(
+        By.CSS_SELECTOR,
         f"table#volume_snapshots tr[data-display='{volume_snapshot_name}']")
     assert len(rows) == 1
-    actions_column = rows[0].find_element_by_css_selector("td.actions_column")
+    actions_column = rows[0].find_element(By.CSS_SELECTOR, "td.actions_column")
     widgets.select_from_dropdown(actions_column, "Delete Volume Snapshot")
     widgets.confirm_modal(driver)
-    messages = widgets.get_and_dismiss_messages(driver)
-    assert(f"Success: Scheduled deletion of Volume Snapshot: "
-           f"{volume_snapshot_name}" in messages)
+    messages = widgets.get_and_dismiss_messages(driver, config)
+    assert (f"Success: Scheduled deletion of Volume Snapshot: "
+            f"{volume_snapshot_name}" in messages)
     wait_for_volume_snapshot_is_deleted(openstack_demo, volume_snapshot_name)
     assert (openstack_demo.block_storage.find_snapshot(volume_snapshot_name)
             is None)
@@ -205,21 +207,21 @@ def test_edit_volume_snapshot_description_demo(login, driver, openstack_demo,
         'snapshots',
     ))
     driver.get(url)
-    rows = driver.find_elements_by_css_selector(
-        f"table#volume_snapshots tr[data-display"
+    rows = driver.find_elements(
+        By.CSS_SELECTOR, f"table#volume_snapshots tr[data-display"
         f"='{new_volume_snapshot_demo.name}']")
     assert len(rows) == 1
-    actions_column = rows[0].find_element_by_css_selector("td.actions_column")
+    actions_column = rows[0].find_element(By.CSS_SELECTOR, "td.actions_column")
     widgets.select_from_dropdown(actions_column, "Edit Snapshot")
-    snapshot_form = driver.find_element_by_css_selector(".modal-dialog form")
-    snapshot_form.find_element_by_id("id_description").clear()
-    snapshot_form.find_element_by_id("id_description").send_keys(
+    snapshot_form = driver.find_element(By.CSS_SELECTOR, ".modal-dialog form")
+    snapshot_form.find_element(By.ID, "id_description").clear()
+    snapshot_form.find_element(By.ID, "id_description").send_keys(
         f"EDITED_Description for: {new_volume_snapshot_demo.name}")
-    snapshot_form.find_element_by_css_selector(".btn-primary").click()
-    messages = widgets.get_and_dismiss_messages(driver)
-    assert(f'Info: Updating volume snapshot '
-           f'"{new_volume_snapshot_demo.name}"' in messages)
-    assert(openstack_demo.block_storage.find_snapshot(
+    snapshot_form.find_element(By.CSS_SELECTOR, ".btn-primary").click()
+    messages = widgets.get_and_dismiss_messages(driver, config)
+    assert (f'Info: Updating volume snapshot '
+            f'"{new_volume_snapshot_demo.name}"' in messages)
+    assert (openstack_demo.block_storage.find_snapshot(
         new_volume_snapshot_demo.name).description ==
         f"EDITED_Description for: {new_volume_snapshot_demo.name}")
 
@@ -236,19 +238,19 @@ def test_create_volume_from_volume_snapshot_demo(login, driver, openstack_demo,
         'snapshots',
     ))
     driver.get(url)
-    rows = driver.find_elements_by_css_selector(
-        f"table#volume_snapshots tr[data-display"
+    rows = driver.find_elements(
+        By.CSS_SELECTOR, f"table#volume_snapshots tr[data-display"
         f"='{new_volume_snapshot_demo.name}']")
     assert len(rows) == 1
-    rows[0].find_element_by_css_selector(".data-table-action").click()
-    volume_form = driver.find_element_by_css_selector(".modal-dialog form")
-    volume_form.find_element_by_id("id_name").clear()
-    volume_form.find_element_by_id("id_name").send_keys(
+    rows[0].find_element(By.CSS_SELECTOR, ".data-table-action").click()
+    volume_form = driver.find_element(By.CSS_SELECTOR, ".modal-dialog form")
+    volume_form.find_element(By.ID, "id_name").clear()
+    volume_form.find_element(By.ID, "id_name").send_keys(
         volume_from_snapshot_name)
-    volume_form.find_element_by_css_selector(".btn-primary").click()
-    messages = widgets.get_and_dismiss_messages(driver)
-    assert(f'Info: Creating volume "{volume_from_snapshot_name}"' in messages)
-    assert(openstack_demo.block_storage.find_volume(
+    volume_form.find_element(By.CSS_SELECTOR, ".btn-primary").click()
+    messages = widgets.get_and_dismiss_messages(driver, config)
+    assert (f'Info: Creating volume "{volume_from_snapshot_name}"' in messages)
+    assert (openstack_demo.block_storage.find_volume(
         volume_from_snapshot_name) is not None)
 
 
@@ -262,20 +264,20 @@ def test_delete_volume_from_volume_snapshot_demo(login, driver, openstack_demo,
         'volumes',
     ))
     driver.get(url)
-    rows = driver.find_elements_by_css_selector(
-        f"table#volumes tr[data-display="
+    rows = driver.find_elements(
+        By.CSS_SELECTOR, f"table#volumes tr[data-display="
         f"'{new_volume_from_snapshot_demo.name}']")
     assert len(rows) == 1
-    actions_column = rows[0].find_element_by_css_selector("td.actions_column")
+    actions_column = rows[0].find_element(By.CSS_SELECTOR, "td.actions_column")
     widgets.select_from_dropdown(actions_column, "Delete Volume")
     widgets.confirm_modal(driver)
-    messages = widgets.get_and_dismiss_messages(driver)
-    assert(f"Info: Scheduled deletion of Volume: "
-           f"{new_volume_from_snapshot_demo.name}" in messages)
+    messages = widgets.get_and_dismiss_messages(driver, config)
+    assert (f"Info: Scheduled deletion of Volume: "
+            f"{new_volume_from_snapshot_demo.name}" in messages)
     test_volumes.wait_for_volume_is_deleted(
         openstack_demo, new_volume_from_snapshot_demo.name)
     assert (openstack_demo.block_storage.find_volume(
-        new_volume_from_snapshot_demo.name)is None)
+        new_volume_from_snapshot_demo.name) is None)
 
 
 def test_delete_snapshot_before_volume_demo(login, driver, openstack_demo,
@@ -294,17 +296,18 @@ def test_delete_snapshot_before_volume_demo(login, driver, openstack_demo,
         'snapshots',
     ))
     driver.get(url)
-    rows_snapshots = driver.find_elements_by_css_selector(
+    rows_snapshots = driver.find_elements(
+        By.CSS_SELECTOR,
         f"table#volume_snapshots tr[data-display='{volume_snapshot_name}']")
     assert len(rows_snapshots) == 1
-    actions_column_snapshot = rows_snapshots[0].find_element_by_css_selector(
-        "td.actions_column")
+    actions_column_snapshot = rows_snapshots[0].find_element(
+        By.CSS_SELECTOR, "td.actions_column")
     widgets.select_from_dropdown(actions_column_snapshot,
                                  "Delete Volume Snapshot")
     widgets.confirm_modal(driver)
-    messages = widgets.get_and_dismiss_messages(driver)
-    assert(f"Success: Scheduled deletion of Volume Snapshot: "
-           f"{volume_snapshot_name}" in messages)
+    messages = widgets.get_and_dismiss_messages(driver, config)
+    assert (f"Success: Scheduled deletion of Volume Snapshot: "
+            f"{volume_snapshot_name}" in messages)
     wait_for_volume_snapshot_is_deleted(openstack_demo, volume_snapshot_name)
     assert (openstack_demo.block_storage.find_snapshot(volume_snapshot_name)
             is None)
@@ -314,17 +317,17 @@ def test_delete_snapshot_before_volume_demo(login, driver, openstack_demo,
         'volumes',
     ))
     driver.get(url)
-    rows_volumes = driver.find_elements_by_css_selector(
-        f"table#volumes tr[data-display='"
+    rows_volumes = driver.find_elements(
+        By.CSS_SELECTOR, f"table#volumes tr[data-display='"
         f"{new_volume_from_snapshot_demo.name}']")
     assert len(rows_volumes) == 1
-    actions_column_volume = rows_volumes[0].find_element_by_css_selector(
-        "td.actions_column")
+    actions_column_volume = rows_volumes[0].find_element(
+        By.CSS_SELECTOR, "td.actions_column")
     widgets.select_from_dropdown(actions_column_volume, "Delete Volume")
     widgets.confirm_modal(driver)
-    messages = widgets.get_and_dismiss_messages(driver)
-    assert(f"Info: Scheduled deletion of Volume: "
-           f"{new_volume_from_snapshot_demo.name}" in messages)
+    messages = widgets.get_and_dismiss_messages(driver, config)
+    assert (f"Info: Scheduled deletion of Volume: "
+            f"{new_volume_from_snapshot_demo.name}" in messages)
     test_volumes.wait_for_volume_is_deleted(
         openstack_demo, new_volume_from_snapshot_demo.name)
     assert (openstack_demo.block_storage.find_volume(
@@ -378,25 +381,25 @@ def test_volume_snapshots_pagination_demo(login, driver, volume_snapshot_names,
                                                     sorting=True)
     assert first_page_definition == current_table_status
     # Turning to next page(page2)
-    driver.find_element_by_link_text("Next »").click()
+    driver.find_element(By.LINK_TEXT, "Next »").click()
     current_table_status = widgets.get_table_status(driver, "volume_snapshots",
                                                     volume_snapshot_names[1],
                                                     sorting=True)
     assert second_page_definition == current_table_status
     # Turning to next page(page3)
-    driver.find_element_by_link_text("Next »").click()
+    driver.find_element(By.LINK_TEXT, "Next »").click()
     current_table_status = widgets.get_table_status(driver, "volume_snapshots",
                                                     volume_snapshot_names[0],
                                                     sorting=True)
     assert third_page_definition == current_table_status
     # Turning back to previous page(page2)
-    driver.find_element_by_link_text("« Prev").click()
+    driver.find_element(By.LINK_TEXT, "« Prev").click()
     current_table_status = widgets.get_table_status(driver, "volume_snapshots",
                                                     volume_snapshot_names[1],
                                                     sorting=True)
     assert second_page_definition == current_table_status
     # Turning back to previous page(page1)
-    driver.find_element_by_link_text("« Prev").click()
+    driver.find_element(By.LINK_TEXT, "« Prev").click()
     current_table_status = widgets.get_table_status(driver, "volume_snapshots",
                                                     volume_snapshot_names[2],
                                                     sorting=True)
@@ -416,18 +419,19 @@ def test_create_volume_snapshot_admin(login, driver, new_volume_admin,
         'volumes',
     ))
     driver.get(volumes_url)
-    row = driver.find_element_by_css_selector(
+    row = driver.find_element(
+        By.CSS_SELECTOR,
         f"table#volumes tr[data-display='{new_volume_admin.name}']")
-    actions_column = row.find_element_by_css_selector("td.actions_column")
+    actions_column = row.find_element(By.CSS_SELECTOR, "td.actions_column")
     widgets.select_from_dropdown(actions_column, "Create Snapshot")
-    snapshot_form = driver.find_element_by_css_selector(
-        ".modal-dialog form")
-    snapshot_form.find_element_by_id("id_name").send_keys(
+    snapshot_form = driver.find_element(
+        By.CSS_SELECTOR, ".modal-dialog form")
+    snapshot_form.find_element(By.ID, "id_name").send_keys(
         volume_snapshot_name)
-    snapshot_form.find_element_by_css_selector(".btn-primary").click()
-    messages = widgets.get_and_dismiss_messages(driver)
-    assert(f'Info: Creating volume snapshot "{volume_snapshot_name}".'
-           in messages)
+    snapshot_form.find_element(By.CSS_SELECTOR, ".btn-primary").click()
+    messages = widgets.get_and_dismiss_messages(driver, config)
+    assert (f'Info: Creating volume snapshot "{volume_snapshot_name}".'
+            in messages)
     assert (openstack_admin.block_storage.find_snapshot(volume_snapshot_name)
             is not None)
 
@@ -441,20 +445,20 @@ def test_delete_volume_snapshot_admin(login, driver, openstack_admin,
         'snapshots',
     ))
     driver.get(url)
-    rows = driver.find_elements_by_css_selector(
-        f"table#volume_snapshots tr[data-display="
+    rows = driver.find_elements(
+        By.CSS_SELECTOR, f"table#volume_snapshots tr[data-display="
         f"'{new_volume_snapshot_admin.name}']")
     assert len(rows) == 1
-    actions_column = rows[0].find_element_by_css_selector("td.actions_column")
+    actions_column = rows[0].find_element(By.CSS_SELECTOR, "td.actions_column")
     widgets.select_from_dropdown(actions_column, "Delete Volume Snapshot")
     widgets.confirm_modal(driver)
-    messages = widgets.get_and_dismiss_messages(driver)
-    assert(f"Success: Scheduled deletion of Volume Snapshot: "
-           f"{new_volume_snapshot_admin.name}" in messages)
+    messages = widgets.get_and_dismiss_messages(driver, config)
+    assert (f"Success: Scheduled deletion of Volume Snapshot: "
+            f"{new_volume_snapshot_admin.name}" in messages)
     wait_for_volume_snapshot_is_deleted(openstack_admin,
                                         new_volume_snapshot_admin.name)
     assert (openstack_admin.block_storage.find_snapshot(
-            new_volume_snapshot_admin.name)is None)
+            new_volume_snapshot_admin.name) is None)
 
 
 def test_edit_volume_snapshot_description_admin(login, driver, openstack_admin,
@@ -467,21 +471,21 @@ def test_edit_volume_snapshot_description_admin(login, driver, openstack_admin,
         'snapshots',
     ))
     driver.get(url)
-    rows = driver.find_elements_by_css_selector(
-        f"table#volume_snapshots tr[data-display"
+    rows = driver.find_elements(
+        By.CSS_SELECTOR, f"table#volume_snapshots tr[data-display"
         f"='{new_volume_snapshot_admin.name}']")
     assert len(rows) == 1
-    actions_column = rows[0].find_element_by_css_selector("td.actions_column")
+    actions_column = rows[0].find_element(By.CSS_SELECTOR, "td.actions_column")
     widgets.select_from_dropdown(actions_column, "Edit Snapshot")
-    snapshot_form = driver.find_element_by_css_selector(".modal-dialog form")
-    snapshot_form.find_element_by_id("id_description").clear()
-    snapshot_form.find_element_by_id("id_description").send_keys(
+    snapshot_form = driver.find_element(By.CSS_SELECTOR, ".modal-dialog form")
+    snapshot_form.find_element(By.ID, "id_description").clear()
+    snapshot_form.find_element(By.ID, "id_description").send_keys(
         f"EDITED_Description for: {new_volume_snapshot_admin.name}")
-    snapshot_form.find_element_by_css_selector(".btn-primary").click()
-    messages = widgets.get_and_dismiss_messages(driver)
-    assert(f'Info: Updating volume snapshot '
-           f'"{new_volume_snapshot_admin.name}"' in messages)
-    assert(openstack_admin.block_storage.find_snapshot(
+    snapshot_form.find_element(By.CSS_SELECTOR, ".btn-primary").click()
+    messages = widgets.get_and_dismiss_messages(driver, config)
+    assert (f'Info: Updating volume snapshot '
+            f'"{new_volume_snapshot_admin.name}"' in messages)
+    assert (openstack_admin.block_storage.find_snapshot(
         new_volume_snapshot_admin.name).description ==
         f"EDITED_Description for: {new_volume_snapshot_admin.name}")
 
@@ -533,25 +537,25 @@ def test_volume_snapshots_pagination_admin(login, driver, volume_snapshot_names,
                                                     sorting=True)
     assert first_page_definition == current_table_status
     # Turning to next page(page2)
-    driver.find_element_by_link_text("Next »").click()
+    driver.find_element(By.LINK_TEXT, "Next »").click()
     current_table_status = widgets.get_table_status(driver, "volume_snapshots",
                                                     volume_snapshot_names[1],
                                                     sorting=True)
     assert second_page_definition == current_table_status
     # Turning to next page(page3)
-    driver.find_element_by_link_text("Next »").click()
+    driver.find_element(By.LINK_TEXT, "Next »").click()
     current_table_status = widgets.get_table_status(driver, "volume_snapshots",
                                                     volume_snapshot_names[0],
                                                     sorting=True)
     assert third_page_definition == current_table_status
     # Turning back to previous page(page2)
-    driver.find_element_by_link_text("« Prev").click()
+    driver.find_element(By.LINK_TEXT, "« Prev").click()
     current_table_status = widgets.get_table_status(driver, "volume_snapshots",
                                                     volume_snapshot_names[1],
                                                     sorting=True)
     assert second_page_definition == current_table_status
     # Turning back to previous page(page1)
-    driver.find_element_by_link_text("« Prev").click()
+    driver.find_element(By.LINK_TEXT, "« Prev").click()
     current_table_status = widgets.get_table_status(driver, "volume_snapshots",
                                                     volume_snapshot_names[2],
                                                     sorting=True)

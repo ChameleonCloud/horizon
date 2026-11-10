@@ -20,6 +20,7 @@ from django.test import tag
 from django.test.utils import override_settings
 from django.urls import reverse
 from django.utils import timezone
+from selenium.webdriver.common.by import By
 
 import pytest
 
@@ -206,7 +207,7 @@ class CreateProjectWorkflowTests(test.BaseAdminViewTests):
         self.assertEqual(res.context['workflow'].name,
                          workflows.CreateProject.name)
 
-        self.assertQuerysetEqual(
+        self.assertQuerySetEqual(
             workflow.steps,
             ['<CreateProjectInfo: createprojectinfoaction>',
              '<UpdateProjectMembers: update_members>',
@@ -579,7 +580,7 @@ class UpdateProjectWorkflowTests(test.BaseAdminViewTests):
         self.assertEqual(step.action.initial['name'], project.name)
         self.assertEqual(step.action.initial['description'],
                          project.description)
-        self.assertQuerysetEqual(
+        self.assertQuerySetEqual(
             workflow.steps,
             ['<UpdateProjectInfo: update_info>',
              '<UpdateProjectMembers: update_members>',
@@ -1009,7 +1010,7 @@ class UpdateQuotasWorkflowTests(test.BaseAdminViewTests):
         self.assertEqual(step.action.initial['ram'], quota.get('ram').limit)
         self.assertEqual(step.action.initial['injected_files'],
                          quota.get('injected_files').limit)
-        self.assertQuerysetEqual(
+        self.assertQuerySetEqual(
             workflow.steps,
             ['<UpdateComputeQuota: update_compute_quotas>',
              '<UpdateVolumeQuota: update_volume_quotas>'],
@@ -1201,7 +1202,7 @@ class UsageViewTests(test.BaseAdminViewTests):
         self.assertTemplateUsed(res, 'project/overview/usage.csv')
 
         self.assertIsInstance(res.context['usage'], usage.ProjectUsage)
-        hdr = ('"Instance Name","VCPUs","RAM (MB)","Disk (GB)",'
+        hdr = ('"Instance Name","vCPUs","RAM (MB)","Disk (GB)",'
                '"Usage (Hours)","Age (Seconds)","State"')
         self.assertContains(res, '%s\r\n' % hdr)
 
@@ -1224,7 +1225,7 @@ class UsageViewTests(test.BaseAdminViewTests):
         res = self.client.get(csv_url)
 
         self.assertIsInstance(res.context['usage'], usage.ProjectUsage)
-        hdr = ('"Instance Name","VCPUs","RAM (MB)","Disk (GB)",'
+        hdr = ('"Instance Name","vCPUs","RAM (MB)","Disk (GB)",'
                '"Usage (Hours)","Age (Seconds)","State"')
         self.assertContains(res, '%s\r\n' % hdr)
         usage_1_quoted = ('"\'=cmd|\' /C calc\'!A0","1","512","0","122.87",'
@@ -1590,7 +1591,7 @@ class SeleniumTests(test.SeleniumAdminTestCase, test.TestCase):
                           (self.live_server_url,
                            reverse('horizon:identity:projects:create')))
 
-        members = self.selenium.find_element_by_css_selector(member_css_class)
+        members = self.selenium.find_element(By.CSS_SELECTOR, member_css_class)
 
         for user in users:
             self.assertIn(user.name, members.text)

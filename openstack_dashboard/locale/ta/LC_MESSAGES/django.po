@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: horizon VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
-"POT-Creation-Date: 2025-07-08 23:51+0000\n"
+"POT-Creation-Date: 2026-04-24 08:10+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -13,12 +13,6 @@ msgstr ""
 "Language: ta\n"
 "X-Generator: Zanata 4.3.3\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-
-msgid " - End"
-msgstr " - முடிவு"
-
-msgid " : Next hop"
-msgstr ": அடுத்த ஹாப்"
 
 #, python-format
 msgid "%(field_name)s: Invalid IP address (value=%(ip)s)"
@@ -80,10 +74,6 @@ msgstr "ஒரு உள்ளூர் படிமத்தை பதிவே
 
 msgid "AKI - Amazon Kernel Image"
 msgstr "AKI - அமேசான் கெர்னல் இமேஜ்"
-
-#, python-format
-msgid "ALLOW %(ethertype)s %(proto_port)s %(direction)s %(remote)s"
-msgstr "அனுமதி %(ethertype)s %(proto_port)s %(direction)s %(remote)s"
 
 msgid "AMI - Amazon Machine Image"
 msgstr "AMI - அமேசான் மெஷின் இமேஜ்"
@@ -171,13 +161,6 @@ msgstr "இந்த திரளில் புரவலர்களை சே
 
 msgid "Add/Remove Hosts to Aggregate"
 msgstr "திரளில் புரவலர்களை சேர்/நீக்கு"
-
-msgid ""
-"Additional routes announced to the hosts. Each entry is: destination_cidr,"
-"nexthop (e.g., 192.168.200.0/24,10.56.1.254) and one entry per line."
-msgstr ""
-"புரவலர்களிடம் அறிவித்த கூடுதல் திசைகள் ஒவ்வொரு உள்ளீடும்: destination_cidr,nexthop "
-"(எ.கா, 192.168.200.0/24,10.56.1.254) மற்றும்  ஒவ்வொரு வரியிலும் ஒரு உள்ளீடு."
 
 msgid "Admin"
 msgstr "நிர்வாகம்"
@@ -752,11 +735,11 @@ msgstr "DNS பெயர் சேவையகங்கள்"
 msgid "Decrypt Password"
 msgstr " கடவுச்சொல்லின் குறியாக்கத்தை நீக்கு"
 
+msgid "Default Quotas"
+msgstr "முன்னிருப்பு ஒதுக்கீட்டளவுகள்"
+
 msgid "Default quotas updated."
 msgstr "முன்னிருப்பு ஒதுக்கீட்டளவுகள் புதுப்பிக்கப்பட்டன."
-
-msgid "Defaults"
-msgstr "முன்னிருப்புகள்"
 
 #, python-format
 msgid "Delete the created network \"%s\" due to subnet creation failure."
@@ -952,15 +935,6 @@ msgstr "கீழே"
 msgid "Download CSV Summary"
 msgstr "CSV சுருக்கத்தை பதிவிறக்கவும்"
 
-msgid "EC2 Access Key"
-msgstr "EC2 அணுகல் விசை"
-
-msgid "EC2 Secret Key"
-msgstr "EC2 ரகசிய விசை"
-
-msgid "EC2 URL"
-msgstr "EC2 URL"
-
 msgid "Edit"
 msgstr "திருத்து"
 
@@ -1120,10 +1094,6 @@ msgstr "QoS விவரக்குறிப்பு தொடர்பை ப
 msgid "Error when adding or removing hosts."
 msgstr "புரவலர்களை சேர்க்கும்போது அல்லது நீக்கும்போது பிழை"
 
-#, python-format
-msgid "Error writing zipfile: %(exc)s"
-msgstr "ஜிப்கோப்பை எழுதுவதில் பிழை: %(exc)s"
-
 msgid "Ether Type"
 msgstr "ஈத்தர் வகை"
 
@@ -1168,14 +1138,6 @@ msgid "Failed"
 msgstr "தோல்வியுற்றது"
 
 #, python-format
-msgid ""
-"Failed to add %(users_to_add)s project members%(group_msg)s and set project "
-"quotas."
-msgstr ""
-"%(users_to_add)s பிராஜக்டு உறுப்பினர்கள்%(group_msg)s -ஐ சேர்த்து பிராஜக்டு "
-"ஒதுக்கீட்டளவுகளை அமைப்பதில் தோல்வி"
-
-#, python-format
 msgid "Failed to add %s project groups and update project quotas."
 msgstr ""
 "%s பிராஜக்டு குழுக்களை சேர்த்து மற்றும் பிராஜக்டு ஒதுக்கீட்டளவுகளை புதுப்பிப்பதில் தோல்வி."
@@ -1215,14 +1177,6 @@ msgstr "நிகழ்வுகளை வெளியேற்றுவதி�
 #, python-format
 msgid "Failed to live migrate instance to host \"%s\"."
 msgstr "புரவலன் \"%s\"-ற்கு நிகழ்வை இயங்கு இடம்பெயர்வு செய்வதில் தோல்வி"
-
-#, python-format
-msgid ""
-"Failed to modify %(users_to_modify)s project members%(group_msg)s and update "
-"project quotas."
-msgstr ""
-"%(users_to_modify)s பிராஜக்டு உறுப்பினர்கள்%(group_msg)s -ஐ மாற்றியமைத்து பிராஜக்டு "
-"ஒதுக்கீட்டளவுகளை புதுப்பிப்பதில் தோல்வி"
 
 #, python-format
 msgid "Failed to modify %s domain groups."
@@ -1420,14 +1374,6 @@ msgstr "புரவலர் திரட்டல்கள்"
 
 msgid "Host Routes"
 msgstr "புரவலன் திசைகள்"
-
-#, python-format
-msgid ""
-"Host Routes format error: Destination CIDR and nexthop must be specified "
-"(value=%s)"
-msgstr ""
-"புரவலன் திசைகள் வடிவ பிழை: இலக்கு CIDR மற்றும் nexthop குறிப்பிடப்பட வேண்டும் "
-"(மதிப்பு=%s)"
 
 msgid ""
 "Host aggregates divide an availability zone into logical units by grouping "
@@ -1631,9 +1577,6 @@ msgstr "நிகழ்வு ஐடி"
 msgid "Instance Name"
 msgstr "நிகழ்வின் பெயர்"
 
-msgid "Instance Overview"
-msgstr "நிகழ்வு கண்ணோட்டம்"
-
 msgid "Instance Password is not set or is not yet available"
 msgstr "நிகழ்வு கடவுச்சொல் அமைக்கப்படவில்லை அல்லது இதுவரை கிடைக்கவில்லை"
 
@@ -1748,10 +1691,6 @@ msgstr "நிகழ்வின் இயங்கு இடம்பெயர�
 msgid "Live migrate an instance to a specific host."
 msgstr "ஒரு நிகழ்வை குறிப்பிட்ட புரவலனுக்கு இயங்கு இடம்பெயர்வு"
 
-#, python-format
-msgid "Load Balancer VIP %s"
-msgstr "சுமை சமனாக்கி VIP %s "
-
 msgid "Local"
 msgstr "உள்ளூர்"
 
@@ -1837,12 +1776,6 @@ msgstr "இடம் பெயர்கிறது"
 
 msgid "Migration Policy"
 msgstr "இடம்பெயர்வு கொள்கை"
-
-msgid "Min Disk"
-msgstr "கு.ப. வட்டு"
-
-msgid "Min RAM"
-msgstr "குறைந்தபட்ச RAM"
 
 msgid "Minimum Disk (GB)"
 msgstr "குறைந்தபட்ச RAM (GB)"
@@ -2102,9 +2035,6 @@ msgstr "நிகழ்வுகளின் எண்ணிக்கை"
 
 msgid "Number of Snapshots"
 msgstr "ஸ்னாப்ஷாட்களின் எண்ணிக்கை"
-
-msgid "Number of VCPUs"
-msgstr "VCPU-களின் எண்ணிக்கை"
 
 msgid "Number of Volumes"
 msgstr "தொகுதிகளின் எண்ணிக்கை"
@@ -2529,9 +2459,6 @@ msgstr ""
 msgctxt "Power state of an Instance"
 msgid "Running"
 msgstr "இயங்குகிறது"
-
-msgid "S3 URL"
-msgstr "S3 URL"
 
 msgid "SSH key pairs can be generated with the ssh-keygen command:"
 msgstr "SSH விசை ஜோடிகள் ssh-keygen கட்டளையை கொண்டு உருவாக்கப்படலாம்:"
@@ -3236,14 +3163,8 @@ msgstr "தொகுதி வகை கூடுதல் விவரக்க
 msgid "Unable to extend volume."
 msgstr "தொகுதி நீட்டிக்க முடியவில்லை."
 
-msgid "Unable to fetch EC2 credentials."
-msgstr "EC2 சான்றுகளை தருவிக்க முடியவில்லை."
-
 msgid "Unable to find default role."
 msgstr "முன்னிருப்பு பங்கை கண்டுபிடிக்க முடியவில்லை."
-
-msgid "Unable to get EC2 credentials"
-msgstr "EC2 சான்றுகளை பெற முடியவில்லை."
 
 #, python-format
 msgid "Unable to get RDP console for instance \"%s\"."
@@ -3579,9 +3500,6 @@ msgstr "உபவலை விவரங்களை மீட்க முடி
 msgid "Unable to retrieve subnet details."
 msgstr "உபவலை விவரங்களை மீட்க முடியவில்லை."
 
-msgid "Unable to retrieve tenant limits."
-msgstr "குடியிருப்போர் வரம்புகளை மீட்க முடியவில்லை."
-
 msgid "Unable to retrieve the aggregate to be updated"
 msgstr "புதுப்பிக்க வேண்டிய திரளை மீட்க முடியவில்லை"
 
@@ -3754,9 +3672,6 @@ msgstr "புதுப்பிக்கவும்"
 msgid "Update Default Quotas"
 msgstr "முன்னிருப்பு ஒதுக்கீட்டளவுகளை புதுப்பிக்கவும்"
 
-msgid "Update Defaults"
-msgstr "முன்னிருப்புகளை புதுப்பிக்கவும்"
-
 msgid "Update Group"
 msgstr "குழுவை புதுப்பிக்கலும்"
 
@@ -3885,18 +3800,6 @@ msgstr "பயனர் பெயர் \"%s\" ஏற்கனவே பயன�
 
 msgid "Users"
 msgstr "பயனர்கள்"
-
-msgid "VCPU"
-msgstr "VCPU"
-
-msgid "VCPU Hours"
-msgstr "VCPU நேரங்கள்"
-
-msgid "VCPU Usage"
-msgstr "VCPU பயன்பாடு"
-
-msgid "VCPUs"
-msgstr "VCPU-கள்"
 
 msgid "VLAN"
 msgstr "VLAN"
@@ -4088,6 +3991,3 @@ msgstr "முன்-முனை"
 
 msgid "undefined"
 msgstr "வரையறுக்கப்படாத"
-
-msgid "unknown IP address"
-msgstr "அறியப்படாத ஐபி முகவரி"

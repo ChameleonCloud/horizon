@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: horizon VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
-"POT-Creation-Date: 2025-07-08 23:51+0000\n"
+"POT-Creation-Date: 2026-04-24 08:10+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -38,12 +38,6 @@ msgstr ""
 "\n"
 "      %(used)s / %(quota)s Kullanıldı\n"
 "      "
-
-msgid " - End"
-msgstr " - Bitiş"
-
-msgid " : Next hop"
-msgstr " : Sonraki nokta"
 
 msgid ""
 " A protocol entry contains information that dictates which mapping rules to "
@@ -202,10 +196,6 @@ msgstr ""
 msgid "AKI - Amazon Kernel Image"
 msgstr "AKI - Amazon Çekirdek İmajı"
 
-#, python-format
-msgid "ALLOW %(ethertype)s %(proto_port)s %(direction)s %(remote)s"
-msgstr "İzin ver %(ethertype)s %(proto_port)s %(direction)s %(remote)s"
-
 msgid "AMI - Amazon Machine Image"
 msgstr "AMI - Amazon Makine İmajı"
 
@@ -217,9 +207,6 @@ msgstr "API Uç Noktaları"
 
 msgid "ARI - Amazon Ramdisk Image"
 msgstr "ARI - Amazon Ramdisk İmajı"
-
-msgid "Accept Transfer"
-msgstr "Aktarımı Kabul Et"
 
 msgid "Accept Volume Transfer"
 msgstr "Mantıksal Sürücü Aktarımını Kabul Et"
@@ -350,13 +337,6 @@ msgstr[1] "Kullanıcılar Eklendi"
 
 msgid "Additional Routes"
 msgstr "Ek Rotalar"
-
-msgid ""
-"Additional routes announced to the hosts. Each entry is: destination_cidr,"
-"nexthop (e.g., 192.168.200.0/24,10.56.1.254) and one entry per line."
-msgstr ""
-"İstemcilere duyrulan ek rotalar. Her girdi: hedef_cidr,sonrakinokta (örn., "
-"192.168.200.0/24,10.56.1.254) ve satır başına tek girdi olacak şekildedir."
 
 msgid ""
 "Additionally, some resource types may require a prefix to be used when "
@@ -706,9 +686,6 @@ msgstr "İmajın CPU mimarisi."
 msgid "Cancel"
 msgstr "İptal"
 
-msgid "Cancel Transfer"
-msgstr "Aktarımı İptal Et"
-
 #, python-format
 msgid "Cannot find instance %s."
 msgstr "%s sanal makine bulunamadı."
@@ -1006,9 +983,6 @@ msgstr "Alt Ağ Oluştur"
 msgid "Create Subnet (Quota exceeded)"
 msgstr "Alt Ağ Oluştur (Kota aşıldı)"
 
-msgid "Create Transfer"
-msgstr "Aktarım Oluştur"
-
 msgid "Create User"
 msgstr "Kullanıcı Oluştur"
 
@@ -1236,6 +1210,9 @@ msgstr "DNS İsmi"
 msgid "DNS Name Servers"
 msgstr "DNS İsim Sunucuları"
 
+msgid "DOWN"
+msgstr "KAPALI"
+
 msgctxt "Admin state of a Network"
 msgid "DOWN"
 msgstr "DOWN"
@@ -1259,11 +1236,11 @@ msgctxt "Default style theme"
 msgid "Default"
 msgstr "Ön tanımlı"
 
+msgid "Default Quotas"
+msgstr "Varsayılan Kotalar"
+
 msgid "Default quotas updated."
 msgstr "Varsayılan kotalar güncellendi."
-
-msgid "Defaults"
-msgstr "Varsayılanlar"
 
 msgid "Delete"
 msgid_plural "Delete"
@@ -1866,18 +1843,6 @@ msgstr "OpenStack RC Dosyasını İndir"
 msgid "Download transfer credentials"
 msgstr "Aktarım kimlik bilgilerini indir"
 
-msgid "EC2 Access Key"
-msgstr "EC2 Erişim Anahtarı"
-
-msgid "EC2 Credentials"
-msgstr "EC2 Kimlik Bilgileri"
-
-msgid "EC2 Secret Key"
-msgstr "EC2 Gizli Anahtarı"
-
-msgid "EC2 URL"
-msgstr "EC2 Adresi"
-
 msgid ""
 "Each QoS Specs entity will have a \"Consumer\" value which indicates where "
 "the administrator would like the QoS policy to be enforced. This value can "
@@ -2184,10 +2149,6 @@ msgstr "İsim uzayı %s için kaynak türlerinin güncellenmesinde hata."
 msgid "Error when adding or removing hosts."
 msgstr "İstemci ekleme ya da çıkarmada hata."
 
-#, python-format
-msgid "Error writing zipfile: %(exc)s"
-msgstr "%(exc)s zipfile yazdırılamadı"
-
 msgid "Ether Type"
 msgstr "Ether Türü"
 
@@ -2263,14 +2224,6 @@ msgid "Failed"
 msgstr "Başarısız"
 
 #, python-format
-msgid ""
-"Failed to add %(users_to_add)s project members%(group_msg)s and set project "
-"quotas."
-msgstr ""
-"%(users_to_add)s proje üyeleri eklenemedi %(group_msg)s ve proje kotaları "
-"düzenlenemedi. "
-
-#, python-format
 msgid "Failed to add %s project groups and update project quotas."
 msgstr "%s proje groupları eklenemedi ve proje kotaları güncellenemedi."
 
@@ -2343,14 +2296,6 @@ msgstr "Sanal makine(ler) göçü başarısız: %s"
 
 msgid "Failed to migrate volume."
 msgstr "Mantıksal sürücü göç ettirilemedi."
-
-#, python-format
-msgid ""
-"Failed to modify %(users_to_modify)s project members%(group_msg)s and update "
-"project quotas."
-msgstr ""
-"%(users_to_modify)s proje üyeleri düzenlenemedi %(group_msg)s ve proje "
-"kotaları güncellenemedi. "
 
 #, python-format
 msgid "Failed to modify %s domain groups."
@@ -2674,14 +2619,6 @@ msgstr "İstemci Adı ="
 msgid "Host Routes"
 msgstr "İstemci Yönlendiricileri"
 
-#, python-format
-msgid ""
-"Host Routes format error: Destination CIDR and nexthop must be specified "
-"(value=%s)"
-msgstr ""
-"İstemci Rotaları biçim hatası: Hedef CIDR ve sonraki nokta belirtilmelidir "
-"(değer=%s)"
-
 msgid ""
 "Host aggregates divide an availability zone into logical units by grouping "
 "together hosts. Create a host aggregate then select the hosts contained in "
@@ -2973,9 +2910,6 @@ msgstr "Sanal Makine ID'si ="
 msgid "Instance Name"
 msgstr "Sanal Makine Adı"
 
-msgid "Instance Overview"
-msgstr "Sunucu Genel Görünümü"
-
 msgid "Instance Password is not set or is not yet available"
 msgstr "Sunucu Parolası ayarlanmamış veya henüz kullanılabilir değil"
 
@@ -3126,10 +3060,6 @@ msgstr "Canlı Sanal Makine Göçü"
 
 msgid "Live migrate an instance to a specific host."
 msgstr "Bir sanal makineyi belli bir sunucuya canlı göç ettir."
-
-#, python-format
-msgid "Load Balancer VIP %s"
-msgstr "Yük Dengeleyici VIP %s"
 
 msgid "Local"
 msgstr "Yerel"
@@ -3352,12 +3282,6 @@ msgstr "Göç edilen sunucular geri dönderilemeyen sonuçlara sebep olabilir."
 
 msgid "Migration Policy"
 msgstr "Göç İlkesi"
-
-msgid "Min Disk"
-msgstr "Minimum Disk"
-
-msgid "Min RAM"
-msgstr "Asgari RAM"
 
 msgid "Min. Size (MB) ="
 msgstr "Minimum Boyut (MB) ="
@@ -3783,9 +3707,6 @@ msgstr "Sanal Makine Sayısı"
 msgid "Number of Snapshots"
 msgstr "Anlık Görüntü Sayısı"
 
-msgid "Number of VCPUs"
-msgstr "VCPU sayısı"
-
 msgid "Number of Volumes"
 msgstr "Mantıksal Sürücü Sayısı"
 
@@ -4113,9 +4034,6 @@ msgstr "Açık:"
 msgid "QCOW2 - QEMU Emulator"
 msgstr "QCOW2 - QEMU Emülatör"
 
-msgid "QOS Policy ID"
-msgstr "QOS İlke ID'si"
-
 #, python-format
 msgid "QoS Spec name \"%s\" already exists."
 msgstr "QoS Özellik ismi \"%s\" zaten mevcut."
@@ -4177,12 +4095,6 @@ msgstr "RAM (toplam)"
 
 msgid "RAM (used)"
 msgstr "RAM (kullanılan)"
-
-msgid "RX/TX Factor"
-msgstr "RX/TX Factor"
-
-msgid "RX/TX factor"
-msgstr "RX/TX factor"
 
 msgid "Ramdisk"
 msgstr "Ramdisk"
@@ -4253,9 +4165,6 @@ msgstr "Yeniden İnşa Ediliyor"
 #, python-format
 msgid "Rebuilding instance %s."
 msgstr "Sanal makine %s tekrar inşa ediliyor."
-
-msgid "Recreate EC2 Credentials"
-msgstr "EC2 Kimlik Bilgilerini Yeniden Oluştur"
 
 #, python-format
 msgid "Regenerate and download Key Pair &quot;%(keypair_name)s&quot;"
@@ -4558,9 +4467,6 @@ msgstr "Çalışıyor"
 
 msgid "Running Instance Migration Type"
 msgstr "Çalışan Sunucu Göç Türü"
-
-msgid "S3 URL"
-msgstr "S3 Adresi"
 
 msgid "SLAAC: Address discovered from OpenStack Router"
 msgstr "SLAAC: OpenStack Yönlendiricisinden alınan adres"
@@ -5207,9 +5113,6 @@ msgstr "%s açık anahtar başarıyla getirildi"
 msgid "Successfully modified QoS Spec consumer."
 msgstr "QoS Özelliği tüketicisi başarıyla değiştirildi."
 
-msgid "Successfully recreated ec2 credentials."
-msgstr "Ec2 kimlik bilgileri başarıyla yeniden oluşturuldu."
-
 #, python-format
 msgid ""
 "Successfully sent the request to change the volume type to \"%(vtype)s\" for "
@@ -5707,14 +5610,6 @@ msgid "Total Size of Volumes and Snapshots (GiB) of Type %(type)s"
 msgstr ""
 "%(type)s Türünde Mantıksal Sürücü ve Anlık Görüntülerin Toplam Boyutu (GiB)"
 
-msgid "Total VCPU Usage (Hours):"
-msgstr "Toplam VCPU Kullanımı (Saat):"
-
-msgid ""
-"Total VCPU usage (Number of VCPU in instance * Hours Used) for the project"
-msgstr ""
-"Proje için Toplam VCPU kullanımı (Sunucudaki VCPU sayısı * Kullanılan Saat)"
-
 msgid "Total Volume Storage"
 msgstr "Toplam Birim Alanı"
 
@@ -5740,8 +5635,15 @@ msgstr "Trunks"
 msgid "Type"
 msgstr "Tür"
 
+msgid "Type ="
+msgstr "Tür ="
+
 msgid "Type of backend device identifier provided"
 msgstr "Sağlanan arka uç aygıt tanımlayıcı türü"
+
+#. Translators: Admin state status for router.
+msgid "UP"
+msgstr "AÇIK"
 
 msgctxt "Admin state of a Network"
 msgid "UP"
@@ -5935,14 +5837,8 @@ msgstr "Mantıksal sürücü türü ek özellikleri düzenlenemedi."
 msgid "Unable to extend volume."
 msgstr "Mantıksal sürücü büyütülemiyor."
 
-msgid "Unable to fetch EC2 credentials."
-msgstr "EC2 Kimlikleri getirilemedi."
-
 msgid "Unable to find default role."
 msgstr "Varsayılan rol bulunamadı."
-
-msgid "Unable to get EC2 credentials"
-msgstr "EC2 Kimlikleri getirilemedi."
 
 #, python-format
 msgid "Unable to get RDP console for instance \"%s\"."
@@ -6042,15 +5938,6 @@ msgstr "IP adres ayrıştırılamıyor %s."
 
 msgid "Unable to rebuild instance."
 msgstr "Sanal makine yeniden inşa edilemedi."
-
-msgid "Unable to recreate ec2 credentials. Failed to create ec2 credentials."
-msgstr ""
-"Ec2 kimlik bilgileri yeniden oluşturulamıyor. Ec2 kimlik bilgileri "
-"oluşturulamadı."
-
-msgid "Unable to recreate ec2 credentials. Failed to delete ec2 credentials."
-msgstr ""
-"Ec2 kimlik bilgileri tekrar oluşturulamıyor. Ec2 kimlik bilgileri silinemedi."
 
 msgid "Unable to register identity provider."
 msgstr "Kimlik sağlayıcı kaydedilemiyor."
@@ -6377,9 +6264,6 @@ msgstr "Alt ağ detayları alınamıyor"
 msgid "Unable to retrieve subnet details."
 msgstr "Alt ağ detayları alınamıyor."
 
-msgid "Unable to retrieve tenant limits."
-msgstr "Kiracı sınırları alınamadı."
-
 msgid "Unable to retrieve the aggregate to be updated"
 msgstr "Güncellenecek takım alınamadı"
 
@@ -6682,9 +6566,6 @@ msgstr "İlişkileri Güncelle"
 msgid "Update Default Quotas"
 msgstr "Varsayılan Kotaları Güncelle"
 
-msgid "Update Defaults"
-msgstr "Varsayılanları Güncelle"
-
 msgid "Update Encrypted Volume Type"
 msgstr "Şifreli Mantıksal Sürücü Türünü Güncelle"
 
@@ -6872,18 +6753,6 @@ msgstr "Eşleşmeyi tanımlamak için kullanıcı-tanımlı benzersiz id."
 
 msgid "Users"
 msgstr "Kullanıcılar"
-
-msgid "VCPU"
-msgstr "VCPUlar"
-
-msgid "VCPU Hours"
-msgstr "VCPU Saatleri"
-
-msgid "VCPU Usage"
-msgstr "VCPU Kullanımı"
-
-msgid "VCPUs"
-msgstr "VCPUlar"
 
 msgid "VDI - Virtual Disk Image"
 msgstr "VDI - Sanal Disk İmajı"
@@ -7267,9 +7136,6 @@ msgstr "hayır"
 
 msgid "undefined"
 msgstr "tanımsız"
-
-msgid "unknown IP address"
-msgstr "bilinmeyen IP adresi"
 
 msgid "up"
 msgstr "up"

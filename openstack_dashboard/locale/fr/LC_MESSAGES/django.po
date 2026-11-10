@@ -28,7 +28,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: horizon VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
-"POT-Creation-Date: 2025-07-08 23:51+0000\n"
+"POT-Creation-Date: 2026-04-24 08:10+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -83,12 +83,6 @@ msgstr ""
 "  (service stockage objet, Ceph, NFS, etc ...).\n"
 "  Un de ces services doit être activé afin de créer un backup.\n"
 "  "
-
-msgid " - End"
-msgstr "- Fin"
-
-msgid " : Next hop"
-msgstr ": prochain saut"
 
 msgid ""
 " A protocol entry contains information that dictates which mapping rules to "
@@ -269,10 +263,6 @@ msgstr ""
 msgid "AKI - Amazon Kernel Image"
 msgstr "AKI - Amazon Kernel Image"
 
-#, python-format
-msgid "ALLOW %(ethertype)s %(proto_port)s %(direction)s %(remote)s"
-msgstr "AUTORISER %(ethertype)s %(proto_port)s %(direction)s %(remote)s"
-
 msgid "AMI - Amazon Machine Image"
 msgstr "AMI - Amazon Machine Image"
 
@@ -284,9 +274,6 @@ msgstr "Points d'accès API"
 
 msgid "ARI - Amazon Ramdisk Image"
 msgstr "ARI - Amazon Ramdisk Image"
-
-msgid "Accept Transfer"
-msgstr "Accepter le transfert"
 
 msgid "Accept Volume Transfer"
 msgstr "Accepter le transfert de volume"
@@ -457,14 +444,6 @@ msgstr[1] "Utilisateurs ajoutés"
 
 msgid "Additional Routes"
 msgstr "Routes supplémentaires"
-
-msgid ""
-"Additional routes announced to the hosts. Each entry is: destination_cidr,"
-"nexthop (e.g., 192.168.200.0/24,10.56.1.254) and one entry per line."
-msgstr ""
-"Routes additionnelles annoncées aux hôtes. Chaque entrée est de la forme "
-"cidr_destination,saut_suivant (e.g. : 192.168.200.0/24,10.56.1.254). Une "
-"seule entrée par ligne est permise."
 
 msgid ""
 "Additionally, some resource types may require a prefix to be used when "
@@ -882,9 +861,6 @@ msgstr "Architecture de l'unité centrale de l'image."
 msgid "Cancel"
 msgstr "Annuler"
 
-msgid "Cancel Transfer"
-msgstr "Annuler le transfert"
-
 #, python-format
 msgid "Cannot find instance %s."
 msgstr "Impossible de trouver l'instance %s."
@@ -1133,9 +1109,6 @@ msgctxt "Action log of an instance"
 msgid "Create"
 msgstr "Créer"
 
-msgid "Create A RBAC Policy"
-msgstr "Créer une stratégie RBAC"
-
 msgid "Create An Image"
 msgstr "Créer une image"
 
@@ -1234,9 +1207,6 @@ msgstr "Créer un sous-réseau"
 
 msgid "Create Subnet (Quota exceeded)"
 msgstr "Créer un sous-réseau (Quota dépassé)"
-
-msgid "Create Transfer"
-msgstr "Créer un transfert"
 
 msgid "Create User"
 msgstr "Créer un Utilisateur"
@@ -1518,6 +1488,9 @@ msgstr "nom du DNS"
 msgid "DNS Name Servers"
 msgstr "Serveurs DNS"
 
+msgid "DOWN"
+msgstr "Inactif"
+
 msgctxt "Admin state of a Network"
 msgid "DOWN"
 msgstr "Inactif"
@@ -1541,11 +1514,11 @@ msgctxt "Default style theme"
 msgid "Default"
 msgstr "Défaut"
 
+msgid "Default Quotas"
+msgstr "Quotas par défaut"
+
 msgid "Default quotas updated."
 msgstr "Les quotas par défaut ont été mis à jour."
-
-msgid "Defaults"
-msgstr "Valeurs par défaut"
 
 msgid "Delete"
 msgid_plural "Delete"
@@ -2212,18 +2185,6 @@ msgstr "Télécharger le fichier openrc"
 msgid "Download transfer credentials"
 msgstr "Télécharger le tranfert d'identification"
 
-msgid "EC2 Access Key"
-msgstr "La clé d'accès EC2"
-
-msgid "EC2 Credentials"
-msgstr "Données d'identification EC2 "
-
-msgid "EC2 Secret Key"
-msgstr "La clé secrète EC2"
-
-msgid "EC2 URL"
-msgstr "URL EC2"
-
 msgid ""
 "Each QoS Specs entity will have a \"Consumer\" value which indicates where "
 "the administrator would like the QoS policy to be enforced. This value can "
@@ -2575,10 +2536,6 @@ msgstr "Erreur de mise à jour des types de ressource pour l'espace de nom %s."
 msgid "Error when adding or removing hosts."
 msgstr "Erreur pendant l'ajout ou la suppression d'hôtes."
 
-#, python-format
-msgid "Error writing zipfile: %(exc)s"
-msgstr "Erreur pendant l'écriture du fichier zip : %(exc)s"
-
 msgid "Errors occurred in deleting group."
 msgstr "Des erreurs se sont produites pendant la suppression du groupe."
 
@@ -2677,14 +2634,6 @@ msgid "Failed"
 msgstr "Échec"
 
 #, python-format
-msgid ""
-"Failed to add %(users_to_add)s project members%(group_msg)s and set project "
-"quotas."
-msgstr ""
-"Échec de l'ajout des membres %(users_to_add)s %(group_msg)s et de la "
-"définition des quotas du projet."
-
-#, python-format
 msgid "Failed to add %s project groups and update project quotas."
 msgstr ""
 "Échec de l'ajout des groupes %s et de la mise à jour des quotas du projet."
@@ -2781,14 +2730,6 @@ msgstr "Échec de la migration des instances : %s"
 
 msgid "Failed to migrate volume."
 msgstr "Échec de la migration du volume."
-
-#, python-format
-msgid ""
-"Failed to modify %(users_to_modify)s project members%(group_msg)s and update "
-"project quotas."
-msgstr ""
-"Échec de la modification des membres %(users_to_modify)s  %(group_msg)s et "
-"de la mise à jour des quotas du projet."
 
 #, python-format
 msgid "Failed to modify %s domain groups."
@@ -3192,14 +3133,6 @@ msgstr "Nom de l'hôte ="
 msgid "Host Routes"
 msgstr "Routes d'hôte"
 
-#, python-format
-msgid ""
-"Host Routes format error: Destination CIDR and nexthop must be specified "
-"(value=%s)"
-msgstr ""
-"Format d'erreur des routes d'hôte : Destination CIDR et saut suivant doivent "
-"être spécifiés (valeur=%s)"
-
 msgid ""
 "Host aggregates divide an availability zone into logical units by grouping "
 "together hosts. Create a host aggregate then select the hosts contained in "
@@ -3529,9 +3462,6 @@ msgstr "Nom de l'instance"
 msgid "Instance Name ="
 msgstr "Nom de l'Instance ="
 
-msgid "Instance Overview"
-msgstr "Aperçu de l'instance"
-
 msgid "Instance Password is not set or is not yet available"
 msgstr ""
 "Le mot de passe de l'instance n'est pas défini ou n'est pas encore "
@@ -3738,10 +3668,6 @@ msgstr "Migration dynamique d'instance"
 
 msgid "Live migrate an instance to a specific host."
 msgstr "Migrer directement une instance à un hôte spécifique."
-
-#, python-format
-msgid "Load Balancer VIP %s"
-msgstr "VIP du répartiteur de charge %s"
 
 msgid "Local"
 msgstr "Local"
@@ -3974,12 +3900,6 @@ msgstr ""
 
 msgid "Migration Policy"
 msgstr "Stratégie de migration"
-
-msgid "Min Disk"
-msgstr "Disque Min"
-
-msgid "Min RAM"
-msgstr "RAM Min"
 
 msgid "Min. Size (MB) ="
 msgstr "Taille minimale (Mo) ="
@@ -4446,9 +4366,6 @@ msgstr "Nombre d'instances"
 msgid "Number of Snapshots"
 msgstr "Nombre d'instantanés"
 
-msgid "Number of VCPUs"
-msgstr "Nombre de VCPUs"
-
 msgid "Number of Volumes"
 msgstr "Nombre de volumes"
 
@@ -4805,9 +4722,6 @@ msgstr "Public :"
 msgid "QCOW2 - QEMU Emulator"
 msgstr "QCOW2 - Emulateur QEMU"
 
-msgid "QOS Policy ID"
-msgstr "ID Police QOS"
-
 msgid "QoS Policy"
 msgstr "Stratégie de QOS"
 
@@ -4891,12 +4805,6 @@ msgstr "Détails de la stratégie RBAC"
 msgid "RBAC Policy was successfully created."
 msgstr "La stratégie RBAC a été créée avec succès."
 
-msgid "RX/TX Factor"
-msgstr "Facteur RX/TX "
-
-msgid "RX/TX factor"
-msgstr "Facteur RX/TX"
-
 msgid "Ramdisk"
 msgstr "Ramdisk"
 
@@ -4966,9 +4874,6 @@ msgstr "Reconstruction en cours"
 #, python-format
 msgid "Rebuilding instance %s."
 msgstr "Reconstruction de l'instance en cours %s."
-
-msgid "Recreate EC2 Credentials"
-msgstr "Recréer les données d'identification EC2 "
 
 #, python-format
 msgid "Regenerate and download Key Pair &quot;%(keypair_name)s&quot;"
@@ -5302,9 +5207,6 @@ msgstr "En fonctionnement"
 
 msgid "Running Instance Migration Type"
 msgstr "Type en migration d'instance en cours"
-
-msgid "S3 URL"
-msgstr "URL S3"
 
 msgid "SLAAC: Address discovered from OpenStack Router"
 msgstr "SLAAC: Adresse découverte par le routeur OpenStack"
@@ -6015,9 +5917,6 @@ msgstr "Clé publique importée avec succès : %s"
 msgid "Successfully modified QoS Spec consumer."
 msgstr "La Spécification QoS du Consommateur a été modifiée avec succès."
 
-msgid "Successfully recreated ec2 credentials."
-msgstr "Données d'identification ec2 recréées avec succès."
-
 msgid "Successfully rescued instance"
 msgstr "Instance secourue avec succès"
 
@@ -6125,9 +6024,6 @@ msgstr "Hôte cible"
 
 msgid "Target Project"
 msgstr "Projet cible"
-
-msgid "Target Tenant"
-msgstr "Tenant cible"
 
 msgid "Task"
 msgstr "Tâche"
@@ -6625,15 +6521,6 @@ msgstr "Taille totale des volumes et des instantanés (Go)"
 msgid "Total Size of Volumes and Snapshots (GiB) of Type %(type)s"
 msgstr "Taille totale des volumes et des instantanés (Go) du type %(type)s"
 
-msgid "Total VCPU Usage (Hours):"
-msgstr "Total (en heures) de l’utilisation des VCPU :"
-
-msgid ""
-"Total VCPU usage (Number of VCPU in instance * Hours Used) for the project"
-msgstr ""
-"Utilisation totale des vCPU pour le projet (nombre de vCPU * heures "
-"consommées)"
-
 msgid "Total Volume Storage"
 msgstr "Stockage Volume Total"
 
@@ -6660,8 +6547,15 @@ msgstr "Joncteurs"
 msgid "Type"
 msgstr "Type"
 
+msgid "Type ="
+msgstr "Type ="
+
 msgid "Type of backend device identifier provided"
 msgstr "Type d'identifiant du backend fourni"
+
+#. Translators: Admin state status for router.
+msgid "UP"
+msgstr "Actif"
 
 msgctxt "Admin state of a Network"
 msgid "UP"
@@ -6947,14 +6841,8 @@ msgstr ""
 msgid "Unable to extend volume."
 msgstr "Impossible d'étendre le volume."
 
-msgid "Unable to fetch EC2 credentials."
-msgstr "Impossible de récupérer les informations d'authentification EC2."
-
 msgid "Unable to find default role."
 msgstr "Impossible de trouver le rôle par défaut."
-
-msgid "Unable to get EC2 credentials"
-msgstr "Impossible d'obtenir les identifiants du compte EC2"
 
 #, python-format
 msgid "Unable to get MKS console for instance \"%s\"."
@@ -7082,16 +6970,6 @@ msgstr "Impossible d'analyser l'adresse IP %s"
 
 msgid "Unable to rebuild instance."
 msgstr "Impossible de reconstruire l'instance."
-
-msgid "Unable to recreate ec2 credentials. Failed to create ec2 credentials."
-msgstr ""
-"Impossible de recréer les données d'identification ec2. La création des "
-"données d'identification ec2 a échoué."
-
-msgid "Unable to recreate ec2 credentials. Failed to delete ec2 credentials."
-msgstr ""
-"Impossible de recréer les données d'identification ec2. La suppression des "
-"données d'identification ec2 a échoué."
 
 msgid "Unable to register identity provider."
 msgstr "Impossible d'enregistrer le fournisseur d'identité"
@@ -7513,9 +7391,6 @@ msgstr "Impossible de récupérer les détails du sous-réseau"
 msgid "Unable to retrieve subnet details."
 msgstr "Impossible de récupérer les détails du sous-réseau."
 
-msgid "Unable to retrieve tenant limits."
-msgstr "Incapable de récupérer les limites du tenant."
-
 msgid "Unable to retrieve the aggregate to be updated"
 msgstr "impossible de récupérer l'agrégat à mettre à jour"
 
@@ -7897,9 +7772,6 @@ msgstr "Mise à jour des associations"
 msgid "Update Default Quotas"
 msgstr "Mettre à jour les quotas par défaut"
 
-msgid "Update Defaults"
-msgstr "Mettre à jour les valeurs par défaut"
-
 msgid "Update Encrypted Volume Type"
 msgstr "Mise à jour du volume chiffré"
 
@@ -8110,30 +7982,6 @@ msgstr "ID unique défini par l'utilisateur pour identifier le mappage."
 
 msgid "Users"
 msgstr "Utilisateurs"
-
-msgid "VCPU"
-msgstr "VCPU"
-
-msgid "VCPU Hours"
-msgstr "VCPU Heures"
-
-msgid "VCPU Usage"
-msgstr "Utilisation VCPU"
-
-msgid "VCPUs"
-msgstr "VCPUs"
-
-msgid "VCPUs allocation ratio"
-msgstr "Taux d'allocation des vCPUs"
-
-msgid "VCPUs reserved"
-msgstr "vCPUs réservés"
-
-msgid "VCPUs total"
-msgstr "Total des vCPUs"
-
-msgid "VCPUs used"
-msgstr "vCPUs utilisés"
 
 msgid "VDI - Virtual Disk Image"
 msgstr "VDI - Image disque virtuelle"
@@ -8612,9 +8460,6 @@ msgstr "non"
 
 msgid "undefined"
 msgstr "Indéfini"
-
-msgid "unknown IP address"
-msgstr "Adresse IP inconnue"
 
 msgid "up"
 msgstr "actif"

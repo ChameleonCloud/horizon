@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: horizon VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
-"POT-Creation-Date: 2025-07-08 23:51+0000\n"
+"POT-Creation-Date: 2026-04-24 08:10+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -13,12 +13,6 @@ msgstr ""
 "Language: mr\n"
 "X-Generator: Zanata 4.3.3\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-
-msgid " - End"
-msgstr "-समाप्त"
-
-msgid " : Next hop"
-msgstr " : पुढील उडी"
 
 #, python-format
 msgid "%(field_name)s: Invalid IP address (value=%(ip)s)"
@@ -80,10 +74,6 @@ msgstr "अपलोड करण्यासाठी एक स्थानि
 
 msgid "AKI - Amazon Kernel Image"
 msgstr "AKI - ॲमॅझॉन कर्नेल प्रतिमा  "
-
-#, python-format
-msgid "ALLOW %(ethertype)s %(proto_port)s %(direction)s %(remote)s"
-msgstr "परवानगी द्या %(ethertype)s %(proto_port)s %(direction)s %(remote)s"
 
 msgid "AMI - Amazon Machine Image"
 msgstr "AMI - ॲमॅझॉन मशिन इमेज"
@@ -171,13 +161,6 @@ msgstr "या सरासरीमध्ये होस्ट समावि
 
 msgid "Add/Remove Hosts to Aggregate"
 msgstr "सरासरीमध्ये होस्ट समाविष्ट/नष्ट करा"
-
-msgid ""
-"Additional routes announced to the hosts. Each entry is: destination_cidr,"
-"nexthop (e.g., 192.168.200.0/24,10.56.1.254) and one entry per line."
-msgstr ""
-"होस्टसाठी घोषित अतिरिक्त मार्ग. प्रत्येक प्रवेश आहे: लक्ष्य_सीआयडीआर,पुढीलउडी (उदा., "
-"१९२.१६८.२००.०/२४,१०.५६.१.२५४) व एका ओळीवर एक नोंद."
 
 msgid "Admin"
 msgstr "प्रशासक"
@@ -747,11 +730,11 @@ msgstr "डीएनएस नाव सर्वर"
 msgid "Decrypt Password"
 msgstr "पासवर्डचे सांकेतिकीकरण रद्द करा"
 
+msgid "Default Quotas"
+msgstr "पूर्वनिर्धारित वाटे"
+
 msgid "Default quotas updated."
 msgstr "पूर्वनिर्धारित वाटे सुधारित."
-
-msgid "Defaults"
-msgstr "पूर्वनिर्धारित"
 
 #, python-format
 msgid "Delete the created network \"%s\" due to subnet creation failure."
@@ -947,15 +930,6 @@ msgstr "खाली"
 msgid "Download CSV Summary"
 msgstr "सीएसव्ही सारांश डाउनलोड करा"
 
-msgid "EC2 Access Key"
-msgstr "ईसी२ उपलब्धता कळ"
-
-msgid "EC2 Secret Key"
-msgstr "ईसी२ गुप्त कळ"
-
-msgid "EC2 URL"
-msgstr "ईसी२ यूआरएल"
-
 msgid "Edit"
 msgstr "संपादित करा"
 
@@ -1115,10 +1089,6 @@ msgstr "क्यूओएस निर्देश संबंध सुधा
 msgid "Error when adding or removing hosts."
 msgstr "होस्ट समाविष्ट करताना किंवा काढून टाकताना चूक."
 
-#, python-format
-msgid "Error writing zipfile: %(exc)s"
-msgstr "झिप धारिका लिहीण्यात चूक: %(exc)s"
-
 msgid "Ether Type"
 msgstr "इथर प्रकार"
 
@@ -1161,14 +1131,6 @@ msgid "Failed"
 msgstr "अपयशी"
 
 #, python-format
-msgid ""
-"Failed to add %(users_to_add)s project members%(group_msg)s and set project "
-"quotas."
-msgstr ""
-"समाविष्ट करण्यास अपयशी %(users_to_add)s प्रकल्प सदस्य%(group_msg)s व प्रकल्प वाटा "
-"रचना करा."
-
-#, python-format
 msgid "Failed to add %s project groups and update project quotas."
 msgstr "प्रकल्प गट समाविष्ट करण्यास %s व प्रकल्प वाटा सुधारित करण्यास अपयशी."
 
@@ -1207,14 +1169,6 @@ msgstr "घटक रिक्त करण्यात अपयशी: %s"
 #, python-format
 msgid "Failed to live migrate instance to host \"%s\"."
 msgstr "घटक होस्टवर थेट स्थलांतरित करण्यास अपयशी \"%s\"."
-
-#, python-format
-msgid ""
-"Failed to modify %(users_to_modify)s project members%(group_msg)s and update "
-"project quotas."
-msgstr ""
-"सुधारणा करण्यात अपयशी %(users_to_modify)s प्रकल्प सदस्य%(group_msg)s व सुधारित "
-"प्रकल्प वाटे."
 
 #, python-format
 msgid "Failed to modify %s domain groups."
@@ -1411,12 +1365,6 @@ msgstr "होस्ट सरासरी."
 
 msgid "Host Routes"
 msgstr "होस्ट मार्ग"
-
-#, python-format
-msgid ""
-"Host Routes format error: Destination CIDR and nexthop must be specified "
-"(value=%s)"
-msgstr "होस्ट मार्ग प्रारुप चूक: लक्ष्य सीआयडीआर व पुढील उडी स्पष्ट केली पाहिजे (मूल्य=%s)"
 
 msgid ""
 "Host aggregates divide an availability zone into logical units by grouping "
@@ -1615,9 +1563,6 @@ msgstr "घटना ओळख क्रमांक"
 msgid "Instance Name"
 msgstr "घटना नाव"
 
-msgid "Instance Overview"
-msgstr "घटक आढावा"
-
 msgid "Instance Password is not set or is not yet available"
 msgstr "घटक पासवर्डची रचना केलेली नाही किंवा अजून उपलब्ध नाही"
 
@@ -1729,10 +1674,6 @@ msgstr "थेट स्थलांतर घटक"
 msgid "Live migrate an instance to a specific host."
 msgstr "एखाद्या घटकाचे विशिष्ट होस्टकडे थेट स्थलांतर."
 
-#, python-format
-msgid "Load Balancer VIP %s"
-msgstr "भार संतुलक व्हर्च्युअल आयपी %s"
-
 msgid "Local"
 msgstr "स्थानिक"
 
@@ -1818,12 +1759,6 @@ msgstr "स्थलांतर करत आहे"
 
 msgid "Migration Policy"
 msgstr "स्थलांतर धोरण"
-
-msgid "Min Disk"
-msgstr "किमान डिस्क"
-
-msgid "Min RAM"
-msgstr "किमान रॅम"
 
 msgid "Minimum Disk (GB)"
 msgstr "किमान डिस्क (जीबी)"
@@ -2081,9 +2016,6 @@ msgstr "घटकांची संख्या"
 
 msgid "Number of Snapshots"
 msgstr "क्षणचित्रांची संख्या"
-
-msgid "Number of VCPUs"
-msgstr "VCPUs ची संख्या"
 
 msgid "Number of Volumes"
 msgstr "खंडांची संख्या"
@@ -2505,9 +2437,6 @@ msgstr ""
 msgctxt "Power state of an Instance"
 msgid "Running"
 msgstr "सुरु आहे"
-
-msgid "S3 URL"
-msgstr "एस३ यूआरएल"
 
 msgid "SSH key pairs can be generated with the ssh-keygen command:"
 msgstr "एसएसएच-कीजेन आज्ञेद्वारे एसएसएच कळ जोड्या तयार करता येऊ शकतात:"
@@ -3200,14 +3129,8 @@ msgstr "खंड प्रकार अतिरिक्त निर्दे
 msgid "Unable to extend volume."
 msgstr "खंड विस्तारित करण्यास असमर्थ."
 
-msgid "Unable to fetch EC2 credentials."
-msgstr "ईसी२ ओळखपत्रे मिळविण्यास असमर्थ"
-
 msgid "Unable to find default role."
 msgstr "पूर्वनिर्धारित भूमिका शोधण्यास असमर्थ."
-
-msgid "Unable to get EC2 credentials"
-msgstr "ईसी२ ओळखपत्रे मिळविण्यास असमर्थ"
 
 #, python-format
 msgid "Unable to get RDP console for instance \"%s\"."
@@ -3541,9 +3464,6 @@ msgstr "उपनेट तपशील मिळविसण्यास अस
 msgid "Unable to retrieve subnet details."
 msgstr "उपनेट तपशील मिळविण्यास असमर्थ."
 
-msgid "Unable to retrieve tenant limits."
-msgstr "भाडेकरु मर्यादा मिळविण्यास असमर्थ."
-
 msgid "Unable to retrieve the aggregate to be updated"
 msgstr "सुधारित करायची सरासरी मिळविण्यास असमर्थ"
 
@@ -3716,9 +3636,6 @@ msgstr "सुधारणा"
 msgid "Update Default Quotas"
 msgstr "पूर्वनिर्धारित वाटे सुधारित करा"
 
-msgid "Update Defaults"
-msgstr "पूर्वनिर्धारित सुधारित करा"
-
 msgid "Update Group"
 msgstr "गट सुधारित करा"
 
@@ -3845,18 +3762,6 @@ msgstr "वापरकर्ता नाव \"%s\" आधीपासूनच
 
 msgid "Users"
 msgstr "वापरकर्ते"
-
-msgid "VCPU"
-msgstr "व्हीसीपीयू"
-
-msgid "VCPU Hours"
-msgstr "व्हीसीपीयू तास"
-
-msgid "VCPU Usage"
-msgstr "व्हीसीपीयू वापर"
-
-msgid "VCPUs"
-msgstr "व्हीसीपीयू"
 
 msgid "VLAN"
 msgstr "व्हीलॅन"
@@ -4045,6 +3950,3 @@ msgstr "अग्रभाग"
 
 msgid "undefined"
 msgstr "अनिश्चित"
-
-msgid "unknown IP address"
-msgstr "अज्ञात आयपी पत्ता"

@@ -5,7 +5,7 @@ pbr>=5.5.0 # Apache-2.0
 
 # Horizon Core Requirements
 Babel>=2.6.0 # BSD
-Django>=4.2,<4.3 # BSD
+Django>=4.2 # BSD
 django-compressor>=4.4 # MIT
 django-debreach>=1.4.2 # BSD License (2 clause)
 futurist>=1.2.0 # Apache-2.0
@@ -21,6 +21,7 @@ oslo.upgradecheck>=1.5.0 # Apache-2.0
 oslo.utils>=7.0.0 # Apache-2.0
 osprofiler>=3.4.2 # Apache-2.0
 libsass>=0.23.0 # MIT
+Pillow>=9.1.0 # PIL License
 python-cinderclient>=8.0.0 # Apache-2.0
 python-glanceclient>=2.8.0 # Apache-2.0
 python-keystoneclient>=3.22.0 # Apache-2.0
@@ -28,6 +29,7 @@ python-neutronclient>=8.1.0 # Apache-2.0
 python-novaclient>=9.1.0 # Apache-2.0
 python-swiftclient>=3.2.0 # Apache-2.0
 PyYAML>=6.0 # MIT
+qrcode>=8.2 # BSD
 requests>=2.25.1 # Apache-2.0
 semantic-version>=2.3.1 # BSD
 tzdata>=2022.4
@@ -43,7 +45,7 @@ XStatic-Bootstrap-SCSS>=3.3.7.1 # Apache 2.0 License
 XStatic-bootswatch>=3.3.7.0 # MIT License
 XStatic-D3>=3.5.17.0 # BSD License (3 clause)
 XStatic-Hogan>=2.0.0.2 # Apache 2.0 License
-XStatic-Font-Awesome>=4.7.0.0 # SIL OFL 1.1 License, MIT License
+XStatic-Font-Awesome>=6.2.1.2 # SIL OFL 1.1 License, MIT License
 XStatic-Jasmine>=2.4.1.1 # MIT License
 XStatic-jQuery>=3.5.1.1 # MIT License
 XStatic-JQuery-Migrate>=3 # MIT License
@@ -59,9 +61,3 @@ XStatic-smart-table>=1.4.13.2 # MIT License
 XStatic-Spin>=1.2.5.2 # MIT License
 XStatic-term.js>=0.0.7.0 # MIT License
 XStatic-tv4>=1.2.7.0 # MIT
-
-# enmerkar is not a runtime requirement.
-# It is only required when extracting translation strings.
-# Most horizon plugins do not have enmerkar in their requirements.txt
-# and they depends on horizon requirements, so we keep it here.
-enmerkar>=0.7.1 # BSD

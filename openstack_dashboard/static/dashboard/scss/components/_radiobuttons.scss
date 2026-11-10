@@ -18,8 +18,8 @@
       padding-left: 0;
 
       &:before {
-        @include fa-icon();
-        content: $fa-var-circle-o;
+        @include fa-icon-regular($fa-var-circle);
+        content: unquote("\"#{ $fa-var-circle }\"");
       }
 
       & > span {
@@ -30,7 +30,7 @@
 
     // Radio Button - Checked
     &:checked + label:before {
-      content: $fa-var-dot-circle-o;
+      content: unquote("\"#{ $fa-var-circle-dot }\"");
     }
   }
 }

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: horizon VERSION\n"
 "Report-Msgid-Bugs-To: https://bugs.launchpad.net/openstack-i18n/\n"
-"POT-Creation-Date: 2025-07-08 23:51+0000\n"
+"POT-Creation-Date: 2026-04-24 08:10+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -13,12 +13,6 @@ msgstr ""
 "Language: ks\n"
 "X-Generator: Zanata 4.3.3\n"
 "Plural-Forms: nplurals=1; plural=0\n"
-
-msgid " - End"
-msgstr "خَتم"
-
-msgid " : Next hop"
-msgstr " :بیاکھ ہاپ"
 
 #, python-format
 msgid "%(field_name)s: Invalid IP address (value=%(ip)s)"
@@ -74,10 +68,6 @@ msgstr "لوکل شکل اَپلوڈ کرنہ خبببآطرہ"
 
 msgid "AKI - Amazon Kernel Image"
 msgstr "AKI - امیزان کئرنل شکل"
-
-#, python-format
-msgid "ALLOW %(ethertype)s %(proto_port)s %(direction)s %(remote)s"
-msgstr "ALLOW %(ethertype)s %(proto_port)s %(direction)s %(remote)s"
 
 msgid "AMI - Amazon Machine Image"
 msgstr "AMI - امیزان مئشین شکل"
@@ -162,13 +152,6 @@ msgstr "جمع کئریو ہوسٹ ایگریگیٹ سیتھ ۔ ہوسٹ ہیک�
 
 msgid "Add/Remove Hosts to Aggregate"
 msgstr "جغمع کئریو/ کئڈیو ہوسٹ ایگریگیٹ سیتھ"
-
-msgid ""
-"Additional routes announced to the hosts. Each entry is: destination_cidr,"
-"nexthop (e.g., 192.168.200.0/24,10.56.1.254) and one entry per line."
-msgstr ""
-"مَزید راوٹس ایلان آو کئرنہٕ ہوسٹ خآطرہ۔  ہر اینٹری چھ : destination_cidr,"
-"nexthop (e.g., 192.168.200.0/24,10.56.1.254) تہٕ ہر اینٹری فئی لائن پئٹھ."
 
 msgid "Admin"
 msgstr "ایڈمِن"
@@ -701,11 +684,11 @@ msgstr "DNS سَرور نٲو"
 msgid "Decrypt Password"
 msgstr "ڈیکریپٹ پآسوئرڈ"
 
+msgid "Default Quotas"
+msgstr "ڈیفالٹ کئوٹا "
+
 msgid "Default quotas updated."
 msgstr "  ڈیفالٹ  کئوٹا اَپڈیٹ"
-
-msgid "Defaults"
-msgstr "ڈیفالٹ"
 
 #, python-format
 msgid "Delete the created network \"%s\" due to subnet creation failure."
@@ -906,15 +889,6 @@ msgstr "ڈاون"
 msgid "Download CSV Summary"
 msgstr "ڈوان لوڈ کئریوCSV  خَلاصہٖ"
 
-msgid "EC2 Access Key"
-msgstr "EC2 ایکسس کی"
-
-msgid "EC2 Secret Key"
-msgstr "EC2 سیکریٹ کی"
-
-msgid "EC2 URL"
-msgstr "EC2 URL"
-
 msgid "Edit"
 msgstr "شیریئو"
 
@@ -1074,10 +1048,6 @@ msgstr "غَلطی اَپڈیٹ کئرنہ خآطرہ  QoS سِپیک جورہ �
 msgid "Error when adding or removing hosts."
 msgstr "غَلطی جمع یا کئڈنہٕ وَقتہٕ ہوس"
 
-#, python-format
-msgid "Error writing zipfile: %(exc)s"
-msgstr "غَلطی زِپ فٲیل لیکھنہ وَقتہ  : %(exc)s"
-
 msgid "Ether Type"
 msgstr "ایتھر قِسم"
 
@@ -1114,14 +1084,6 @@ msgstr ""
 
 msgid "Extra Specs"
 msgstr " علاوہ  سِپیک "
-
-#, python-format
-msgid ""
-"Failed to add %(users_to_add)s project members%(group_msg)s and set project "
-"quotas."
-msgstr ""
-"Failed to add %(users_to_add)s project members%(group_msg)s and set project "
-"quotas."
 
 #, python-format
 msgid "Failed to add %s project groups and update project quotas."
@@ -1163,14 +1125,6 @@ msgstr "نا کامیاب اِنسٹئنس خآلی کئرنہٕ خٲطرہ: %s"
 #, python-format
 msgid "Failed to live migrate instance to host \"%s\"."
 msgstr "اِنسٹنسلایو مےگریٹ ہوسٹ  ناکامیاب کرنہ کرنہ خآطرہ\"%s\""
-
-#, python-format
-msgid ""
-"Failed to modify %(users_to_modify)s project members%(group_msg)s and update "
-"project quotas."
-msgstr ""
-"Failed to modify %(users_to_modify)s project members%(group_msg)s and update "
-"project quotas."
 
 #, python-format
 msgid "Failed to modify %s domain groups."
@@ -1355,14 +1309,6 @@ msgstr "ہوسٹ ایگرِگیٹ"
 msgid "Host Routes"
 msgstr "ہوسٹ راوٹس"
 
-#, python-format
-msgid ""
-"Host Routes format error: Destination CIDR and nexthop must be specified "
-"(value=%s)"
-msgstr ""
-"ہوسٹ روئٹس فارمیٹ غلطی: مَنزٕل CIDR تہٕ نیکسٹ ہاپس گئژہن آسئن  وَضاحت "
-"کئریتھ(value=%s)"
-
 msgid ""
 "Host aggregates divide an availability zone into logical units by grouping "
 "together hosts. Create a host aggregate then select the hosts contained in "
@@ -1543,9 +1489,6 @@ msgstr "اِنسٹئنس ID"
 msgid "Instance Name"
 msgstr "اِنسٹئنس نآو"
 
-msgid "Instance Overview"
-msgstr "اِنسٹنس  اوور ویو"
-
 msgid "Instance Password is not set or is not yet available"
 msgstr "اِنسٹنس پٲس ورڈ چُھ نہ دَستِیاب یا چُھ نہ دَستِیاب"
 
@@ -1655,10 +1598,6 @@ msgstr "لآئو مئگریٹ اِنسٹئنس"
 msgid "Live migrate an instance to a specific host."
 msgstr "لٲئو مئگریٹ أکھ اِنسٹئنس یُس وَضاحت پئزہ کئرون ہوسٹ خٲطرہ"
 
-#, python-format
-msgid "Load Balancer VIP %s"
-msgstr "لوڈ بیلنسر  VIP %s"
-
 msgid "Local"
 msgstr "لوکل"
 
@@ -1744,12 +1683,6 @@ msgstr "مئگریِنگ"
 
 msgid "Migration Policy"
 msgstr "مئگریشن پآلیسی"
-
-msgid "Min Disk"
-msgstr "کم از کم ڈِسک"
-
-msgid "Min RAM"
-msgstr "کم از کمRAM"
 
 msgid "Minimum Disk (GB)"
 msgstr "کم از کم ڈِسک (GB)"
@@ -2003,9 +1936,6 @@ msgstr "تعداد اِنسٹئنس ہُند۱"
 
 msgid "Number of Snapshots"
 msgstr "تعداد سِنیپ شآٹس  ہُند"
-
-msgid "Number of VCPUs"
-msgstr "تعداد  VCPU"
 
 msgid "Number of Volumes"
 msgstr "والیوم ہُند تعداد"
@@ -2339,9 +2269,6 @@ msgid ""
 msgstr ""
 "رولز یِم وَضا حت چھ کران کوس ٹریفِک چُھ اِجازت اِنسٹنسِز دِتمِت حِفآظتی گروپس خآطرہ۔  "
 "حِفآظتی گروپ رولس مَنز چھ ۳ بیڈہ حِصہ:"
-
-msgid "S3 URL"
-msgstr "S3 URL"
 
 msgid "SSH key pairs can be generated with the ssh-keygen command:"
 msgstr "کی جورہ چھ ssh ہیکان بَناویتہ ssh-keygenکمانڈ سیتھ"
@@ -2970,14 +2897,8 @@ msgstr "نا قابِل شئرنہٕ ٕ خآطرہ  والیوم قِسم علا
 msgid "Unable to extend volume."
 msgstr "نا قابِل والئومبئڈراونہٕ  خآطرہ"
 
-msgid "Unable to fetch EC2 credentials."
-msgstr "نا قابِل EC2کئریڈینشل واپس اَنہٕ خآطرہ"
-
 msgid "Unable to find default role."
 msgstr "نا قابِل ڈیفالٹ کئردار ژہانڈنہٕ خآطرہ"
-
-msgid "Unable to get EC2 credentials"
-msgstr "نا قابِل عئوپِن ٲر سی ۲کئریڈینشل واپس اَنہٕ خآطرہ"
 
 #, python-format
 msgid "Unable to get RDP console for instance \"%s\"."
@@ -3313,9 +3234,6 @@ msgstr "نا قابِل سب نیٹ تٔفصیل واپس اَنہٕ خآطرہ�
 msgid "Unable to retrieve subnet details."
 msgstr "نا قابِل سب نیٹ تٔفصیل واپس اَنہٕ خآطرہ۔ "
 
-msgid "Unable to retrieve tenant limits."
-msgstr "ناکامیاب والیوم  تَفصیل والیوم واپس  اَنہٕ خآطرہ"
-
 msgid "Unable to retrieve the aggregate to be updated"
 msgstr "نا قابِل ایگریگیٹ یُس اَپڈیٹ کئرون عئوس سُہٕ واپس عئنس منز"
 
@@ -3481,9 +3399,6 @@ msgstr "اَپڈیٹ"
 msgid "Update Default Quotas"
 msgstr "اَپڈیٹ  ڈیفالٹ  کئوٹا"
 
-msgid "Update Defaults"
-msgstr "اَپڈیٹ  ڈیفالٹ"
-
 msgid "Update Group"
 msgstr "اپڈیٹ کئریو گروپ"
 
@@ -3606,18 +3521,6 @@ msgstr "یوزر \"%s\" چُھ گوڈے موجود"
 
 msgid "Users"
 msgstr "یوزر "
-
-msgid "VCPU"
-msgstr "VCPU"
-
-msgid "VCPU Hours"
-msgstr "گھنٹہٕ VCPU"
-
-msgid "VCPU Usage"
-msgstr "VCPUاِستعمال"
-
-msgid "VCPUs"
-msgstr "VCPUs"
 
 msgid "VLAN"
 msgstr "VLAN"
@@ -3804,6 +3707,3 @@ msgstr "بئتھُم -عند"
 
 msgid "undefined"
 msgstr "وَضاحت کئریتھ نہٖ"
-
-msgid "unknown IP address"
-msgstr "نا معلوم IPنیب"

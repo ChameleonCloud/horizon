@@ -9,7 +9,10 @@
 
 // Vendor Components
 @import "/horizon/lib/bootstrap_scss/scss/bootstrap";
-@import "/horizon/lib/font_awesome/scss/font-awesome.scss";
+@import "/horizon/lib/font_awesome/scss/fontawesome.scss";
+@import "/horizon/lib/font_awesome/scss/solid.scss";
+@import "/horizon/lib/font_awesome/scss/brands.scss";
+@import "/horizon/lib/font_awesome/scss/regular.scss";
 
 // Main Page Layout
 @import "layout";

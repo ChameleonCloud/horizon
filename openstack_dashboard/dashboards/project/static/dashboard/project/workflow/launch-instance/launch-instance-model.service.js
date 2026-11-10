@@ -155,6 +155,7 @@
       serverGroups: [],
       volumeBootable: false,
       volumes: [],
+      volumeTypes: [],
       volumeSnapshots: [],
       metadataTree: null,
       hintsTree: null,
@@ -208,6 +209,7 @@
         hide_create_volume: false,
         vol_create: false,
         vol_delete_on_instance_delete: false,
+        vol_type: {},
         vol_size: 1
       };
     }
@@ -326,6 +328,10 @@
       }
       if ('default_availability_zone' in defaults) {
         model.default_availability_zone = defaults.default_availability_zone;
+      }
+      if ('vol_delete_on_instance_delete' in defaults) {
+        model.newInstanceSpec.vol_delete_on_instance_delete =
+          defaults.vol_delete_on_instance_delete;
       }
       if ('default_flavor_name' in defaults) {
         model.default_flavor_name = defaults.default_flavor_name;
@@ -675,6 +681,8 @@
 
     function addVolumeSourcesIfEnabled(config) {
       var volumeDeferred = $q.defer();
+      var volumeTypesDeferred = $q.defer();
+      var volumeDefaultTypeDeferred = $q.defer();
       var volumeSnapshotDeferred = $q.defer();
       var absoluteLimitsDeferred = $q.defer();
       serviceCatalog
@@ -695,9 +703,13 @@
         model.allowCreateVolumeFromImage = true;
         if (!config || !config.disable_volume) {
           getVolumes().then(resolveVolumes, failVolumes);
+          getVolumeTypes().then(resolveVolumeTypes, resolveVolumeTypes);
+          getDefaultVolumeType().then(resolveDefaultVolumeType, resolveDefaultVolumeType);
           getAbsoluteLimits().then(resolveAbsoluteLimitsDeferred, resolveAbsoluteLimitsDeferred);
         } else {
           resolveVolumes();
+          resolveVolumeTypes();
+          resolveDefaultVolumeType();
           resolveAbsoluteLimitsDeferred();
         }
         if (!config || !config.disable_volume_snapshot) {
@@ -710,6 +722,12 @@
         return cinderAPI.getVolumes({status: 'available', bootable: 1})
           .then(onGetVolumes);
       }
+      function getVolumeTypes() {
+        return cinderAPI.getVolumeTypes().then(onGetVolumeTypes);
+      }
+      function getDefaultVolumeType() {
+        return cinderAPI.getDefaultVolumeType().then(onGetDefaultVolumeType);
+      }
       function getAbsoluteLimits() {
         return cinderAPI.getAbsoluteLimits().then(onGetCinderLimits);
       }
@@ -719,6 +737,8 @@
       }
       function resolvePromises() {
         volumeDeferred.resolve();
+        volumeTypesDeferred.resolve();
+        volumeDefaultTypeDeferred.resolve();
         volumeSnapshotDeferred.resolve();
         absoluteLimitsDeferred.resolve();
       }
@@ -727,6 +747,12 @@
       }
       function failVolumes() {
         volumeDeferred.resolve();
+      }
+      function resolveVolumeTypes() {
+        volumeTypesDeferred.resolve();
+      }
+      function resolveDefaultVolumeType() {
+        volumeDefaultTypeDeferred.resolve();
       }
       function resolveVolumeSnapshots() {
         volumeSnapshotDeferred.resolve();
@@ -740,6 +766,8 @@
       return $q.all(
         [
           volumeDeferred.promise,
+          volumeTypesDeferred.promise,
+          volumeDefaultTypeDeferred.promise,
           volumeSnapshotDeferred.promise,
           absoluteLimitsDeferred.promise
         ]);
@@ -816,6 +844,14 @@
       addAllowedBootSource(model.volumes, bootSourceTypes.VOLUME, gettext('Volume'));
     }
 
+    function onGetVolumeTypes(data) {
+      model.volumeTypes = data.data.items;
+    }
+
+    function onGetDefaultVolumeType(data) {
+      model.newInstanceSpec.vol_type = data.data;
+    }
+
     function onGetVolumeSnapshots(data) {
       cinderAPI.getVolumes({bootable: 1}).then(function (volumes) {
         onGetBootableVolumeSnapshots(volumes.data.items, data.data.items);
@@ -881,6 +917,7 @@
       delete finalSpec.source_type;
       delete finalSpec.vol_create;
       delete finalSpec.vol_delete_on_instance_delete;
+      delete finalSpec.vol_type;
       delete finalSpec.vol_size;
     }
 
@@ -895,6 +932,7 @@
             'delete_on_termination': finalSpec.vol_delete_on_instance_delete,
             'uuid': finalSpec.source_id,
             'boot_index': '0',
+            'volume_type': finalSpec.vol_type.name,
             'volume_size': finalSpec.vol_size
           }
         );

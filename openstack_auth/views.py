@@ -22,6 +22,7 @@ from django.contrib import messages
 from django import http as django_http
 from django.middleware import csrf
 from django import shortcuts
+from django.urls import NoReverseMatch
 from django.urls import reverse
 from django.utils import http
 from django.utils.translation import gettext_lazy as _
@@ -29,6 +30,7 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
+from django.views.decorators.http import require_POST
 from django.views.generic import edit as edit_views
 from keystoneauth1 import exceptions as keystone_exceptions
 
@@ -85,21 +87,23 @@ def is_ajax(request):
 def login(request):
     """Logs a user in using the :class:`~openstack_auth.forms.Login` form."""
 
+    # Store the next URL in cookie so we can use it after WebSSO.
+    # We can't use session, because user is not logged in yet.
+    next_url = request.GET.get('next')
+
     # If the user enabled websso and the default redirect
     # redirect to the default websso url
     if (request.method == 'GET' and settings.WEBSSO_ENABLED and
             settings.WEBSSO_DEFAULT_REDIRECT):
-        # Store next parameter in session instead of URL
-        next_param = request.GET.get(auth.REDIRECT_FIELD_NAME)
-        if next_param:
-            request.session['websso_next'] = next_param
-
         protocol = settings.WEBSSO_DEFAULT_REDIRECT_PROTOCOL
         region = settings.WEBSSO_DEFAULT_REDIRECT_REGION
         origin = utils.build_absolute_uri(request, '/auth/websso/')
         url = ('%s/auth/OS-FEDERATION/websso/%s?origin=%s' %
                (region, protocol, origin))
-        return shortcuts.redirect(url)
+        response = django_http.HttpResponseRedirect(url)
+        if next_url:
+            response.set_cookie('login_redirect', next_url, max_age=3600)
+        return response
 
     # If the user enabled websso and selects default protocol
     # from the dropdown, We need to redirect user to the websso url
@@ -112,7 +116,12 @@ def login(request):
             if auth_url is None:
                 auth_url = forms.get_region_endpoint(region_id)
             url = utils.get_websso_url(request, auth_url, auth_type)
-            return shortcuts.redirect(url)
+            response = django_http.HttpResponseRedirect(url)
+            utils.set_response_cookie(response, 'login_region',
+                                      request.POST.get('region', ''))
+            utils.set_response_cookie(response, 'login_domain',
+                                      request.POST.get('domain', ''))
+            return response
 
     if not is_ajax(request):
         # If the user is already authenticated, redirect them to the
@@ -179,6 +188,9 @@ def login(request):
         msg = _("Your password has expired. Please set a new password.")
         set_logout_reason(res, msg)
 
+    if next_url:
+        res.set_cookie('login_redirect', next_url, max_age=3600)
+
     # Save the region in the cookie, this is used as the default
     # selected region next time the Login form loads.
     if request.method == "POST":
@@ -244,17 +256,21 @@ def websso(request):
     if request.session.test_cookie_worked():
         request.session.delete_test_cookie()
 
-    # Get next URL from session if it exists
-    redirect_to = request.session.pop("websso_next", settings.LOGIN_REDIRECT_URL)
-    if not http.url_has_allowed_host_and_scheme(
-        url=redirect_to,
-        allowed_hosts={request.get_host()},
-    ):
+    redirect_to = request.COOKIES.get('login_redirect')
+    if not redirect_to:
+        redirect_to = request.POST.get('RelayState')
+    if not redirect_to or not http.url_has_allowed_host_and_scheme(
+            redirect_to, allowed_hosts={request.get_host()}):
         redirect_to = settings.LOGIN_REDIRECT_URL
 
-    return django_http.HttpResponseRedirect(redirect_to)
+    response = django_http.HttpResponseRedirect(redirect_to)
+    response.delete_cookie('login_redirect')
+    return response
+
 
 # TODO(stephenfin): Migrate to CBV
+@csrf_protect
+@require_POST
 def logout(request, login_url=None, **kwargs):
     """Logs out the user if he is logged in. Then redirects to the log-in page.
 
@@ -276,9 +292,13 @@ def logout(request, login_url=None, **kwargs):
         return django_http.HttpResponseRedirect(
             settings.WEBSSO_DEFAULT_REDIRECT_LOGOUT)
 
-    return django_auth_views.logout_then_login(request,
-                                               login_url=login_url,
-                                               **kwargs)
+    # Django 5.2 makes the built-in LogoutView POST-only. Calling
+    # logout_then_login() here will result in 405 for GET-based logout flows.
+    # Enforce POST at this view and perform logout directly.
+    auth.logout(request)
+    return django_http.HttpResponseRedirect(
+        shortcuts.resolve_url(login_url or settings.LOGIN_URL)
+    )
 
 
 # TODO(stephenfin): Migrate to CBV
@@ -330,7 +350,10 @@ def switch(request, tenant_id, redirect_field_name=auth.REDIRECT_FIELD_NAME):
             _('Switch to project "%(project_name)s" successful.') %
             {'project_name': request.user.project_name})
         messages.success(request, message)
-    response = shortcuts.redirect(redirect_to)
+    try:
+        response = shortcuts.redirect(redirect_to)
+    except NoReverseMatch:
+        response = django_http.HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
     utils.set_response_cookie(response, 'recent_project',
                               request.user.project_id)
     return response

@@ -24,15 +24,11 @@ from selenium.webdriver.common import by
 from selenium.webdriver.common import desired_capabilities as dc
 from selenium.webdriver.remote import webelement
 
-# Select the WebDriver to use based on the --selenium-phantomjs switch.
-if os.environ.get('SELENIUM_PHANTOMJS'):
-    from selenium.webdriver import PhantomJS as WebDriver
-    desired_capabilities = dc.DesiredCapabilities.PHANTOMJS
-elif os.environ.get('SELENIUM_CHROME'):
+if os.environ.get('SELENIUM_CHROME'):
     from selenium.webdriver import Chrome as WebDriver
     desired_capabilities = dc.DesiredCapabilities.CHROME
 else:
-    from horizon.test.firefox_binary import WebDriver
+    from selenium.webdriver.firefox.webdriver import WebDriver
     desired_capabilities = dc.DesiredCapabilities.FIREFOX
 
 

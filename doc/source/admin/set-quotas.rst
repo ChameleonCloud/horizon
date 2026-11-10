@@ -54,7 +54,7 @@ The following table describes the Compute and Block Storage service quotas:
 | Injected File      | Content bytes allowed for each     | Compute       |
 | Content Bytes      | injected file.                     |               |
 +--------------------+------------------------------------+---------------+
-| Keypairs           | Number of keypairs.                | Compute       |
+| Key pairs          | Number of key pairs.               | Compute       |
 +--------------------+------------------------------------+---------------+
 | Metadata Items     | Metadata items allowed for each    | Compute       |
 |                    | instance.                          |               |
@@ -71,7 +71,7 @@ The following table describes the Compute and Block Storage service quotas:
 | Snapshots          | Volume snapshots allowed for       | Block Storage |
 |                    | each project.                      |               |
 +--------------------+------------------------------------+---------------+
-| VCPUs              | Instance cores allowed for each    | Compute       |
+| vCPUs              | Instance cores allowed for each    | Compute       |
 |                    | project.                           |               |
 +--------------------+------------------------------------+---------------+
 | Volumes            | Volumes allowed for each           | Block Storage |
@@ -87,7 +87,7 @@ View default project quotas
    from the drop-down list.
 
 #. On the :guilabel:`Admin` tab, open the :guilabel:`System` tab
-   and click the :guilabel:`Defaults` category.
+   and click the :guilabel:`Default Quotas` category.
 
 #. The default quota values are displayed.
 
@@ -105,18 +105,18 @@ Update project quotas
    from the drop-down list.
 
 #. On the :guilabel:`Admin` tab, open the :guilabel:`System` tab
-   and click the :guilabel:`Defaults` category.
+   and click the :guilabel:`Default Quotas` category.
 
-#. Click the :guilabel:`Update Defaults` button.
+#. Click the :guilabel:`Update Default Quotas` button.
 
 #. In the :guilabel:`Update Default Quotas` window,
    you can edit the default quota values.
 
-#. Click the :guilabel:`Update Defaults` button.
+#. Click the :guilabel:`Update Default Quotas` button.
 
 .. note::
 
    The dashboard does not show all possible project quotas.
    To view and update the quotas for a service, use its
-   command-line client. See `OpenStack Administrator Guide
-   <https://docs.openstack.org/admin-guide/cli-set-quotas.html>`_.
+   command-line client. See `Manage quotas
+   <https://docs.openstack.org/cinder/latest/cli/cli-set-quotas.html>`_.

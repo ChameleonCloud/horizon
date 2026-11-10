@@ -3,9 +3,9 @@
 # Michele Valsecchi <mvalsecc@redhat.com>, 2019. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: horizon 25.2.0.dev70\n"
+"Project-Id-Version: horizon 25.7.2.dev3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-24 23:07+0000\n"
+"POT-Creation-Date: 2026-04-24 08:10+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -16,8 +16,14 @@ msgstr ""
 "X-Generator: Zanata 4.3.3\n"
 "Plural-Forms: nplurals=1; plural=0\n"
 
+msgid ":launchpad:`neutron-fwaas-dashboard`"
+msgstr ":launchpad:`neutron-fwaas-dashboard`"
+
 msgid ":launchpad:`neutron-vpnaas-dashboard`"
 msgstr ":launchpad:`neutron-vpnaas-dashboard`"
+
+msgid ":opendev-repo:`openstack/neutron-fwaas-dashboard`"
+msgstr ":opendev-repo:`openstack/neutron-fwaas-dashboard`"
 
 msgid ":opendev-repo:`openstack/neutron-vpnaas-dashboard`"
 msgstr ":opendev-repo:`openstack/neutron-vpnaas-dashboard`"
@@ -25,14 +31,8 @@ msgstr ":opendev-repo:`openstack/neutron-vpnaas-dashboard`"
 msgid ":opendev-repo:`openstack/octavia-dashboard`"
 msgstr ":opendev-repo:`openstack/octavia-dashboard`"
 
-msgid ":opendev-repo:`openstack/sahara-dashboard`"
-msgstr ":opendev-repo:`openstack/sahara-dashboard`"
-
 msgid ":storyboard:`openstack/octavia-dashboard`"
 msgstr ":storyboard:`openstack/octavia-dashboard`"
-
-msgid ":storyboard:`openstack/sahara-dashboard`"
-msgstr ":storyboard:`openstack/sahara-dashboard`"
 
 msgid ""
 "ALLOWED_HOSTS can also be ['*'] to accept all hosts. This may be useful for "
@@ -44,9 +44,6 @@ msgstr ""
 "開発用途に有用かもしれません。潜在的なセキュリティ問題があるため、本番環境で"
 "は使用すべきではありません。詳細は https://docs.djangoproject.com/en/dev/ref/"
 "settings/#allowed-hosts を参照してください。"
-
-msgid "Access the dashboard using a web browser at ``http://controller/``."
-msgstr "ウェブブラウザーを使用して ``http://controller/`` にアクセスします。"
 
 msgid ""
 "After you install and configure the dashboard, you can complete the "
@@ -106,9 +103,6 @@ msgstr ""
 "``controller`` ノードの OpenStack のサービスを使用するように、ダッシュボード"
 "を設定します。"
 
-msgid "Configure the web server:"
-msgstr "ウェブサーバーを設定します。"
-
 msgid ""
 "Create ``openstack_dashboard/local/local_settings.py``. It is usually a good "
 "idea to copy ``openstack_dashboard/local/local_settings.py.example`` and "
@@ -152,13 +146,6 @@ msgid ""
 msgstr ""
 "``/etc/openstack-dashboard/local_settings`` ファイルを編集し、以下の作業をす"
 "べて行います。"
-
-msgid ""
-"Edit the ``/srv/www/openstack-dashboard/openstack_dashboard/local/"
-"local_settings.py`` file and complete the following actions:"
-msgstr ""
-"``/srv/www/openstack-dashboard/openstack_dashboard/local/local_settings.py`` "
-"ファイルを編集し、以下の作業をすべて行います。"
 
 msgid "Enable support for domains:"
 msgstr "ドメインのサポートを有効にします。"
@@ -208,12 +195,6 @@ msgstr "インストールと設定 (Red Hat Enterprise Linux, CentOS)"
 
 msgid "Install and configure for Ubuntu"
 msgstr "インストールと設定 (Ubuntu)"
-
-msgid "Install and configure for openSUSE and SUSE Linux Enterprise"
-msgstr "インストールと設定 (openSUSE, SUSE Linux Enterprise)"
-
-msgid "Install the horizon python module into your system"
-msgstr "システムに horizon の python モジュールをインストールします。"
 
 msgid "Install the packages:"
 msgstr "パッケージをインストールします。"
@@ -360,22 +341,6 @@ msgstr ""
 "代わりに ``openstack-dashboard`` パッケージをインストールしてください。"
 
 msgid ""
-"This page covers the basic installation of horizon in a production "
-"environment. If you are looking for a developer environment, see :ref:"
-"`quickstart`."
-msgstr ""
-"このページでは、本番環境に horizon をインストールする基本的な手順を説明しま"
-"す。開発環境の情報を探している場合は :ref:`クイックスタート <quickstart>` を"
-"参照してください。"
-
-msgid ""
-"This section contains a small summary of the critical settings required to "
-"run horizon. For more details, please refer to :ref:`install-settings`."
-msgstr ""
-"ここでは、 horizon を動かすのに必要不可欠な最低限の設定のみを説明します。詳細"
-"な設定は :ref:`install-settings` を参照してください。"
-
-msgid ""
 "This section describes how to install and configure the dashboard on the "
 "controller node."
 msgstr ""
@@ -401,9 +366,6 @@ msgstr "動作検証 (Red Hat Enterprise Linux, CentOS)"
 msgid "Verify operation for Ubuntu"
 msgstr "動作検証 (Ubuntu)"
 
-msgid "Verify operation for openSUSE and SUSE Linux Enterprise"
-msgstr "動作検証 (openSUSE, SUSE Linux Enterprise)"
-
 msgid "Verify operation of the dashboard."
 msgstr "ダッシュボードの動作を検証します。"
 
@@ -412,18 +374,6 @@ msgstr "OpenStack 環境にダッシュボードが追加されました。"
 
 msgid "``ALLOWED_HOSTS``"
 msgstr "``ALLOWED_HOSTS``"
-
-msgid ""
-"``ALLOWED_HOSTS`` can also be ``['*']`` to accept all hosts. This may be "
-"useful for development work, but is potentially insecure and should not be "
-"used in production. See `Django documentation <https://docs.djangoproject."
-"com/en/dev/ref/settings/#allowed-hosts>`_ for further information."
-msgstr ""
-"``ALLOWED_HOSTS`` は、すべてのホストを受け付けるために ``['*']`` にできます。"
-"これは、開発用途に有用かもしれません。潜在的なセキュリティ問題があるため、本"
-"番環境では使用すべきではありません。詳細は `Django documentation <https://"
-"docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts>`_ を参照してくださ"
-"い。"
 
 msgid ""
 "``ALLOWED_HOSTS`` can also be ``['*']`` to accept all hosts. This may be "
