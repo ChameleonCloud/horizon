@@ -1288,6 +1288,9 @@ BAREMETAL_UNSUPPORTED_ACTIONS = frozenset(
         # Baremetal does not support nova snapshot
         "snapshot",
 
+        # Baremetal does not support migration
+        "migrate",
+
         # Baremetal does not support console log
         "log",
 
