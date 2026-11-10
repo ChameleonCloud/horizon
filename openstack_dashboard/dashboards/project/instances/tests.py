@@ -1423,7 +1423,7 @@ class InstanceDetailTests(InstanceTestBase):
 
         res = self._get_instance_details(self.servers.first())
 
-        self.assertNotContains(res, 'VCPUs')
+        self.assertNotContains(res, 'vCPUs')
         self.assertContains(res, 'Flavor ID')
 
     @override_settings(OPENSTACK_INSTANCE_RETRIEVE_IP_ADDRESSES=False)
@@ -3610,7 +3610,7 @@ class FlavorPopoverTests(helpers.TestCase):
         popover = self._popover()
 
         self.assertIn('resource discovery interface', popover)
-        self.assertNotIn('VCPUs', popover)
+        self.assertNotIn('vCPUs', popover)
 
     @django.test.utils.override_settings(
         CHAMELEON_ENABLE_BAREMETAL=True,
@@ -3619,7 +3619,7 @@ class FlavorPopoverTests(helpers.TestCase):
     def test_hybrid_site_shows_the_specs_for_a_vm(self):
         popover = self._popover('m1.tiny')
 
-        self.assertIn('VCPUs', popover)
+        self.assertIn('vCPUs', popover)
         self.assertNotIn('resource discovery interface', popover)
 
 

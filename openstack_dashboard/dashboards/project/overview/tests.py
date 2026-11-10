@@ -320,7 +320,7 @@ class UsageViewTests(test.TestCase):
         # Only the compute section is trimmed.
         self.assertEqual(['Compute', 'Volume', 'Network'],
                          [c['title'] for c in charts])
-        self.assertNotContains(res, "This Period's VCPU-Hours")
+        self.assertNotContains(res, "This Period's vCPU-Hours")
 
     @override_settings(CHAMELEON_ENABLE_BAREMETAL=True)
     def test_chi_baremetal_hides_per_instance_usage_columns(self):
