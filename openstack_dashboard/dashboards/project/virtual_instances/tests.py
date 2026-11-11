@@ -134,7 +134,7 @@ class VirtualPanelNavigationTests(helpers.TestCase):
 
     def _assert_form_posts_to_the_panel(self, res, tail):
         self.assertEqual(200, res.status_code)
-        found = re.search(r'<form [^>]*action="([^"]*)"',
+        found = re.search(r'<form id="[^"]*"[^>]*action="([^"]*)"',
                           res.content.decode("utf-8"))
         self.assertEqual(VIRTUAL_PANEL + tail,
                          found.group(1) if found else "rendered no form")
